@@ -99,6 +99,7 @@ export class SessionCreateForm extends LitElement {
   @state() private quickStartCommands: QuickStartItem[] = [
     { label: '✨ claude', command: 'claude' },
     { label: '✨ gemini', command: 'gemini' },
+    { label: '✨ opencode', command: 'opencode' },
     { label: 'zsh', command: 'zsh' },
     { label: 'python3', command: 'python3' },
     { label: 'node', command: 'node' },

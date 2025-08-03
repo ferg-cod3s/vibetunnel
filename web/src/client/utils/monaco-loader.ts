@@ -25,46 +25,60 @@ let isInitialized = false;
 let loadingPromise: Promise<void> | null = null;
 
 /**
- * Load Monaco Editor using AMD loader
+ * Load Monaco Editor using dynamic imports with lazy loading
  */
 async function loadMonacoEditor(): Promise<void> {
   if (loadingPromise) return loadingPromise;
 
   loadingPromise = new Promise((resolve, reject) => {
-    // Create script tag for loader.js
-    const loaderScript = document.createElement('script');
-    loaderScript.src = '/monaco-editor/vs/loader.js';
+    // Use requestIdleCallback for lazy loading when the browser is idle
+    const loadWhenIdle = () => {
+      // Create script tag for loader.js
+      const loaderScript = document.createElement('script');
+      loaderScript.src = '/monaco-editor/vs/loader.js';
+      
+      // Set loading attributes for better performance
+      loaderScript.async = true;
+      loaderScript.defer = true;
 
-    loaderScript.onload = () => {
-      // Configure require
-      window.require.config({
-        paths: {
-          vs: '/monaco-editor/vs',
-        },
-      });
+      loaderScript.onload = () => {
+        // Configure require
+        window.require.config({
+          paths: {
+            vs: '/monaco-editor/vs',
+          },
+        });
 
-      // Disable workers - they interfere with diff computation
-      // Monaco will fall back to synchronous mode which works fine
-      window.MonacoEnvironment = {
-        getWorker: (_workerId: string, _label: string): Worker => {
-          // Return a dummy worker that will never be used
-          // Monaco will fall back to synchronous mode
-          return new Worker('data:,');
-        },
+        // Disable workers - they interfere with diff computation
+        // Monaco will fall back to synchronous mode which works fine
+        window.MonacoEnvironment = {
+          getWorker: (_workerId: string, _label: string): Worker => {
+            // Return a dummy worker that will never be used
+            // Monaco will fall back to synchronous mode
+            return new Worker('data:,');
+          },
+        };
+
+        // Load monaco with minimal essential modules first
+        window.require(['vs/editor/editor.main'], () => {
+          logger.debug('Monaco Editor loaded via AMD with lazy loading');
+          resolve();
+        });
       };
 
-      // Load monaco
-      window.require(['vs/editor/editor.main'], () => {
-        logger.debug('Monaco Editor loaded via AMD');
-        resolve();
-      });
+      loaderScript.onerror = () => {
+        reject(new Error('Failed to load Monaco loader script'));
+      };
+
+      document.head.appendChild(loaderScript);
     };
 
-    loaderScript.onerror = () => {
-      reject(new Error('Failed to load Monaco loader script'));
-    };
-
-    document.head.appendChild(loaderScript);
+    // Use requestIdleCallback if available, otherwise setTimeout with longer delay
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadWhenIdle, { timeout: 2000 });
+    } else {
+      setTimeout(loadWhenIdle, 100);
+    }
   });
 
   return loadingPromise;

@@ -201,6 +201,52 @@ export function createSessionRoutes(config: SessionRoutesConfig): Router {
       return res.status(400).json({ error: 'Command array is required' });
     }
 
+    // Validate command array for security
+    try {
+      for (const arg of command) {
+        if (typeof arg !== 'string') {
+          throw new Error('All command arguments must be strings');
+        }
+        if (arg.length > 1000) {
+          throw new Error('Command argument exceeds maximum length');
+        }
+        // Prevent null bytes which can be used for injection
+        if (arg.includes('\0')) {
+          throw new Error('Command arguments cannot contain null bytes');
+        }
+      }
+
+      // Validate the base command
+      const baseCommand = command[0];
+      if (baseCommand.includes('/') && !baseCommand.startsWith('/')) {
+        // Relative paths with directory separators are suspicious
+        if (baseCommand.includes('../')) {
+          throw new Error('Command cannot contain directory traversal sequences');
+        }
+      }
+
+      // Check for command injection patterns in the first argument
+      const dangerousPatterns = [
+        /[;&|`$()]/, // Command separators and substitution
+        /\$\{/, // Parameter expansion
+        /\$\(/, // Command substitution
+        />\s*\/dev/, // Device redirections
+        /2>&1/, // Error redirection
+      ];
+
+      for (const pattern of dangerousPatterns) {
+        if (pattern.test(baseCommand)) {
+          throw new Error('Command contains potentially dangerous patterns');
+        }
+      }
+    } catch (validationError) {
+      logger.warn(`session creation failed: command validation error: ${validationError instanceof Error ? validationError.message : String(validationError)}`);
+      return res.status(400).json({ 
+        error: 'Invalid command', 
+        details: validationError instanceof Error ? validationError.message : String(validationError)
+      });
+    }
+
     try {
       // If remoteId is specified and we're in HQ mode, forward to remote
       if (remoteId && isHQMode && remoteRegistry) {

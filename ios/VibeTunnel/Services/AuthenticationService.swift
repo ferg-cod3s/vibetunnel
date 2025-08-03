@@ -226,9 +226,11 @@ final class AuthenticationService: ObservableObject {
         return ["Authorization": "Bearer \(token)"]
     }
 
-    /// Get token for query parameters (used for SSE)
+    /// SECURITY: Query parameter tokens are no longer supported
+    /// All authentication must use Authorization headers for security
+    @available(*, deprecated, message: "Use getAuthHeader() instead - tokens in URLs are insecure")
     func getTokenForQuery() -> String? {
-        authToken
+        return nil // Always return nil to force header usage
     }
 
     /// Attempt automatic login using stored credentials for a server profile
@@ -318,9 +320,9 @@ final class AuthenticationService: ObservableObject {
            let userDataData = userDataJson.data(using: .utf8),
            let userData = try? JSONDecoder().decode(UserData.self, from: userDataData)
         {
-            // Check if token is less than 24 hours old
+            // Check if token is less than 8 hours old (reduced from 24 hours for security)
             let tokenAge = Date().timeIntervalSince(userData.loginTime)
-            if tokenAge < 24 * 60 * 60 { // 24 hours
+            if tokenAge < 8 * 60 * 60 { // 8 hours
                 self.authToken = token
                 self.currentUser = userData.userId
                 self.authMethod = AuthMethod(rawValue: userData.authMethod)

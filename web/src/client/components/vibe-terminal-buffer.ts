@@ -39,11 +39,15 @@ export class VibeTerminalBuffer extends LitElement {
   @state() private error: string | null = null;
   @state() private displayedFontSize = 16;
   @state() private visibleRows = 0;
+  @state() private scrollTop = 0;
+  @state() private virtualScrollEnabled = true;
 
   private container: HTMLElement | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private unsubscribe: (() => void) | null = null;
   private lastTextSnapshot: string | null = null;
+  private lastBufferSnapshot: BufferSnapshot | null = null;
+  private renderedElements: Map<number, HTMLElement> = new Map();
 
   // Adaptive debouncing properties
   private updateTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -66,6 +70,20 @@ export class VibeTerminalBuffer extends LitElement {
     if (this.isMobileDevice) {
       document.removeEventListener('touchstart', this.handleTouchStart);
     }
+    
+    // Clear memory references to prevent leaks
+    this.buffer = null;
+    this.lastBufferSnapshot = null;
+    this.pendingBuffer = null;
+    this.lastTextSnapshot = null;
+    this.renderedElements.clear();
+    
+    // Remove scroll event listener
+    if (this.container?.onscroll) {
+      this.container.onscroll = null;
+    }
+    this.container = null;
+    
     super.disconnectedCallback();
   }
 
@@ -315,16 +333,84 @@ export class VibeTerminalBuffer extends LitElement {
     if (!this.container || !this.buffer || this.visibleRows === 0) return;
 
     const lineHeight = this.displayedFontSize * 1.2;
+    const totalRows = this.buffer.cells.length;
+    
+    // Enable virtual scrolling for large buffers (more than 100 lines)
+    const useVirtualScrolling = this.virtualScrollEnabled && totalRows > 100;
+    
+    if (useVirtualScrolling) {
+      this.renderVirtualScrolling(lineHeight, totalRows);
+    } else {
+      this.renderFullBuffer(lineHeight);
+    }
+  }
+
+  private renderVirtualScrolling(lineHeight: number, totalRows: number) {
+    if (!this.container || !this.buffer) return;
+
+    // Calculate visible range with buffer padding
+    const containerHeight = this.container.clientHeight;
+    const visibleRowCount = Math.ceil(containerHeight / lineHeight);
+    const scrollPosition = this.scrollTop / lineHeight;
+    
+    // Add buffer rows above and below for smooth scrolling
+    const bufferRows = Math.min(10, visibleRowCount);
+    const startRow = Math.max(0, Math.floor(scrollPosition) - bufferRows);
+    const endRow = Math.min(totalRows, Math.ceil(scrollPosition + visibleRowCount) + bufferRows);
+    
+    // Create virtual scrolling container
+    const totalHeight = totalRows * lineHeight;
+    const topOffset = startRow * lineHeight;
+    
+    let html = `
+      <div style="height: ${totalHeight}px; position: relative;">
+        <div style="transform: translateY(${topOffset}px);">
+    `;
+    
+    // Render only visible rows
+    for (let i = startRow; i < endRow; i++) {
+      const row = this.buffer.cells[i];
+      if (!row) continue;
+
+      // Check if cursor is on this line
+      const isCursorLine = i === this.buffer.cursorY && this.sessionStatus === 'running';
+      const cursorCol = isCursorLine ? this.buffer.cursorX : -1;
+      const lineContent = TerminalRenderer.renderLineFromCells(row, cursorCol);
+
+      html += `<div class="terminal-line" style="height: ${lineHeight}px; line-height: ${lineHeight}px;" data-row="${i}">${lineContent}</div>`;
+    }
+    
+    html += '</div></div>';
+    
+    // Update scroll handling
+    if (!this.container.onscroll) {
+      this.container.onscroll = () => {
+        this.scrollTop = this.container!.scrollTop;
+        // Throttle re-rendering during scroll
+        if (!this.updateTimeout) {
+          this.updateTimeout = setTimeout(() => {
+            this.updateTimeout = null;
+            this.updateBufferContentImmediate();
+          }, 16); // 60fps
+        }
+      };
+    }
+    
+    // Set innerHTML
+    this.container.innerHTML = html;
+    this.container.style.overflowY = 'auto';
+  }
+
+  private renderFullBuffer(lineHeight: number) {
+    if (!this.container || !this.buffer) return;
+
     let html = '';
 
-    // The server already sends only the visible terminal area (terminal.rows worth of lines)
-    // We should render all cells sent by the server without additional truncation
+    // Render all rows for smaller buffers
     for (let i = 0; i < this.buffer.cells.length; i++) {
       const row = this.buffer.cells[i];
 
       // Check if cursor is on this line
-      // The server sends cursorY relative to the cells array (0-based)
-      // Only show cursor if session is running
       const isCursorLine = i === this.buffer.cursorY && this.sessionStatus === 'running';
       const cursorCol = isCursorLine ? this.buffer.cursorX : -1;
       const lineContent = TerminalRenderer.renderLineFromCells(row, cursorCol);
@@ -342,6 +428,7 @@ export class VibeTerminalBuffer extends LitElement {
 
     // Set innerHTML directly like terminal.ts does
     this.container.innerHTML = html;
+    this.container.style.overflowY = 'hidden';
   }
 
   /**

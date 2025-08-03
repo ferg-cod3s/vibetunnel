@@ -55,11 +55,25 @@ struct VibeTunnelApp: App {
     private func handleURL(_ url: URL) {
         // Handle vibetunnel://session/{sessionId} URLs
         guard url.scheme == "vibetunnel" else { return }
+        
+        // SECURITY: Only process URL if user is authenticated and connected
+        guard connectionManager.isConnected,
+              connectionManager.authenticationService.isAuthenticated else {
+            Logger(category: "VibeTunnelApp").warning("Ignoring URL - user not authenticated: \(url)")
+            return
+        }
 
         if url.host == "session",
            let sessionId = url.pathComponents.last,
            !sessionId.isEmpty
         {
+            // Validate session ID format (alphanumeric + hyphens only)
+            let allowedCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_"))
+            guard sessionId.rangeOfCharacter(from: allowedCharacters.inverted) == nil else {
+                Logger(category: "VibeTunnelApp").warning("Invalid session ID format: \(sessionId)")
+                return
+            }
+            
             navigationManager.navigateToSession(sessionId)
         }
     }

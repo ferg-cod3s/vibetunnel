@@ -14,10 +14,74 @@ struct ServerConfig: Codable, Equatable {
         host: String,
         port: Int,
         name: String? = nil
-    ) {
-        self.host = host
+    ) throws {
+        // Validate host input
+        let trimmedHost = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedHost.isEmpty else {
+            throw ValidationError.invalidHost("Host cannot be empty")
+        }
+        
+        // Validate hostname/IP format
+        try Self.validateHost(trimmedHost)
+        
+        // Validate port range
+        guard port > 0 && port <= 65535 else {
+            throw ValidationError.invalidPort("Port must be between 1 and 65535")
+        }
+        
+        // Validate name if provided
+        if let name = name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard trimmedName.count <= 100 else {
+                throw ValidationError.invalidName("Name must be 100 characters or less")
+            }
+            self.name = trimmedName
+        } else {
+            self.name = nil
+        }
+        
+        self.host = trimmedHost
         self.port = port
-        self.name = name
+    }
+    
+    /// Validation errors for server configuration
+    enum ValidationError: LocalizedError {
+        case invalidHost(String)
+        case invalidPort(String) 
+        case invalidName(String)
+        
+        var errorDescription: String? {
+            switch self {
+            case .invalidHost(let message):
+                return "Invalid host: \(message)"
+            case .invalidPort(let message):
+                return "Invalid port: \(message)"
+            case .invalidName(let message):
+                return "Invalid name: \(message)"
+            }
+        }
+    }
+    
+    /// Validate hostname or IP address format
+    private static func validateHost(_ host: String) throws {
+        // Check for dangerous characters
+        let allowedCharacters = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-:[]%")
+        guard host.unicodeScalars.allSatisfy({ allowedCharacters.contains($0) }) else {
+            throw ValidationError.invalidHost("Contains invalid characters")
+        }
+        
+        // Check for obvious injection attempts
+        let dangerousPatterns = ["<", ">", "\"", "'", ";", "|", "&", "$(", "`"]
+        for pattern in dangerousPatterns {
+            if host.contains(pattern) {
+                throw ValidationError.invalidHost("Contains potentially dangerous characters")
+            }
+        }
+        
+        // Basic length check
+        guard host.count <= 253 else {
+            throw ValidationError.invalidHost("Hostname too long (max 253 characters)")
+        }
     }
 
     /// Constructs the base URL for API requests.

@@ -37,21 +37,16 @@ final class SSEClient: NSObject, @unchecked Sendable {
 
     @MainActor
     func start() {
-        // Append token to URL for SSE authentication
-        var requestURL = url
-        if let token = authenticationService?.getTokenForQuery() {
-            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-            var queryItems = components?.queryItems ?? []
-            queryItems.append(URLQueryItem(name: "token", value: token))
-            components?.queryItems = queryItems
-            if let urlWithToken = components?.url {
-                requestURL = urlWithToken
-            }
-        }
-
-        var request = URLRequest(url: requestURL)
+        var request = URLRequest(url: url)
         request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
         request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        
+        // Add authentication header for security (never use query parameters for tokens)
+        if let authHeaders = authenticationService?.getAuthHeader() {
+            for (key, value) in authHeaders {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+        }
 
         task = session?.dataTask(with: request)
         task?.resume()

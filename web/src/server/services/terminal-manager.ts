@@ -158,11 +158,11 @@ export class TerminalManager {
     let sessionTerminal = this.terminals.get(sessionId);
 
     if (!sessionTerminal) {
-      // Create new terminal
+      // Create new terminal with memory-conscious settings
       const terminal = new XtermTerminal({
         cols: 80,
         rows: 24,
-        scrollback: 10000,
+        scrollback: 5000, // Reduced from 10K to prevent memory issues in long-running sessions
         allowProposedApi: true,
         convertEol: true,
       });
@@ -684,6 +684,60 @@ export class TerminalManager {
       cursorY,
       cells: trimmedCells,
     };
+  }
+
+  /**
+   * Clean up terminal for a session to prevent memory leaks
+   */
+  cleanupTerminal(sessionId: string): void {
+    const sessionTerminal = this.terminals.get(sessionId);
+    if (sessionTerminal) {
+      // Stop watching the stream file
+      if (sessionTerminal.watcher) {
+        sessionTerminal.watcher.close();
+        sessionTerminal.watcher = undefined;
+      }
+
+      // Dispose of the terminal to free memory
+      try {
+        sessionTerminal.terminal.dispose();
+      } catch (error) {
+        logger.warn(`Error disposing terminal for session ${sessionId}:`, error);
+      }
+
+      // Clear references
+      this.terminals.delete(sessionId);
+      
+      // Remove from buffer change listeners
+      this.bufferChangeListeners.delete(sessionId);
+      
+      logger.debug(`Terminal cleaned up for session ${sessionId}`);
+    }
+  }
+
+  /**
+   * Clean up inactive terminals to prevent memory leaks
+   */
+  cleanupInactiveTerminals(maxAgeMs: number = 24 * 60 * 60 * 1000): number { // 24 hours
+    const now = Date.now();
+    const toCleanup: string[] = [];
+    
+    for (const [sessionId, sessionTerminal] of this.terminals.entries()) {
+      const age = now - sessionTerminal.lastUpdate;
+      if (age > maxAgeMs) {
+        toCleanup.push(sessionId);
+      }
+    }
+    
+    for (const sessionId of toCleanup) {
+      this.cleanupTerminal(sessionId);
+    }
+    
+    if (toCleanup.length > 0) {
+      logger.log(chalk.yellow(`Cleaned up ${toCleanup.length} inactive terminals`));
+    }
+    
+    return toCleanup.length;
   }
 
   /**

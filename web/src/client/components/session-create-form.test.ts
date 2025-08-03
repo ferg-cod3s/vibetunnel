@@ -156,7 +156,7 @@ describe('SessionCreateForm', () => {
 
       // The test environment may not render the buttons correctly due to lit-html issues
       // so we'll just verify the data structure exists
-      const expectedCommands = ['claude', 'gemini', 'zsh', 'python3', 'node', 'pnpm run dev'];
+      const expectedCommands = ['claude', 'gemini', 'opencode', 'zsh', 'python3', 'node', 'pnpm run dev'];
       const actualCommands = element.quickStartCommands.map((item) => item.command);
 
       expectedCommands.forEach((cmd) => {

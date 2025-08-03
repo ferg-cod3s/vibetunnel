@@ -109,10 +109,7 @@ class BufferWebSocketClient: NSObject {
         components?.scheme = baseURL.scheme == "https" ? "wss" : "ws"
         components?.path = "/buffers"
 
-        // Add authentication token as query parameter (not header)
-        if let token = authenticationService?.getTokenForQuery() {
-            components?.queryItems = [URLQueryItem(name: "token", value: token)]
-        }
+        // Authentication is handled via headers only for security
 
         guard let wsURL = components?.url else {
             connectionError = WebSocketError.invalidURL

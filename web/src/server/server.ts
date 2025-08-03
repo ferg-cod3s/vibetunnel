@@ -415,6 +415,36 @@ export async function createApp(): Promise<AppInstance> {
   );
   logger.debug('Configured security headers with helmet');
 
+  // Add CSRF protection for state-changing operations
+  app.use((req, res, next) => {
+    // Skip CSRF protection for read-only operations and authenticated WebSocket upgrades
+    if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') {
+      return next();
+    }
+
+    // Skip CSRF for WebSocket upgrade requests
+    if (req.headers.upgrade === 'websocket') {
+      return next();
+    }
+
+    // Skip CSRF for API token authentication
+    if (req.headers.authorization?.startsWith('Bearer ')) {
+      return next();
+    }
+
+    // Verify CSRF token for session-based requests
+    const csrfToken = req.headers['x-csrf-token'] as string;
+    const sessionCsrfToken = req.session?.csrfToken;
+
+    if (!csrfToken || !sessionCsrfToken || csrfToken !== sessionCsrfToken) {
+      logger.warn(`CSRF protection blocked request to ${req.path} from ${req.ip}`);
+      return res.status(403).json({ error: 'CSRF token missing or invalid' });
+    }
+
+    next();
+  });
+  logger.debug('Configured CSRF protection');
+
   // Add compression middleware with Brotli support
   // Skip compression for SSE streams (asciicast and events)
   app.use(
@@ -474,6 +504,25 @@ export async function createApp(): Promise<AppInstance> {
   // Initialize Terminal Manager for server-side terminal state
   const terminalManager = new TerminalManager(CONTROL_DIR);
   logger.debug('Initialized terminal manager');
+
+  // Set up periodic cleanup to prevent memory leaks
+  const CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 hour
+  const cleanupInterval = setInterval(() => {
+    try {
+      // Clean up inactive terminals older than 4 hours
+      terminalManager.cleanupInactiveTerminals(4 * 60 * 60 * 1000);
+      
+      // Clean up exited sessions
+      ptyManager.cleanupExitedSessions();
+    } catch (error) {
+      logger.warn('Error during periodic cleanup:', error);
+    }
+  }, CLEANUP_INTERVAL);
+
+  // Clean up interval on shutdown
+  process.on('exit', () => {
+    clearInterval(cleanupInterval);
+  });
 
   // Initialize stream watcher for file-based streaming
   const streamWatcher = new StreamWatcher(sessionManager);

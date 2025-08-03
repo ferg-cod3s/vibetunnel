@@ -91,9 +91,9 @@ protocol APIClientProtocol {
 /// terminal I/O, and file system operations. It uses URLSession for networking
 /// and provides async/await interfaces for all operations.
 @MainActor
-class APIClient: APIClientProtocol {
+class APIClient: NSObject, APIClientProtocol {
     static let shared = APIClient()
-    private let session = URLSession.shared
+    private let session: URLSession
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
     private(set) var authenticationService: AuthenticationService?
@@ -107,7 +107,16 @@ class APIClient: APIClientProtocol {
         return serverConfig.baseURL
     }
 
-    private init() {}
+    private override init() {
+        // Configure secure URLSession with certificate validation
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 30.0
+        configuration.timeoutIntervalForResource = 120.0
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        
+        self.session = URLSession(configuration: configuration, delegate: nil, delegateQueue: nil)
+        super.init()
+    }
 
     // MARK: - Session Management
 
