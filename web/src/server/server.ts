@@ -1,6 +1,8 @@
 // VibeTunnel server entry point
 import chalk from 'chalk';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import * as crypto from 'crypto';
 import type { Response as ExpressResponse } from 'express';
 import express from 'express';
 import * as fs from 'fs';
@@ -415,9 +417,13 @@ export async function createApp(): Promise<AppInstance> {
   );
   logger.debug('Configured security headers with helmet');
 
-  // Add CSRF protection for state-changing operations
+  // Add cookie parser middleware for CSRF token handling
+  app.use(cookieParser());
+  logger.debug('Configured cookie parser middleware');
+
+  // Add CSRF protection for state-changing operations using Double-Submit Cookie pattern
   app.use((req, res, next) => {
-    // Skip CSRF protection for read-only operations and authenticated WebSocket upgrades
+    // Skip CSRF protection for read-only operations
     if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') {
       return next();
     }
@@ -427,23 +433,45 @@ export async function createApp(): Promise<AppInstance> {
       return next();
     }
 
-    // Skip CSRF for API token authentication
+    // Skip CSRF for authentication routes
+    if (req.path === '/api/auth/password' || req.path === '/api/auth/ssh-key') {
+      return next();
+    }
+
+    // Skip CSRF for authenticated API requests using Bearer tokens
+    // JWT Bearer tokens are not vulnerable to CSRF attacks since they require
+    // explicit JavaScript access and are not sent automatically by browsers
     if (req.headers.authorization?.startsWith('Bearer ')) {
       return next();
     }
 
-    // Verify CSRF token for session-based requests
+    // For requests without Bearer tokens, enforce CSRF protection
+    // This protects any cookie-based or sessionless endpoints
     const csrfToken = req.headers['x-csrf-token'] as string;
-    const sessionCsrfToken = req.session?.csrfToken;
+    const csrfCookie = (req as express.Request & { cookies?: Record<string, string> }).cookies?.[
+      'csrf-token'
+    ];
 
-    if (!csrfToken || !sessionCsrfToken || csrfToken !== sessionCsrfToken) {
-      logger.warn(`CSRF protection blocked request to ${req.path} from ${req.ip}`);
-      return res.status(403).json({ error: 'CSRF token missing or invalid' });
+    // Allow requests with valid CSRF token-cookie pair
+    if (csrfToken && csrfCookie && csrfToken === csrfCookie) {
+      return next();
     }
 
-    next();
+    // Block potentially malicious cross-site requests
+    logger.warn(`CSRF protection blocked request to ${req.path} from ${req.ip}`, {
+      hasToken: !!csrfToken,
+      hasCookie: !!csrfCookie,
+      tokensMatch: csrfToken === csrfCookie,
+      userAgent: req.headers['user-agent'],
+      referer: req.headers.referer,
+    });
+
+    return res.status(403).json({
+      error: 'CSRF token missing or invalid',
+      details: 'Cross-site request forgery protection requires matching CSRF token',
+    });
   });
-  logger.debug('Configured CSRF protection');
+  logger.debug('Configured CSRF protection using Double-Submit Cookie pattern');
 
   // Add compression middleware with Brotli support
   // Skip compression for SSE streams (asciicast and events)
@@ -465,7 +493,10 @@ export async function createApp(): Promise<AppInstance> {
 
   // Add JSON body parser middleware with size limit
   app.use(express.json({ limit: '10mb' }));
-  logger.debug('Configured express middleware');
+
+  // Add cookie parser middleware for CSRF protection
+  app.use(cookieParser());
+  logger.debug('Configured express middleware with cookie parser');
 
   // Control directory for session data
   const CONTROL_DIR =
@@ -511,7 +542,7 @@ export async function createApp(): Promise<AppInstance> {
     try {
       // Clean up inactive terminals older than 4 hours
       terminalManager.cleanupInactiveTerminals(4 * 60 * 60 * 1000);
-      
+
       // Clean up exited sessions
       ptyManager.cleanupExitedSessions();
     } catch (error) {
@@ -862,6 +893,27 @@ export async function createApp(): Promise<AppInstance> {
     });
   });
 
+  // CSRF token endpoint (no auth required for token generation)
+  app.get('/api/csrf-token', (_req, res) => {
+    // Generate a cryptographically secure random token
+    const csrfToken = require('crypto').randomBytes(32).toString('hex');
+
+    // Set the CSRF token as an HTTP-only cookie for security
+    res.cookie('csrf-token', csrfToken, {
+      httpOnly: false, // Must be accessible to JavaScript for header inclusion
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: 'strict', // Prevent cross-site cookie usage
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      path: '/',
+    });
+
+    // Also return in response body for immediate use
+    res.json({
+      csrfToken,
+      expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
+    });
+  });
+
   // Connect session exit notifications if push notifications are enabled
   if (pushNotificationService) {
     ptyManager.on('sessionExited', (sessionId: string) => {
@@ -1000,6 +1052,36 @@ export async function createApp(): Promise<AppInstance> {
     });
     logger.debug('Connected Claude turn notifications to PTY manager');
   }
+
+  // CSRF token endpoint (no auth required, used by frontend)
+  app.get('/api/csrf-token', (_req, res) => {
+    try {
+      // Generate a cryptographically secure random token (32 bytes = 64 hex chars)
+      const csrfToken = crypto.randomBytes(32).toString('hex');
+
+      const isDevelopment = !process.env.BUILD_DATE || process.env.NODE_ENV === 'development';
+
+      // Set CSRF token in cookie with secure settings
+      res.cookie('csrf-token', csrfToken, {
+        httpOnly: false, // Must be accessible to JavaScript
+        secure: !isDevelopment, // Only send over HTTPS in production
+        sameSite: 'strict', // Strict same-site policy for CSRF protection
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        path: '/', // Available site-wide
+      });
+
+      // Also return in response body for immediate use
+      res.json({
+        csrfToken,
+        expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
+      });
+
+      logger.debug('Generated CSRF token for client');
+    } catch (error) {
+      logger.error('Error generating CSRF token:', error);
+      res.status(500).json({ error: 'Failed to generate CSRF token' });
+    }
+  });
 
   // Apply auth middleware to all API routes (including auth routes for Tailscale header detection)
   app.use('/api', authMiddleware);

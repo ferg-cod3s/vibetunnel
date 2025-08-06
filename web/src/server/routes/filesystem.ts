@@ -42,7 +42,7 @@ export function createFilesystemRoutes(): Router {
     try {
       const resolvedPath = path.resolve(requestedPath);
       const resolvedBase = path.resolve(basePath);
-      
+
       // Allow access to user's home directory and its subdirectories
       const userHome = process.env.HOME || process.env.USERPROFILE;
       if (userHome) {
@@ -51,7 +51,7 @@ export function createFilesystemRoutes(): Router {
           return true;
         }
       }
-      
+
       // Allow access to common safe directories
       const safePaths = [
         '/tmp',
@@ -60,14 +60,14 @@ export function createFilesystemRoutes(): Router {
         '/opt',
         process.cwd(), // Current working directory
       ];
-      
+
       for (const safePath of safePaths) {
         const resolvedSafePath = path.resolve(safePath);
         if (resolvedPath.startsWith(resolvedSafePath)) {
           return true;
         }
       }
-      
+
       // Check if path is within base path
       return resolvedPath.startsWith(resolvedBase);
     } catch (error) {

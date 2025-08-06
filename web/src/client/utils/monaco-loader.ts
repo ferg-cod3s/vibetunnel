@@ -36,7 +36,7 @@ async function loadMonacoEditor(): Promise<void> {
       // Create script tag for loader.js
       const loaderScript = document.createElement('script');
       loaderScript.src = '/monaco-editor/vs/loader.js';
-      
+
       // Set loading attributes for better performance
       loaderScript.async = true;
       loaderScript.defer = true;

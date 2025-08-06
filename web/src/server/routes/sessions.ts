@@ -240,10 +240,13 @@ export function createSessionRoutes(config: SessionRoutesConfig): Router {
         }
       }
     } catch (validationError) {
-      logger.warn(`session creation failed: command validation error: ${validationError instanceof Error ? validationError.message : String(validationError)}`);
-      return res.status(400).json({ 
-        error: 'Invalid command', 
-        details: validationError instanceof Error ? validationError.message : String(validationError)
+      logger.warn(
+        `session creation failed: command validation error: ${validationError instanceof Error ? validationError.message : String(validationError)}`
+      );
+      return res.status(400).json({
+        error: 'Invalid command',
+        details:
+          validationError instanceof Error ? validationError.message : String(validationError),
       });
     }
 

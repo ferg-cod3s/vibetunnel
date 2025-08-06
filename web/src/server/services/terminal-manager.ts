@@ -707,10 +707,10 @@ export class TerminalManager {
 
       // Clear references
       this.terminals.delete(sessionId);
-      
+
       // Remove from buffer change listeners
-      this.bufferChangeListeners.delete(sessionId);
-      
+      this.bufferListeners.delete(sessionId);
+
       logger.debug(`Terminal cleaned up for session ${sessionId}`);
     }
   }
@@ -718,25 +718,26 @@ export class TerminalManager {
   /**
    * Clean up inactive terminals to prevent memory leaks
    */
-  cleanupInactiveTerminals(maxAgeMs: number = 24 * 60 * 60 * 1000): number { // 24 hours
+  cleanupInactiveTerminals(maxAgeMs: number = 24 * 60 * 60 * 1000): number {
+    // 24 hours
     const now = Date.now();
     const toCleanup: string[] = [];
-    
+
     for (const [sessionId, sessionTerminal] of this.terminals.entries()) {
       const age = now - sessionTerminal.lastUpdate;
       if (age > maxAgeMs) {
         toCleanup.push(sessionId);
       }
     }
-    
+
     for (const sessionId of toCleanup) {
       this.cleanupTerminal(sessionId);
     }
-    
+
     if (toCleanup.length > 0) {
       logger.log(chalk.yellow(`Cleaned up ${toCleanup.length} inactive terminals`));
     }
-    
+
     return toCleanup.length;
   }
 

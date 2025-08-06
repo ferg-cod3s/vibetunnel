@@ -70,20 +70,20 @@ export class VibeTerminalBuffer extends LitElement {
     if (this.isMobileDevice) {
       document.removeEventListener('touchstart', this.handleTouchStart);
     }
-    
+
     // Clear memory references to prevent leaks
     this.buffer = null;
     this.lastBufferSnapshot = null;
     this.pendingBuffer = null;
     this.lastTextSnapshot = null;
     this.renderedElements.clear();
-    
+
     // Remove scroll event listener
     if (this.container?.onscroll) {
       this.container.onscroll = null;
     }
     this.container = null;
-    
+
     super.disconnectedCallback();
   }
 
@@ -334,10 +334,10 @@ export class VibeTerminalBuffer extends LitElement {
 
     const lineHeight = this.displayedFontSize * 1.2;
     const totalRows = this.buffer.cells.length;
-    
+
     // Enable virtual scrolling for large buffers (more than 100 lines)
     const useVirtualScrolling = this.virtualScrollEnabled && totalRows > 100;
-    
+
     if (useVirtualScrolling) {
       this.renderVirtualScrolling(lineHeight, totalRows);
     } else {
@@ -352,21 +352,21 @@ export class VibeTerminalBuffer extends LitElement {
     const containerHeight = this.container.clientHeight;
     const visibleRowCount = Math.ceil(containerHeight / lineHeight);
     const scrollPosition = this.scrollTop / lineHeight;
-    
+
     // Add buffer rows above and below for smooth scrolling
     const bufferRows = Math.min(10, visibleRowCount);
     const startRow = Math.max(0, Math.floor(scrollPosition) - bufferRows);
     const endRow = Math.min(totalRows, Math.ceil(scrollPosition + visibleRowCount) + bufferRows);
-    
+
     // Create virtual scrolling container
     const totalHeight = totalRows * lineHeight;
     const topOffset = startRow * lineHeight;
-    
+
     let html = `
       <div style="height: ${totalHeight}px; position: relative;">
         <div style="transform: translateY(${topOffset}px);">
     `;
-    
+
     // Render only visible rows
     for (let i = startRow; i < endRow; i++) {
       const row = this.buffer.cells[i];
@@ -379,9 +379,9 @@ export class VibeTerminalBuffer extends LitElement {
 
       html += `<div class="terminal-line" style="height: ${lineHeight}px; line-height: ${lineHeight}px;" data-row="${i}">${lineContent}</div>`;
     }
-    
+
     html += '</div></div>';
-    
+
     // Update scroll handling
     if (!this.container.onscroll) {
       this.container.onscroll = () => {
@@ -395,7 +395,7 @@ export class VibeTerminalBuffer extends LitElement {
         }
       };
     }
-    
+
     // Set innerHTML
     this.container.innerHTML = html;
     this.container.style.overflowY = 'auto';
