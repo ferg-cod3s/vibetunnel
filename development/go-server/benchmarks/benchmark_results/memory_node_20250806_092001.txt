@@ -1,0 +1,101 @@
+🔍 Memory Monitor Configuration:
+   Process: node (PID: 2585)
+   Interval: 1s
+   Duration: 1m0s
+   Samples: 60
+
+📊 Starting memory monitoring...
+⏱️  Sample 1: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 2: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 3: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 4: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 5: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 6: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 7: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 8: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 9: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 10: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 11: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 12: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 13: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 14: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 15: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 16: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 17: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 18: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 19: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 20: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 21: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 22: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 23: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 24: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 25: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 26: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 27: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 28: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 29: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 30: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 31: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 32: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 33: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 34: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 35: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 36: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 37: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 38: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 39: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 40: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 41: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=2MB
+⏱️  Sample 42: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=3MB
+⏱️  Sample 43: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=3MB
+⏱️  Sample 44: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=3MB
+⏱️  Sample 45: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=3MB
+⏱️  Sample 46: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=3MB
+⏱️  Sample 47: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=3MB
+⏱️  Sample 48: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=3MB
+⏱️  Sample 49: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=3MB
+⏱️  Sample 50: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 51: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 52: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 53: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 54: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 55: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 56: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 57: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 58: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=0MB
+⏱️  Sample 59: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 60: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+⏱️  Sample 61: RSS=2MB VSZ=2MB CPU=0.0% GoHeap=1MB
+
+✅ Monitoring completed (61 samples collected)
+
+📈 Memory Usage Analysis:
+════════════════════════════════════════
+📊 System Memory (RSS - Resident Set Size):
+   Average: 2 MB
+   Maximum: 2 MB
+   Minimum: 2 MB
+
+📊 Virtual Memory (VSZ):
+   Average: 2 MB
+   Maximum: 2 MB
+   Minimum: 2 MB
+
+📊 CPU Usage:
+   Average: 0.00%
+   Maximum: 0.00%
+   Minimum: 0.00%
+
+📊 Go Runtime Memory:
+   Heap Average: 1 MB
+   Heap Maximum: 3 MB
+   Heap Minimum: 0 MB
+   System Average: 7 MB
+   System Maximum: 11 MB
+
+🎯 Performance Targets:
+   ✅ Average RSS < 100MB: ACHIEVED (2 MB)
+   ✅ Maximum RSS < 200MB: ACHIEVED (2 MB)
+   ✅ Average Go Heap < 50MB: ACHIEVED (1 MB)
+
+💾 Results saved to ./benchmark_results/memory_node_20250806_092001.csv
