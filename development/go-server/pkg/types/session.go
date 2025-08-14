@@ -54,6 +54,7 @@ type SessionResponse struct {
 	Rows      int       `json:"rows"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+	Status    string    `json:"status"`
 	Active    bool      `json:"active"`
 	Clients   int       `json:"clients"`
 }

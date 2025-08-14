@@ -14,7 +14,24 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	
+	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
 )
+
+// mockEventBroadcaster is a mock implementation of EventBroadcaster for tests
+type mockEventBroadcaster struct {
+	events []*types.ServerEvent
+}
+
+func (m *mockEventBroadcaster) Broadcast(event *types.ServerEvent) {
+	m.events = append(m.events, event)
+}
+
+func newMockEventBroadcaster() *mockEventBroadcaster {
+	return &mockEventBroadcaster{
+		events: make([]*types.ServerEvent, 0),
+	}
+}
 
 // setupTestRepo creates a temporary Git repository for testing
 func setupTestRepo(t *testing.T) (string, func()) {
@@ -55,7 +72,7 @@ func TestGitService_CommandInjectionPrevention(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 
 	// Test malicious branch names that could execute commands
 	maliciousBranches := []string{
@@ -96,7 +113,7 @@ func TestGitService_PathTraversalPrevention(t *testing.T) {
 	defer cleanup()
 
 	// Create service with restricted base path
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 
 	// Attempt to discover repositories outside allowed path
 	maliciousPaths := []string{
@@ -132,7 +149,7 @@ func TestGitService_InputValidation(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 
 	tests := []struct {
 		name        string
@@ -242,7 +259,7 @@ func TestGitService_RepositoryAccessControl(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 
 	// Test accessing repository outside of allowed base path
 	outsideRepo := "/tmp/outside_repo"
@@ -260,7 +277,7 @@ func TestGitService_GetRepositoryStatus(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 
 	status, err := service.GetRepositoryStatus(".")
 	
@@ -280,7 +297,7 @@ func TestGitService_ListBranches(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 
 	// Create additional test branch
 	err := runGitCommand(repoPath, "checkout", "-b", "test-branch")
@@ -321,7 +338,7 @@ func TestGitService_InvalidRepository(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
-	service := NewGitService(tempDir)
+	service := NewGitService(tempDir, newMockEventBroadcaster())
 
 	status, err := service.GetRepositoryStatus(".")
 	
@@ -335,7 +352,7 @@ func TestGitAPIHandler_GetStatus(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 	router := mux.NewRouter()
 	service.RegisterRoutes(router)
 
@@ -361,7 +378,7 @@ func TestGitAPIHandler_ListBranches(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 	router := mux.NewRouter()
 	service.RegisterRoutes(router)
 
@@ -386,7 +403,7 @@ func TestGitAPIHandler_SecurityValidation(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 	router := mux.NewRouter()
 	service.RegisterRoutes(router)
 
@@ -453,7 +470,7 @@ func TestGitService_DiscoverRepositories(t *testing.T) {
 	err = runGitCommand(repo2, "init")
 	require.NoError(t, err)
 
-	service := NewGitService(baseDir)
+	service := NewGitService(baseDir, newMockEventBroadcaster())
 
 	repos, err := service.DiscoverRepositories(".")
 	
@@ -492,7 +509,7 @@ func TestGitService_PerformanceLargeRepo(t *testing.T) {
 	repoPath, cleanup := setupTestRepo(t)
 	defer cleanup()
 
-	service := NewGitService(repoPath)
+	service := NewGitService(repoPath, newMockEventBroadcaster())
 
 	// Create many files to simulate large repo
 	for i := 0; i < 100; i++ {

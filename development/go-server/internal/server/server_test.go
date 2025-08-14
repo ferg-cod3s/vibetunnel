@@ -44,14 +44,10 @@ func TestServer_ListSessions_Empty(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Header().Get("Content-Type"), "application/json")
 
-	var response map[string]interface{}
+	var response []interface{}
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	require.NoError(t, err)
-
-	assert.Equal(t, float64(0), response["count"])
-	sessions, ok := response["sessions"].([]interface{})
-	assert.True(t, ok)
-	assert.Len(t, sessions, 0)
+	assert.Len(t, response, 0)
 }
 
 func TestServer_CreateSession(t *testing.T) {
@@ -223,18 +219,14 @@ func TestServer_ListSessions_WithSessions(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 
-	var response map[string]interface{}
+	var response []interface{}
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	require.NoError(t, err)
-
-	assert.Equal(t, float64(2), response["count"])
-	sessions, ok := response["sessions"].([]interface{})
-	assert.True(t, ok)
-	assert.Len(t, sessions, 2)
+	assert.Len(t, response, 2)
 
 	// Verify session IDs are present
 	sessionIds := make(map[string]bool)
-	for _, s := range sessions {
+	for _, s := range response {
 		sessionMap := s.(map[string]interface{})
 		sessionIds[sessionMap["id"].(string)] = true
 	}
@@ -286,18 +278,14 @@ func TestServer_AuthCurrentUser(t *testing.T) {
 	server, err := New(&Config{Port: "0"})
 	require.NoError(t, err)
 
-	// Test without authentication token (should return 401)
+	// When auth is not required (default), endpoint returns system user
 	req := httptest.NewRequest("GET", "/api/auth/current-user", nil)
 	w := httptest.NewRecorder()
 
 	server.setupRoutes()
 	server.httpServer.Handler.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusUnauthorized, w.Code)
-
-	// Test with valid token (mock scenario)
-	// TODO: Once authentication middleware is properly implemented,
-	// add test with valid JWT token that should return user info
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestServer_ResizeSession(t *testing.T) {

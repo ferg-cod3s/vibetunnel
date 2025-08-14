@@ -15,6 +15,11 @@ import (
 	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
 )
 
+// EventBroadcaster interface for broadcasting events
+type EventBroadcaster interface {
+	Broadcast(event *types.ServerEvent)
+}
+
 // RepositoryStatus represents the current state of a Git repository
 type RepositoryStatus struct {
 	RepoPath       string    `json:"repoPath"`
@@ -50,14 +55,16 @@ type BranchListResponse struct {
 
 // GitService provides secure Git operations
 type GitService struct {
-	basePath   string      // Base path for security restrictions
-	followMode *FollowMode // Git follow mode manager
+	basePath         string      // Base path for security restrictions
+	followMode       *FollowMode // Git follow mode manager
+	eventBroadcaster EventBroadcaster // Interface for broadcasting events
 }
 
 // NewGitService creates a new Git service with security restrictions
-func NewGitService(basePath string) *GitService {
+func NewGitService(basePath string, eventBroadcaster EventBroadcaster) *GitService {
 	service := &GitService{
-		basePath: basePath,
+		basePath:         basePath,
+		eventBroadcaster: eventBroadcaster,
 	}
 	service.followMode = NewFollowMode(service)
 	return service
@@ -550,11 +557,28 @@ func (g *GitService) handleFollowMode(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, fmt.Sprintf("Failed to enable follow mode: %v", err), http.StatusInternalServerError)
 			return
 		}
+
+		// Broadcast follow enabled event
+		if g.eventBroadcaster != nil {
+			event := types.NewServerEvent(types.EventGitFollowEnabled).
+				WithMessage(fmt.Sprintf("Git follow mode enabled for branch %s", req.Branch))
+			event.Branch = &req.Branch
+			event.RepoPath = &validatedPath
+			g.eventBroadcaster.Broadcast(event)
+		}
 	} else {
 		err = g.followMode.DisableFollowMode(validatedPath)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Failed to disable follow mode: %v", err), http.StatusInternalServerError)
 			return
+		}
+
+		// Broadcast follow disabled event
+		if g.eventBroadcaster != nil {
+			event := types.NewServerEvent(types.EventGitFollowDisabled).
+				WithMessage("Git follow mode disabled")
+			event.RepoPath = &validatedPath
+			g.eventBroadcaster.Broadcast(event)
 		}
 	}
 
@@ -632,6 +656,26 @@ func (g *GitService) handleGitEvent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Failed to process git event: %v", err), http.StatusInternalServerError)
 		return
+	}
+
+	// Broadcast Git event via SSE
+	if g.eventBroadcaster != nil {
+		var serverEvent *types.ServerEvent
+		switch gitEvent.Type {
+		case "post-checkout":
+			serverEvent = types.NewServerEvent(types.EventGitBranchSwitch).
+				WithMessage(fmt.Sprintf("Branch switched to %s", gitEvent.Branch))
+		case "post-commit":
+			serverEvent = types.NewServerEvent(types.EventGitWorktreeSync).
+				WithMessage(fmt.Sprintf("New commit on branch %s", gitEvent.Branch))
+		default:
+			serverEvent = types.NewServerEvent(types.EventGitWorktreeSync).
+				WithMessage(fmt.Sprintf("Git event: %s", gitEvent.Type))
+		}
+		
+		serverEvent.Branch = &gitEvent.Branch
+		serverEvent.RepoPath = &gitEvent.RepoPath
+		g.eventBroadcaster.Broadcast(serverEvent)
 	}
 
 	response := map[string]string{
