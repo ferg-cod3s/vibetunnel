@@ -18,21 +18,21 @@ type Session struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	Active    bool      `json:"active"`
-	
+
 	// Internal fields (not serialized)
-	PTY     interface{}  `json:"-"` // Will be *os.File from pty.Start()
-	Cmd     *exec.Cmd    `json:"-"`
-	Clients []*WSClient  `json:"-"`
+	PTY     interface{} `json:"-"` // Will be *os.File from pty.Start()
+	Cmd     *exec.Cmd   `json:"-"`
+	Clients []*WSClient `json:"-"`
 }
 
 // WSClient represents a WebSocket client connected to a session
 type WSClient struct {
-	ID         string
-	Conn       *websocket.Conn
-	SessionID  string
-	LastPing   time.Time
-	Send       chan []byte
-	Done       chan struct{}
+	ID        string
+	Conn      *websocket.Conn
+	SessionID string
+	LastPing  time.Time
+	Send      chan []byte
+	Done      chan struct{}
 }
 
 // SessionCreateRequest represents a request to create a new session

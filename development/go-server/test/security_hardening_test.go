@@ -83,7 +83,7 @@ func TestPenetrationTestingAuthSystem(t *testing.T) {
 		t.Run("Token_Expiry_Validation", func(t *testing.T) {
 			// Test with expired tokens
 			expiredToken := "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxfQ.invalid"
-			
+
 			req, err := http.NewRequest("GET", baseURL+"/api/auth/current-user", nil)
 			require.NoError(t, err)
 			req.Header.Set("Authorization", expiredToken)
@@ -132,7 +132,7 @@ func TestPenetrationTestingAuthSystem(t *testing.T) {
 		t.Run("Session_ID_Enumeration", func(t *testing.T) {
 			// Test for session ID predictability/enumeration
 			sessionIDs := []string{}
-			
+
 			// Create multiple sessions and collect IDs
 			for i := 0; i < 5; i++ {
 				sessionPayload := map[string]interface{}{
@@ -203,9 +203,9 @@ func TestInputValidationSecurity(t *testing.T) {
 				defer resp.Body.Close()
 
 				// Should reject SQL injection attempts (our security is strict)
-				assert.Equal(t, http.StatusInternalServerError, resp.StatusCode, 
+				assert.Equal(t, http.StatusInternalServerError, resp.StatusCode,
 					"Should reject SQL injection payload: %s", payload)
-				
+
 				// This demonstrates our strong security posture - we reject dangerous input entirely
 				t.Logf("✅ Successfully blocked SQL injection attempt: %s", payload)
 			})
@@ -235,7 +235,7 @@ func TestInputValidationSecurity(t *testing.T) {
 			// Should reject NoSQL injection attempts (our security is strict)
 			assert.Equal(t, http.StatusInternalServerError, resp.StatusCode,
 				"Should reject NoSQL injection payload: %s", payload)
-			
+
 			// This demonstrates our strong security posture
 			t.Logf("✅ Successfully blocked NoSQL injection attempt: %s", payload)
 		}
@@ -254,7 +254,7 @@ func TestInputValidationSecurity(t *testing.T) {
 		for _, payload := range xssPayloads {
 			t.Run("xss_"+strings.ReplaceAll(payload, "<", "lt"), func(t *testing.T) {
 				sessionPayload := map[string]interface{}{
-					"title": payload,
+					"title":   payload,
 					"command": "echo test",
 				}
 				jsonData, _ := json.Marshal(sessionPayload)
@@ -270,7 +270,7 @@ func TestInputValidationSecurity(t *testing.T) {
 
 					// Verify XSS payload is either sanitized or properly escaped
 					title := session["title"].(string)
-					
+
 					// Should not contain unescaped script tags
 					assert.NotContains(t, title, "<script>")
 					assert.NotContains(t, title, "javascript:")
@@ -328,10 +328,10 @@ func TestRateLimitingEffectiveness(t *testing.T) {
 	t.Run("API_Rate_Limiting", func(t *testing.T) {
 		// Test rate limiting on session creation endpoint
 		client := &http.Client{Timeout: 1 * time.Second}
-		
+
 		successCount := 0
 		rateLimitedCount := 0
-		
+
 		// Make rapid requests to trigger rate limiting
 		for i := 0; i < 150; i++ { // Exceed 100 req/min limit
 			sessionPayload := map[string]interface{}{
@@ -353,11 +353,11 @@ func TestRateLimitingEffectiveness(t *testing.T) {
 		}
 
 		t.Logf("Successful requests: %d, Rate limited: %d", successCount, rateLimitedCount)
-		
+
 		// Should have some rate limiting in effect for rapid requests
 		// Note: This test may need adjustment based on actual rate limiting implementation
 		assert.True(t, successCount > 0, "Should allow some requests")
-		
+
 		// If rate limiting is implemented, should see some 429 responses
 		// This assertion is conditional since rate limiting might not be strict in test environment
 		if rateLimitedCount == 0 {
@@ -368,7 +368,7 @@ func TestRateLimitingEffectiveness(t *testing.T) {
 	t.Run("Per_IP_Rate_Limiting", func(t *testing.T) {
 		// Test that rate limiting is per-IP
 		client := &http.Client{Timeout: 1 * time.Second}
-		
+
 		// Make requests to health endpoint (should be rate limited)
 		requestCount := 0
 		for i := 0; i < 110; i++ { // Exceed rate limit
@@ -378,13 +378,13 @@ func TestRateLimitingEffectiveness(t *testing.T) {
 			}
 			resp.Body.Close()
 			requestCount++
-			
+
 			// Brief pause to avoid overwhelming the server
 			if i%20 == 0 {
 				time.Sleep(10 * time.Millisecond)
 			}
 		}
-		
+
 		t.Logf("Made %d health check requests", requestCount)
 		assert.True(t, requestCount > 50, "Should be able to make some requests")
 	})
@@ -422,7 +422,7 @@ func TestCSRFProtectionVerification(t *testing.T) {
 			// Current implementation may not have strict CSRF protection
 			// This test documents expected behavior for future security hardening
 			t.Logf("CSRF test response status: %d", resp.StatusCode)
-			
+
 			// In a production system with CSRF protection, this should return 403
 			// Currently documenting the behavior for future security improvements
 		})
@@ -446,7 +446,7 @@ func TestCSRFProtectionVerification(t *testing.T) {
 
 			// Should handle cross-origin requests appropriately
 			t.Logf("Cross-origin request status: %d", resp.StatusCode)
-			
+
 			// With proper CORS configuration, this should be controlled
 			// Current CORS allows all origins (*) for development
 		})
@@ -454,7 +454,7 @@ func TestCSRFProtectionVerification(t *testing.T) {
 
 	t.Run("Double_Submit_Cookie_Pattern", func(t *testing.T) {
 		// Test the double-submit cookie CSRF protection pattern
-		
+
 		// First, get a CSRF token (if implemented)
 		resp, err := http.Get(baseURL + "/health")
 		require.NoError(t, err)
@@ -462,7 +462,7 @@ func TestCSRFProtectionVerification(t *testing.T) {
 
 		// Extract CSRF token from response headers or cookies
 		csrfToken := resp.Header.Get("X-CSRF-Token")
-		
+
 		if csrfToken != "" {
 			// Test with valid CSRF token
 			sessionPayload := map[string]interface{}{
@@ -508,11 +508,11 @@ func TestSecurityHeaders(t *testing.T) {
 
 		// Test for important security headers
 		securityHeaders := map[string]string{
-			"X-Content-Type-Options": "nosniff",
-			"X-Frame-Options":        "DENY",
-			"X-XSS-Protection":       "1; mode=block",
+			"X-Content-Type-Options":    "nosniff",
+			"X-Frame-Options":           "DENY",
+			"X-XSS-Protection":          "1; mode=block",
 			"Strict-Transport-Security": "", // Should be present for HTTPS
-			"Content-Security-Policy": "",    // Should have CSP
+			"Content-Security-Policy":   "", // Should have CSP
 		}
 
 		for header, expectedValue := range securityHeaders {
@@ -558,7 +558,7 @@ func TestSecurityHeaders(t *testing.T) {
 			defer resp.Body.Close()
 
 			contentType := resp.Header.Get("Content-Type")
-			assert.Contains(t, contentType, "application/json", 
+			assert.Contains(t, contentType, "application/json",
 				"Endpoint %s should return JSON content type", endpoint)
 		}
 	})

@@ -38,23 +38,23 @@ type Config struct {
 }
 
 type Server struct {
-	config         *config.Config
-	httpServer     *http.Server
-	sessionManager *session.Manager
-	wsHandler      *websocket.Handler
+	config           *config.Config
+	httpServer       *http.Server
+	sessionManager   *session.Manager
+	wsHandler        *websocket.Handler
 	bufferAggregator *buffer.BufferAggregator
-	jwtAuth        *auth.JWTAuth
-	passwordAuth   *auth.PasswordAuth
-	fileSystem     *filesystem.FileSystemService
-	gitService     *git.GitService
-	logService     *logs.LogService
-	controlService *control.ControlService
-	tmuxService    *tmux.TmuxService
+	jwtAuth          *auth.JWTAuth
+	passwordAuth     *auth.PasswordAuth
+	fileSystem       *filesystem.FileSystemService
+	gitService       *git.GitService
+	logService       *logs.LogService
+	controlService   *control.ControlService
+	tmuxService      *tmux.TmuxService
 	eventBroadcaster *events.EventBroadcaster
-	pushService    *push.PushService
-	pushHandler    *push.PushHandler
-	startTime      time.Time
-	mu             sync.RWMutex
+	pushService      *push.PushService
+	pushHandler      *push.PushHandler
+	startTime        time.Time
+	mu               sync.RWMutex
 }
 
 func New(cfg *Config) (*Server, error) {
@@ -94,13 +94,13 @@ func New(cfg *Config) (*Server, error) {
 
 	// Initialize buffer aggregator
 	bufferAggregator := buffer.NewBufferAggregator()
-	
+
 	// Initialize log service
 	logService := logs.NewLogService()
-	
+
 	// Initialize control service
 	controlService := control.NewControlService()
-	
+
 	// Initialize tmux service
 	tmuxService := tmux.NewTmuxService(sessionManager)
 
@@ -115,7 +115,7 @@ func New(cfg *Config) (*Server, error) {
 	subscriptionStore := push.NewInMemorySubscriptionStore()
 	var pushService *push.PushService
 	var pushHandler *push.PushHandler
-	
+
 	if vapidKeys != nil {
 		pushService, err = push.NewPushService(vapidKeys, subscriptionStore, nil)
 		if err != nil {
@@ -126,21 +126,21 @@ func New(cfg *Config) (*Server, error) {
 	}
 
 	s := &Server{
-		config:         fullConfig,
-		sessionManager: sessionManager,
-		wsHandler:      wsHandler,
+		config:           fullConfig,
+		sessionManager:   sessionManager,
+		wsHandler:        wsHandler,
 		bufferAggregator: bufferAggregator,
-		fileSystem:     fileSystemService,
-		gitService:     gitService,
-		logService:     logService,
-		controlService: controlService,
-		tmuxService:    tmuxService,
-		jwtAuth:        jwtAuth,
-		passwordAuth:   passwordAuth,
+		fileSystem:       fileSystemService,
+		gitService:       gitService,
+		logService:       logService,
+		controlService:   controlService,
+		tmuxService:      tmuxService,
+		jwtAuth:          jwtAuth,
+		passwordAuth:     passwordAuth,
 		eventBroadcaster: eventBroadcaster,
-		pushService:    pushService,
-		pushHandler:    pushHandler,
-		startTime:      time.Now(),
+		pushService:      pushService,
+		pushHandler:      pushHandler,
+		startTime:        time.Now(),
 	}
 
 	// Set up event broadcasting hooks
@@ -160,20 +160,20 @@ func (s *Server) setupRoutes() {
 
 	// WebSocket endpoint
 	r.HandleFunc("/ws", s.wsHandler.HandleWebSocket)
-	
+
 	// Buffer WebSocket endpoint for real-time terminal streaming
 	r.HandleFunc("/buffers", s.bufferAggregator.HandleWebSocket)
 
 	// API routes - unprotected base
 	api := r.PathPrefix("/api").Subrouter()
-	
+
 	// General server endpoints for frontend compatibility
 	api.HandleFunc("/config", s.handleServerConfig).Methods("GET")
 	api.HandleFunc("/server/status", s.handleServerStatus).Methods("GET")
-	
+
 	// Server-Sent Events endpoint for real-time events
 	api.HandleFunc("/events", s.eventBroadcaster.HandleSSE).Methods("GET")
-	
+
 	// Test endpoint to trigger events (for development/testing)
 	api.HandleFunc("/events/test", s.handleTestEvent).Methods("POST")
 
@@ -182,7 +182,7 @@ func (s *Server) setupRoutes() {
 	auth.HandleFunc("/config", s.handleAuthConfig).Methods("GET")
 	auth.HandleFunc("/login", s.handleLogin).Methods("POST")
 	auth.HandleFunc("/password", s.handlePasswordAuth).Methods("POST")
-	
+
 	// Create a simple auth middleware using our auth JWT
 	authMiddleware := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -251,16 +251,16 @@ func (s *Server) setupRoutes() {
 
 	// Git routes
 	s.gitService.RegisterRoutes(r)
-	
+
 	// Log routes
 	s.logService.RegisterRoutes(r)
-	
+
 	// Control routes
 	s.controlService.RegisterRoutes(r)
-	
+
 	// Tmux routes
 	s.tmuxService.RegisterRoutes(r)
-	
+
 	// Repository discovery routes (for frontend file browser)
 	sessionRouter.HandleFunc("/repositories/discover", s.handleRepositoryDiscover).Methods("GET")
 
@@ -279,10 +279,10 @@ func (s *Server) setupRoutes() {
 
 	// Build middleware chain: Apply security middleware in order
 	var handler http.Handler = r
-	
+
 	// Apply CORS first (innermost)
 	corsHandler := c.Handler(handler)
-	
+
 	// Apply compression and security headers, but skip for WebSocket routes
 	handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		// Skip compression and security headers for WebSocket endpoints
@@ -291,7 +291,7 @@ func (s *Server) setupRoutes() {
 			corsHandler.ServeHTTP(w, req)
 			return
 		}
-		
+
 		// Apply compression and security headers for non-WebSocket routes
 		compressionHandler := middleware.Compression()(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			securityHandler := middleware.SecurityHeaders()(corsHandler)
@@ -299,7 +299,7 @@ func (s *Server) setupRoutes() {
 		}))
 		compressionHandler.ServeHTTP(w, req)
 	})
-	
+
 	// Apply rate limiting if enabled, but skip for WebSocket endpoints
 	if s.config.EnableRateLimit {
 		rateLimiter := middleware.NewRateLimiter(s.config.RateLimitPerMin, time.Minute)
@@ -314,7 +314,7 @@ func (s *Server) setupRoutes() {
 			rateLimiter.Middleware(prevHandler).ServeHTTP(w, req)
 		})
 	}
-	
+
 	// Apply request logging if enabled, but skip for WebSocket endpoints
 	if s.config.EnableRequestLog {
 		prevHandler := handler // Capture current handler before redefining
@@ -328,7 +328,7 @@ func (s *Server) setupRoutes() {
 			middleware.RequestLogger()(prevHandler).ServeHTTP(w, req)
 		})
 	}
-	
+
 	// Apply CSRF protection if enabled (for state-changing operations)
 	if s.config.EnableCSRF {
 		csrf := middleware.NewCSRF(middleware.CSRFConfig{
@@ -337,7 +337,7 @@ func (s *Server) setupRoutes() {
 		})
 		handler = csrf.Middleware(handler)
 	}
-	
+
 	// Apply IP whitelist if enabled (outermost - first check)
 	if s.config.EnableIPWhitelist {
 		ipWhitelist := middleware.NewIPWhitelist(s.config.AllowedIPs)
@@ -363,22 +363,22 @@ func (s *Server) Handler() http.Handler {
 func (s *Server) Start() error {
 	// Start event broadcaster
 	s.eventBroadcaster.Start()
-	
+
 	// Start buffer aggregator
 	go s.bufferAggregator.Start()
-	
+
 	// Start push notification service
 	if s.pushService != nil {
 		if err := s.pushService.Start(); err != nil {
 			log.Printf("Failed to start push service: %v", err)
 		}
 	}
-	
+
 	// Broadcast server start event
 	startEvent := types.NewServerEvent(types.EventConnected).
 		WithMessage("VibeTunnel Go server started")
 	s.broadcastEvent(startEvent)
-	
+
 	return s.httpServer.ListenAndServe()
 }
 
@@ -387,20 +387,20 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	shutdownEvent := types.NewServerEvent(types.EventServerShutdown).
 		WithMessage("VibeTunnel Go server shutting down")
 	s.broadcastEvent(shutdownEvent)
-	
+
 	// Stop buffer aggregator
 	s.bufferAggregator.Stop()
-	
+
 	// Stop push notification service
 	if s.pushService != nil {
 		if err := s.pushService.Stop(); err != nil {
 			log.Printf("Failed to stop push service: %v", err)
 		}
 	}
-	
+
 	// Stop event broadcaster
 	s.eventBroadcaster.Stop()
-	
+
 	// Close all sessions
 	s.sessionManager.CloseAll()
 
@@ -548,7 +548,7 @@ func (s *Server) handleDeleteSession(w http.ResponseWriter, r *http.Request) {
 
 	// Get session info before closing for event broadcasting
 	session := s.sessionManager.Get(sessionID)
-	
+
 	if err := s.sessionManager.Close(sessionID); err != nil {
 		log.Printf("Failed to close session %s: %v", sessionID, err)
 		s.writeJSONError(w, err.Error(), http.StatusInternalServerError)
@@ -567,15 +567,14 @@ func (s *Server) handleDeleteSession(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-
 // handleServerConfig returns general server configuration
 func (s *Server) handleServerConfig(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	config := map[string]interface{}{
-		"serverName":    s.config.ServerName,
-		"version":       "1.0.0",
-		"authRequired":  s.config.AuthRequired,
+		"serverName":   s.config.ServerName,
+		"version":      "1.0.0",
+		"authRequired": s.config.AuthRequired,
 		"features": map[string]bool{
 			"auth":       true,
 			"filesystem": true,
@@ -600,14 +599,14 @@ func (s *Server) handleServerStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	status := map[string]interface{}{
-		"status":       "running",
-		"healthy":      true,
-		"sessions":     s.sessionManager.Count(),
-		"uptime":       time.Since(s.startTime).String(),
-		"uptimeMs":     time.Since(s.startTime).Milliseconds(),
-		"serverName":   s.config.ServerName,
-		"version":      "1.0.0",
-		"timestamp":    time.Now().Unix(),
+		"status":     "running",
+		"healthy":    true,
+		"sessions":   s.sessionManager.Count(),
+		"uptime":     time.Since(s.startTime).String(),
+		"uptimeMs":   time.Since(s.startTime).Milliseconds(),
+		"serverName": s.config.ServerName,
+		"version":    "1.0.0",
+		"timestamp":  time.Now().Unix(),
 	}
 
 	if err := json.NewEncoder(w).Encode(status); err != nil {
@@ -622,8 +621,8 @@ func (s *Server) handleAuthConfig(w http.ResponseWriter, r *http.Request) {
 
 	// Frontend expects the Option A format
 	authRequired := s.config.AuthRequired
-	passwordAuth := true  // Supported today
-	sshKeyAuth := false   // Not yet implemented
+	passwordAuth := true // Supported today
+	sshKeyAuth := false  // Not yet implemented
 
 	methods := make([]string, 0, 2)
 	if passwordAuth {
@@ -773,13 +772,13 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	if username == "" {
 		username = "user"
 	}
-	
+
 	userClaims := auth.UserClaims{
 		UserID:   "user-1",
 		Username: username,
 		Roles:    []string{"user"},
 	}
-	
+
 	token, err := s.jwtAuth.GenerateToken(userClaims, time.Hour*24)
 	if err != nil {
 		log.Printf("Failed to generate token: %v", err)
@@ -816,7 +815,7 @@ func (s *Server) handlePasswordAuth(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	
+
 	// If auth is required, delegate to handleLogin
 	s.handleLogin(w, r)
 }
@@ -826,15 +825,15 @@ func (s *Server) handleCurrentUser(w http.ResponseWriter, r *http.Request) {
 	log.Printf("🔍 handleCurrentUser called - Method: %s, URL: %s", r.Method, r.URL.String())
 	log.Printf("🔍 Auth required: %v", s.config.AuthRequired)
 	log.Printf("🔍 Request headers: %v", r.Header)
-	
+
 	// Extract user from context (set by JWT middleware)
 	userCtx := middleware.GetUserFromContext(r.Context())
 	log.Printf("🔍 User context from JWT middleware: %+v", userCtx)
-	
+
 	// If no user context and auth is not required, return the system user
 	if userCtx == nil && !s.config.AuthRequired {
 		log.Printf("🔍 No user context and auth not required - getting system user")
-		
+
 		// Get current system user
 		username := os.Getenv("USER")
 		log.Printf("🔍 USER env var: %q", username)
@@ -849,14 +848,14 @@ func (s *Server) handleCurrentUser(w http.ResponseWriter, r *http.Request) {
 
 		response := map[string]interface{}{
 			"success": true,
-			"userId":   username,  // Frontend expects this field
+			"userId":  username, // Frontend expects this field
 			"user": map[string]string{
 				"id":       username,
 				"username": username,
 				"role":     "admin", // Grant full access when auth is disabled
 			},
 		}
-		
+
 		log.Printf("🔍 Sending response: %+v", response)
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(response); err != nil {
@@ -864,7 +863,7 @@ func (s *Server) handleCurrentUser(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	
+
 	// If no user context and auth is required, return error
 	if userCtx == nil {
 		log.Printf("🔍 No user context and auth is required - returning unauthorized")
@@ -875,14 +874,14 @@ func (s *Server) handleCurrentUser(w http.ResponseWriter, r *http.Request) {
 	log.Printf("🔍 Using JWT user context")
 	response := map[string]interface{}{
 		"success": true,
-		"userId":   userCtx.Username,  // Frontend expects this field
+		"userId":  userCtx.Username, // Frontend expects this field
 		"user": map[string]string{
 			"id":       userCtx.UserID,
 			"username": userCtx.Username,
 			"role":     userCtx.Role,
 		},
 	}
-	
+
 	log.Printf("🔍 Sending authenticated response: %+v", response)
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
@@ -901,7 +900,7 @@ func (s *Server) setupEventHooks() {
 func (s *Server) broadcastEvent(event *types.ServerEvent) {
 	// First, broadcast via SSE
 	s.eventBroadcaster.Broadcast(event)
-	
+
 	// Then, send push notifications if push service is available
 	if s.pushService != nil {
 		ctx := context.Background()
@@ -957,7 +956,7 @@ func (s *Server) handleRepositoryDiscover(w http.ResponseWriter, r *http.Request
 	if queryPath == "" {
 		queryPath = "~"
 	}
-	
+
 	// Expand ~ to home directory
 	if strings.HasPrefix(queryPath, "~") {
 		homeDir := os.Getenv("HOME")
@@ -965,7 +964,7 @@ func (s *Server) handleRepositoryDiscover(w http.ResponseWriter, r *http.Request
 			queryPath = strings.Replace(queryPath, "~", homeDir, 1)
 		}
 	}
-	
+
 	// Resolve the path
 	fullPath, err := filepath.Abs(queryPath)
 	if err != nil {
@@ -973,7 +972,7 @@ func (s *Server) handleRepositoryDiscover(w http.ResponseWriter, r *http.Request
 		s.writeJSONError(w, fmt.Sprintf("Invalid path: %v", err), http.StatusBadRequest)
 		return
 	}
-	
+
 	// Check if path exists and is accessible
 	if _, err := os.Stat(fullPath); err != nil {
 		if os.IsNotExist(err) {
@@ -983,7 +982,7 @@ func (s *Server) handleRepositoryDiscover(w http.ResponseWriter, r *http.Request
 		}
 		return
 	}
-	
+
 	// Read directory contents
 	entries, err := os.ReadDir(fullPath)
 	if err != nil {
@@ -991,40 +990,40 @@ func (s *Server) handleRepositoryDiscover(w http.ResponseWriter, r *http.Request
 		s.writeJSONError(w, fmt.Sprintf("Failed to read directory: %v", err), http.StatusInternalServerError)
 		return
 	}
-	
+
 	var repositories []map[string]interface{}
 	var directories []map[string]interface{}
-	
+
 	for _, entry := range entries {
 		// Skip hidden files/directories unless specifically requested
 		if strings.HasPrefix(entry.Name(), ".") {
 			continue
 		}
-		
+
 		entryPath := filepath.Join(fullPath, entry.Name())
 		relativePath := filepath.Join(queryPath, entry.Name())
-		
+
 		if entry.IsDir() {
 			directoryInfo := map[string]interface{}{
 				"name": entry.Name(),
 				"path": relativePath,
 			}
 			directories = append(directories, directoryInfo)
-			
+
 			// Check if it's a Git repository
 			gitPath := filepath.Join(entryPath, ".git")
 			if _, err := os.Stat(gitPath); err == nil {
 				repositoryInfo := map[string]interface{}{
-					"name": entry.Name(),
-					"path": relativePath,
-					"type": "directory",
+					"name":         entry.Name(),
+					"path":         relativePath,
+					"type":         "directory",
 					"isRepository": true,
 				}
 				repositories = append(repositories, repositoryInfo)
 			}
 		}
 	}
-	
+
 	// Sort by name
 	sort.Slice(repositories, func(i, j int) bool {
 		return repositories[i]["name"].(string) < repositories[j]["name"].(string)
@@ -1032,14 +1031,14 @@ func (s *Server) handleRepositoryDiscover(w http.ResponseWriter, r *http.Request
 	sort.Slice(directories, func(i, j int) bool {
 		return directories[i]["name"].(string) < directories[j]["name"].(string)
 	})
-	
+
 	response := map[string]interface{}{
 		"path":         queryPath,
 		"fullPath":     fullPath,
 		"repositories": repositories,
 		"directories":  directories,
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Printf("Failed to encode repository discovery response: %v", err)
@@ -1051,7 +1050,7 @@ func (s *Server) handleRepositoryDiscover(w http.ResponseWriter, r *http.Request
 func (s *Server) handleCleanupExited(w http.ResponseWriter, r *http.Request) {
 	sessions := s.sessionManager.List()
 	var removedCount int
-	
+
 	for _, session := range sessions {
 		// Check if the session's process has exited
 		if !session.Active || (session.Cmd != nil && session.Cmd.ProcessState != nil) {
@@ -1062,12 +1061,12 @@ func (s *Server) handleCleanupExited(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	
+
 	response := map[string]interface{}{
 		"message": fmt.Sprintf("Cleaned up %d exited sessions", removedCount),
 		"count":   removedCount,
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
@@ -1076,27 +1075,27 @@ func (s *Server) handleCleanupExited(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleResetSessionSize(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	sessionID := vars["id"]
-	
+
 	session := s.sessionManager.Get(sessionID)
 	if session == nil {
 		s.writeJSONError(w, "Session not found", http.StatusNotFound)
 		return
 	}
-	
+
 	// Reset to default terminal size (80x24)
 	defaultCols, defaultRows := 80, 24
-	
+
 	if err := s.sessionManager.Resize(sessionID, defaultCols, defaultRows); err != nil {
 		s.writeJSONError(w, fmt.Sprintf("Failed to reset session size: %v", err), http.StatusInternalServerError)
 		return
 	}
-	
+
 	response := map[string]interface{}{
 		"message": "Session size reset to default",
 		"cols":    defaultCols,
 		"rows":    defaultRows,
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }

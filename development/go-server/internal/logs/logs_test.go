@@ -111,7 +111,7 @@ func TestLogService_HandleClientLog(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var body []byte
 			var err error
-			
+
 			if str, ok := tt.body.(string); ok {
 				body = []byte(str)
 			} else {
@@ -123,7 +123,7 @@ func TestLogService_HandleClientLog(t *testing.T) {
 
 			req := httptest.NewRequest("POST", "/api/logs/client", bytes.NewReader(body))
 			req.Header.Set("Content-Type", "application/json")
-			
+
 			rr := httptest.NewRecorder()
 			router.ServeHTTP(rr, req)
 
@@ -171,13 +171,13 @@ func TestLogService_HandleLogDownload(t *testing.T) {
 
 func TestLogLevel_Validation(t *testing.T) {
 	validLevels := []LogLevel{LogLevelLog, LogLevelWarn, LogLevelError, LogLevelDebug}
-	
+
 	for _, level := range validLevels {
 		if string(level) == "" {
 			t.Errorf("Log level %v should not be empty", level)
 		}
 	}
-	
+
 	// Test that we have the expected levels
 	expectedLevels := map[LogLevel]bool{
 		"log":   true,
@@ -185,7 +185,7 @@ func TestLogLevel_Validation(t *testing.T) {
 		"error": true,
 		"debug": true,
 	}
-	
+
 	for _, level := range validLevels {
 		if !expectedLevels[level] {
 			t.Errorf("Unexpected log level: %v", level)

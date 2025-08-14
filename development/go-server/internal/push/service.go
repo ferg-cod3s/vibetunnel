@@ -23,13 +23,13 @@ type NotificationPayload struct {
 	Tag     string                 `json:"tag,omitempty"`
 	Data    map[string]interface{} `json:"data,omitempty"`
 	Actions []NotificationAction   `json:"actions,omitempty"`
-	
+
 	// Options for notification behavior
-	RequireInteraction bool   `json:"requireInteraction,omitempty"`
-	Silent             bool   `json:"silent,omitempty"`
-	Renotify           bool   `json:"renotify,omitempty"`
-	Timestamp          int64  `json:"timestamp,omitempty"`
-	Vibrate            []int  `json:"vibrate,omitempty"`
+	RequireInteraction bool  `json:"requireInteraction,omitempty"`
+	Silent             bool  `json:"silent,omitempty"`
+	Renotify           bool  `json:"renotify,omitempty"`
+	Timestamp          int64 `json:"timestamp,omitempty"`
+	Vibrate            []int `json:"vibrate,omitempty"`
 }
 
 // NotificationAction represents an action button on a notification
@@ -41,10 +41,10 @@ type NotificationAction struct {
 
 // PushService handles Web Push notifications
 type PushService struct {
-	vapidKeys        *VAPIDKeys
+	vapidKeys         *VAPIDKeys
 	subscriptionStore SubscriptionStore
-	subject          string // Email or URL for VAPID subject
-	
+	subject           string // Email or URL for VAPID subject
+
 	// Statistics
 	stats      PushServiceStats
 	statsMutex sync.RWMutex
@@ -52,23 +52,23 @@ type PushService struct {
 
 // PushServiceStats tracks notification sending statistics
 type PushServiceStats struct {
-	TotalSent      int64 `json:"totalSent"`
-	TotalFailed    int64 `json:"totalFailed"`
-	TotalRetries   int64 `json:"totalRetries"`
+	TotalSent      int64      `json:"totalSent"`
+	TotalFailed    int64      `json:"totalFailed"`
+	TotalRetries   int64      `json:"totalRetries"`
 	LastSent       *time.Time `json:"lastSent,omitempty"`
 	LastError      *time.Time `json:"lastError,omitempty"`
-	ActiveDelivery int64 `json:"activeDelivery"`
+	ActiveDelivery int64      `json:"activeDelivery"`
 }
 
 // PushServiceConfig contains configuration for the push service
 type PushServiceConfig struct {
-	Subject        string        // VAPID subject (email or URL)
-	TTL            int           // Time to live for notifications (seconds)
-	Urgency        string        // Urgency: very-low, low, normal, high
-	RetryCount     int           // Number of retries for failed deliveries
-	RetryInterval  time.Duration // Time between retries
-	BatchSize      int           // Maximum notifications per batch
-	Workers        int           // Number of worker goroutines
+	Subject       string        // VAPID subject (email or URL)
+	TTL           int           // Time to live for notifications (seconds)
+	Urgency       string        // Urgency: very-low, low, normal, high
+	RetryCount    int           // Number of retries for failed deliveries
+	RetryInterval time.Duration // Time between retries
+	BatchSize     int           // Maximum notifications per batch
+	Workers       int           // Number of worker goroutines
 }
 
 // DefaultPushServiceConfig returns sensible defaults
@@ -98,7 +98,7 @@ func NewPushService(vapidKeys *VAPIDKeys, subscriptionStore SubscriptionStore, c
 	service := &PushService{
 		vapidKeys:         vapidKeys,
 		subscriptionStore: subscriptionStore,
-		subject:          config.Subject,
+		subject:           config.Subject,
 	}
 
 	return service, nil
@@ -185,7 +185,7 @@ func (ps *PushService) BroadcastNotification(ctx context.Context, payload *Notif
 
 	var wg sync.WaitGroup
 	errorChan := make(chan error, len(subscriptions))
-	
+
 	// Send notifications concurrently with a semaphore to limit concurrency
 	semaphore := make(chan struct{}, 10) // Limit to 10 concurrent sends
 
@@ -265,7 +265,7 @@ func (ps *PushService) sendToSubscription(ctx context.Context, subscription *Pus
 			// Success - update subscription usage
 			ps.subscriptionStore.MarkAsUsed(subscription.ID)
 			ps.recordSuccess()
-			
+
 			if resp != nil {
 				resp.Body.Close()
 			}
@@ -273,15 +273,15 @@ func (ps *PushService) sendToSubscription(ctx context.Context, subscription *Pus
 		}
 
 		lastError = err
-		
+
 		// Check if this is a permanent failure
 		if ps.isPermanentError(err) {
 			log.Printf("🚫 Permanent failure for subscription %s: %v", subscription.ID, err)
-			
+
 			// Deactivate the subscription
 			subscription.Active = false
 			ps.subscriptionStore.Update(subscription)
-			
+
 			ps.recordError()
 			return fmt.Errorf("permanent failure: %w", err)
 		}
@@ -291,9 +291,9 @@ func (ps *PushService) sendToSubscription(ctx context.Context, subscription *Pus
 			ps.updateStats(func(stats *PushServiceStats) {
 				stats.TotalRetries++
 			})
-			
+
 			log.Printf("🔄 Retry %d for subscription %s: %v", attempt+1, subscription.ID, err)
-			
+
 			// Exponential backoff
 			backoff := time.Duration(attempt+1) * 2 * time.Second
 			select {
@@ -316,17 +316,17 @@ func (ps *PushService) isPermanentError(err error) bool {
 	}
 
 	errStr := err.Error()
-	
+
 	// HTTP 410 Gone - subscription is no longer valid
 	if strings.Contains(errStr, "410") {
 		return true
 	}
-	
+
 	// HTTP 400 Bad Request - malformed request
 	if strings.Contains(errStr, "400") {
 		return true
 	}
-	
+
 	// HTTP 413 Payload Too Large - message is too big
 	if strings.Contains(errStr, "413") {
 		return true
@@ -347,7 +347,7 @@ func (ps *PushService) ProcessServerEvent(ctx context.Context, event *types.Serv
 	if err != nil {
 		return fmt.Errorf("failed to get active subscriptions: %w", err)
 	}
-	
+
 	if len(subscriptions) == 0 {
 		return nil // No one to notify
 	}
@@ -424,10 +424,10 @@ func (ps *PushService) createNotificationFromEvent(event *types.ServerEvent) *No
 
 	case types.EventCommandFinished:
 		return &NotificationPayload{
-			Title: "Command Completed",
-			Body:  fmt.Sprintf("Command finished in session: %s", ps.getSessionName(event)),
-			Tag:   "command-finished",
-			Icon:  "/icons/terminal.png",
+			Title:              "Command Completed",
+			Body:               fmt.Sprintf("Command finished in session: %s", ps.getSessionName(event)),
+			Tag:                "command-finished",
+			Icon:               "/icons/terminal.png",
 			RequireInteraction: true,
 			Data: map[string]interface{}{
 				"type":      string(event.Type),
@@ -441,10 +441,10 @@ func (ps *PushService) createNotificationFromEvent(event *types.ServerEvent) *No
 
 	case types.EventServerShutdown:
 		return &NotificationPayload{
-			Title: "VibeTunnel Server Shutdown",
-			Body:  "The VibeTunnel server is shutting down",
-			Tag:   "server-shutdown",
-			Icon:  "/icons/warning.png",
+			Title:              "VibeTunnel Server Shutdown",
+			Body:               "The VibeTunnel server is shutting down",
+			Tag:                "server-shutdown",
+			Icon:               "/icons/warning.png",
 			RequireInteraction: true,
 			Data: map[string]interface{}{
 				"type":      string(event.Type),
@@ -464,7 +464,7 @@ func (ps *PushService) filterSubscriptionsByPreferences(subscriptions []*PushSub
 
 	for _, sub := range subscriptions {
 		prefs := sub.Options.Preferences
-		
+
 		switch eventType {
 		case types.EventSessionStart, types.EventSessionExit:
 			if prefs.SessionEvents {
@@ -540,7 +540,7 @@ func (ps *PushService) updateStats(updater func(*PushServiceStats)) {
 func (ps *PushService) GetStats() PushServiceStats {
 	ps.statsMutex.RLock()
 	defer ps.statsMutex.RUnlock()
-	
+
 	// Create a copy to avoid data races
 	stats := ps.stats
 	return stats

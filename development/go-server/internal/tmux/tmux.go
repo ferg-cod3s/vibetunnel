@@ -35,13 +35,13 @@ type TmuxWindow struct {
 
 // TmuxPane represents a tmux pane
 type TmuxPane struct {
-	Index    int    `json:"index"`
-	Title    string `json:"title"`
-	Active   bool   `json:"active"`
-	Width    int    `json:"width"`
-	Height   int    `json:"height"`
-	Command  string `json:"command"`
-	PID      int    `json:"pid"`
+	Index   int    `json:"index"`
+	Title   string `json:"title"`
+	Active  bool   `json:"active"`
+	Width   int    `json:"width"`
+	Height  int    `json:"height"`
+	Command string `json:"command"`
+	PID     int    `json:"pid"`
 }
 
 // AttachRequest represents a request to attach to tmux
@@ -109,7 +109,7 @@ func (ts *TmuxService) IsAvailable() bool {
 // handleAvailable handles the availability check endpoint
 func (ts *TmuxService) handleAvailable(w http.ResponseWriter, r *http.Request) {
 	available := ts.IsAvailable()
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]bool{"available": available})
 }

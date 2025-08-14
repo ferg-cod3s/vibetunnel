@@ -26,13 +26,13 @@ type Config struct {
 
 // Test statistics
 type Stats struct {
-	ConnectionsCreated  int64
-	ConnectionsFailed   int64
-	MessagesReceived    int64
-	MessagesSent        int64
-	ErrorsEncountered   int64
-	TotalResponseTime   int64 // nanoseconds
-	MaxResponseTime     int64 // nanoseconds
+	ConnectionsCreated int64
+	ConnectionsFailed  int64
+	MessagesReceived   int64
+	MessagesSent       int64
+	ErrorsEncountered  int64
+	TotalResponseTime  int64 // nanoseconds
+	MaxResponseTime    int64 // nanoseconds
 }
 
 // Session creation request
@@ -161,12 +161,12 @@ func runWebSocketConnection(connID int, config Config, stats *Stats, testStartTi
 				}
 				return
 			}
-			
+
 			// Record response time
 			respTime := time.Since(messageStart).Nanoseconds()
 			atomic.AddInt64(&stats.MessagesReceived, 1)
 			atomic.AddInt64(&stats.TotalResponseTime, respTime)
-			
+
 			// Update max response time
 			for {
 				currentMax := atomic.LoadInt64(&stats.MaxResponseTime)
@@ -251,7 +251,7 @@ func printResults(stats *Stats, config Config) {
 	fmt.Printf("Connection Stats:\n")
 	fmt.Printf("  ✅ Successful Connections: %d\n", atomic.LoadInt64(&stats.ConnectionsCreated))
 	fmt.Printf("  ❌ Failed Connections: %d\n", atomic.LoadInt64(&stats.ConnectionsFailed))
-	fmt.Printf("  📊 Success Rate: %.2f%%\n", 
+	fmt.Printf("  📊 Success Rate: %.2f%%\n",
 		float64(atomic.LoadInt64(&stats.ConnectionsCreated))/float64(config.MaxConnections)*100)
 	fmt.Printf("\n")
 	fmt.Printf("Message Stats:\n")
@@ -264,12 +264,12 @@ func printResults(stats *Stats, config Config) {
 	if totalMessages > 0 {
 		avgResponseTime := atomic.LoadInt64(&stats.TotalResponseTime) / totalMessages
 		maxResponseTime := atomic.LoadInt64(&stats.MaxResponseTime)
-		
+
 		fmt.Printf("\n")
 		fmt.Printf("Performance Stats:\n")
 		fmt.Printf("  📏 Average Response Time: %v\n", time.Duration(avgResponseTime))
 		fmt.Printf("  🔝 Max Response Time: %v\n", time.Duration(maxResponseTime))
-		
+
 		// Performance evaluation
 		if avgResponseTime < int64(10*time.Millisecond) {
 			fmt.Printf("  🎯 ✅ Target <10ms average response time: ACHIEVED\n")
@@ -283,7 +283,7 @@ func printResults(stats *Stats, config Config) {
 	if successfulConnections >= int64(config.MaxConnections) {
 		fmt.Printf("  🔗 ✅ Target %d concurrent connections: ACHIEVED\n", config.MaxConnections)
 	} else {
-		fmt.Printf("  🔗 ❌ Target %d concurrent connections: MISSED (got %d)\n", 
+		fmt.Printf("  🔗 ❌ Target %d concurrent connections: MISSED (got %d)\n",
 			config.MaxConnections, successfulConnections)
 	}
 

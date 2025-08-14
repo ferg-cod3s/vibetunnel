@@ -78,7 +78,7 @@ func (eb *EventBroadcaster) Start() {
 // Stop shuts down the broadcaster
 func (eb *EventBroadcaster) Stop() {
 	eb.cancel()
-	
+
 	// Close all client connections
 	eb.mu.Lock()
 	for _, client := range eb.clients {
@@ -86,7 +86,7 @@ func (eb *EventBroadcaster) Stop() {
 	}
 	eb.clients = make(map[string]*Client)
 	eb.mu.Unlock()
-	
+
 	log.Println("📡 Event broadcaster stopped")
 }
 
@@ -138,9 +138,9 @@ func (eb *EventBroadcaster) eventLoop() {
 			eb.mu.Lock()
 			eb.clients[client.ID] = client
 			eb.mu.Unlock()
-			
+
 			log.Printf("📡 Client connected: %s (total: %d)", client.ID, len(eb.clients))
-			
+
 			// Send welcome event
 			welcomeEvent := types.NewServerEvent(types.EventConnected)
 			go eb.sendEventToClient(client, welcomeEvent)
@@ -152,7 +152,7 @@ func (eb *EventBroadcaster) eventLoop() {
 				close(client.Channel)
 			}
 			eb.mu.Unlock()
-			
+
 			log.Printf("📡 Client disconnected: %s (total: %d)", client.ID, len(eb.clients))
 
 		case event := <-eb.eventChannel:
@@ -167,7 +167,7 @@ func (eb *EventBroadcaster) eventLoop() {
 					go eb.sendEventToClient(client, event)
 				}
 				eb.mu.RUnlock()
-				
+
 				log.Printf("📢 Event broadcasted to %d clients: %s", clientCount, event.Type)
 			}
 		}
@@ -209,7 +209,7 @@ func (eb *EventBroadcaster) sendHeartbeat() {
 // cleanupStaleClients removes clients that haven't been seen recently
 func (eb *EventBroadcaster) cleanupStaleClients() {
 	cutoff := time.Now().Add(-eb.clientTimeout)
-	
+
 	eb.mu.Lock()
 	defer eb.mu.Unlock()
 
@@ -243,28 +243,28 @@ func (eb *EventBroadcaster) writeSSEEvent(client *Client, event *types.ServerEve
 
 	// Write SSE formatted event
 	sseMessage := fmt.Sprintf("id: %d\nevent: %s\ndata: %s\n\n", eventID, event.Type, string(data))
-	
+
 	if _, err := client.Writer.Write([]byte(sseMessage)); err != nil {
 		return fmt.Errorf("failed to write SSE event: %v", err)
 	}
 
 	client.Flusher.Flush()
 	client.LastSeen = time.Now()
-	
+
 	return nil
 }
 
 // writeSSEComment writes an SSE comment to a client
 func (eb *EventBroadcaster) writeSSEComment(client *Client, comment string) error {
 	sseComment := fmt.Sprintf(":%s\n\n", comment)
-	
+
 	if _, err := client.Writer.Write([]byte(sseComment)); err != nil {
 		return fmt.Errorf("failed to write SSE comment: %v", err)
 	}
 
 	client.Flusher.Flush()
 	client.LastSeen = time.Now()
-	
+
 	return nil
 }
 
@@ -303,7 +303,7 @@ func (eb *EventBroadcaster) HandleSSE(w http.ResponseWriter, r *http.Request) {
 		case <-r.Context().Done():
 			// Client disconnected
 			return
-			
+
 		case event, ok := <-client.Channel:
 			if !ok {
 				// Channel closed, client being removed

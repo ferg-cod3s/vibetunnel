@@ -19,11 +19,11 @@ import (
 
 // RateLimiter implements token bucket rate limiting per IP
 type RateLimiter struct {
-	limit    int           // requests per window
-	window   time.Duration // time window
-	buckets  map[string]*bucket
-	mu       sync.RWMutex
-	cleanup  time.Duration // cleanup interval for expired buckets
+	limit   int           // requests per window
+	window  time.Duration // time window
+	buckets map[string]*bucket
+	mu      sync.RWMutex
+	cleanup time.Duration // cleanup interval for expired buckets
 }
 
 type bucket struct {
@@ -40,10 +40,10 @@ func NewRateLimiter(limit int, window time.Duration) *RateLimiter {
 		buckets: make(map[string]*bucket),
 		cleanup: window * 2, // Cleanup expired buckets after 2 windows
 	}
-	
+
 	// Start cleanup goroutine
 	go rl.cleanupExpiredBuckets()
-	
+
 	return rl
 }
 
@@ -51,7 +51,7 @@ func NewRateLimiter(limit int, window time.Duration) *RateLimiter {
 func (rl *RateLimiter) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ip := getClientIP(r)
-		
+
 		if !rl.allow(ip) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusTooManyRequests)
@@ -61,7 +61,7 @@ func (rl *RateLimiter) Middleware(next http.Handler) http.Handler {
 			})
 			return
 		}
-		
+
 		next.ServeHTTP(w, r)
 	})
 }
@@ -71,7 +71,7 @@ func (rl *RateLimiter) allow(ip string) bool {
 	rl.mu.RLock()
 	b, exists := rl.buckets[ip]
 	rl.mu.RUnlock()
-	
+
 	if !exists {
 		// Create new bucket
 		rl.mu.Lock()
@@ -84,32 +84,32 @@ func (rl *RateLimiter) allow(ip string) bool {
 			rl.buckets[ip] = b
 		}
 		rl.mu.Unlock()
-		
+
 		if !exists {
 			return true // First request is allowed
 		}
 	}
-	
+
 	// Check bucket with proper refilling
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	
+
 	now := time.Now()
 	elapsed := now.Sub(b.lastSeen)
-	
+
 	// Refill tokens if enough time has passed
 	if elapsed >= rl.window {
 		b.tokens = rl.limit - 1 // Reset and use one token
 		b.lastSeen = now
 		return true
 	}
-	
+
 	// Use a token if available
 	if b.tokens > 0 {
 		b.tokens--
 		return true
 	}
-	
+
 	return false
 }
 
@@ -117,7 +117,7 @@ func (rl *RateLimiter) allow(ip string) bool {
 func (rl *RateLimiter) cleanupExpiredBuckets() {
 	ticker := time.NewTicker(rl.cleanup)
 	defer ticker.Stop()
-	
+
 	for {
 		select {
 		case <-ticker.C:
@@ -141,21 +141,21 @@ func SecurityHeaders() func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Prevent MIME sniffing
 			w.Header().Set("X-Content-Type-Options", "nosniff")
-			
+
 			// Prevent clickjacking
 			w.Header().Set("X-Frame-Options", "DENY")
-			
+
 			// XSS protection (though deprecated, still used by older browsers)
 			w.Header().Set("X-XSS-Protection", "1; mode=block")
-			
+
 			// Referrer policy
 			w.Header().Set("Referrer-Policy", "no-referrer")
-			
+
 			// HSTS (only set for HTTPS)
 			if r.TLS != nil {
 				w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 			}
-			
+
 			// Content Security Policy
 			csp := "default-src 'self'; " +
 				"script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
@@ -165,11 +165,11 @@ func SecurityHeaders() func(http.Handler) http.Handler {
 				"connect-src 'self' ws: wss:; " +
 				"frame-ancestors 'none'"
 			w.Header().Set("Content-Security-Policy", csp)
-			
+
 			// Cross-Origin policies
 			w.Header().Set("Cross-Origin-Embedder-Policy", "require-corp")
 			w.Header().Set("Cross-Origin-Opener-Policy", "same-origin")
-			
+
 			next.ServeHTTP(w, r)
 		})
 	}
@@ -197,7 +197,7 @@ func NewCORS(config CORSConfig) *CORS {
 func (c *CORS) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
-		
+
 		// Check if origin is allowed
 		if c.isOriginAllowed(origin) {
 			if len(c.config.AllowedOrigins) == 1 && c.config.AllowedOrigins[0] == "*" {
@@ -205,15 +205,15 @@ func (c *CORS) Middleware(next http.Handler) http.Handler {
 			} else {
 				w.Header().Set("Access-Control-Allow-Origin", origin)
 			}
-			
+
 			w.Header().Set("Access-Control-Allow-Methods", strings.Join(c.config.AllowedMethods, ", "))
 			w.Header().Set("Access-Control-Allow-Headers", strings.Join(c.config.AllowedHeaders, ", "))
-			
+
 			if c.config.MaxAge > 0 {
 				w.Header().Set("Access-Control-Max-Age", strconv.Itoa(c.config.MaxAge))
 			}
 		}
-		
+
 		// Handle preflight requests
 		if r.Method == "OPTIONS" {
 			if c.isOriginAllowed(origin) {
@@ -221,7 +221,7 @@ func (c *CORS) Middleware(next http.Handler) http.Handler {
 				return
 			}
 		}
-		
+
 		next.ServeHTTP(w, r)
 	})
 }
@@ -231,13 +231,13 @@ func (c *CORS) isOriginAllowed(origin string) bool {
 	if len(c.config.AllowedOrigins) == 0 {
 		return false
 	}
-	
+
 	for _, allowed := range c.config.AllowedOrigins {
 		if allowed == "*" || allowed == origin {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
@@ -266,12 +266,12 @@ func (c *CSRF) GenerateToken() string {
 	// Generate random bytes
 	randomBytes := make([]byte, 32)
 	rand.Read(randomBytes)
-	
+
 	// Create HMAC
 	h := hmac.New(sha256.New, c.secret)
 	h.Write(randomBytes)
 	signature := h.Sum(nil)
-	
+
 	// Combine random bytes and signature, then base64 encode
 	token := append(randomBytes, signature...)
 	return base64.URLEncoding.EncodeToString(token)
@@ -282,22 +282,22 @@ func (c *CSRF) ValidateToken(token string) bool {
 	if token == "" {
 		return false
 	}
-	
+
 	// Decode token
 	data, err := base64.URLEncoding.DecodeString(token)
 	if err != nil || len(data) != 64 { // 32 random + 32 signature
 		return false
 	}
-	
+
 	// Split random bytes and signature
 	randomBytes := data[:32]
 	signature := data[32:]
-	
+
 	// Verify HMAC
 	h := hmac.New(sha256.New, c.secret)
 	h.Write(randomBytes)
 	expectedSignature := h.Sum(nil)
-	
+
 	return hmac.Equal(signature, expectedSignature)
 }
 
@@ -309,14 +309,14 @@ func (c *CSRF) Middleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-		
+
 		// Get token from header
 		token := r.Header.Get("X-CSRF-Token")
 		if token == "" {
 			// Try to get from form data
 			token = r.FormValue(c.tokenName)
 		}
-		
+
 		// Validate token
 		if !c.ValidateToken(token) {
 			w.Header().Set("Content-Type", "application/json")
@@ -327,7 +327,7 @@ func (c *CSRF) Middleware(next http.Handler) http.Handler {
 			})
 			return
 		}
-		
+
 		next.ServeHTTP(w, r)
 	})
 }
@@ -341,7 +341,7 @@ type IPWhitelist struct {
 // NewIPWhitelist creates a new IP whitelist middleware
 func NewIPWhitelist(allowedCIDRs []string) *IPWhitelist {
 	whitelist := &IPWhitelist{}
-	
+
 	for _, cidr := range allowedCIDRs {
 		if strings.Contains(cidr, "/") {
 			// CIDR notation
@@ -361,7 +361,7 @@ func NewIPWhitelist(allowedCIDRs []string) *IPWhitelist {
 			whitelist.allowedIPs = append(whitelist.allowedIPs, ip)
 		}
 	}
-	
+
 	return whitelist
 }
 
@@ -369,7 +369,7 @@ func NewIPWhitelist(allowedCIDRs []string) *IPWhitelist {
 func (ip *IPWhitelist) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		clientIP := getClientIP(r)
-		
+
 		if !ip.isAllowed(clientIP) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
@@ -379,7 +379,7 @@ func (ip *IPWhitelist) Middleware(next http.Handler) http.Handler {
 			})
 			return
 		}
-		
+
 		next.ServeHTTP(w, r)
 	})
 }
@@ -390,21 +390,21 @@ func (ip *IPWhitelist) isAllowed(clientIPStr string) bool {
 	if clientIP == nil {
 		return false
 	}
-	
+
 	// Check exact IP matches
 	for _, allowedIP := range ip.allowedIPs {
 		if allowedIP.Equal(clientIP) {
 			return true
 		}
 	}
-	
+
 	// Check network ranges
 	for _, network := range ip.allowedNets {
 		if network.Contains(clientIP) {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
@@ -413,13 +413,13 @@ func RequestLogger() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
-			
+
 			// Wrap response writer to capture status code
 			wrapped := &responseWriter{ResponseWriter: w, statusCode: 200}
-			
+
 			// Process request
 			next.ServeHTTP(wrapped, r)
-			
+
 			// Log request details
 			duration := time.Since(start)
 			log.Printf("%s %s %s %d %v %s",
@@ -453,15 +453,15 @@ func Compression() func(http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 				return
 			}
-			
+
 			// Set compression headers
 			w.Header().Set("Content-Encoding", "gzip")
 			w.Header().Set("Vary", "Accept-Encoding")
-			
+
 			// Create gzip writer
 			gz := gzip.NewWriter(w)
 			defer gz.Close()
-			
+
 			// Wrap response writer
 			gzw := &gzipResponseWriter{ResponseWriter: w, Writer: gz}
 			next.ServeHTTP(gzw, r)
@@ -487,17 +487,17 @@ func getClientIP(r *http.Request) string {
 		ips := strings.Split(xff, ",")
 		return strings.TrimSpace(ips[0])
 	}
-	
+
 	// Try X-Real-IP header
 	if xri := r.Header.Get("X-Real-IP"); xri != "" {
 		return xri
 	}
-	
+
 	// Fall back to RemoteAddr
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
 		return r.RemoteAddr
 	}
-	
+
 	return ip
 }

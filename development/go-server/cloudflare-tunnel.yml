@@ -1,0 +1,18 @@
+tunnel: fc7f234b-f820-43bd-890a-49069b66baaa
+credentials-file: /Users/johnferguson/.cloudflared/fc7f234b-f820-43bd-890a-49069b66baaa.json
+
+ingress:
+  # Web frontend (primary endpoint)
+  - hostname: vibetunnel-test-1754698012.trycloudflare.com
+    service: http://localhost:3000
+    
+  # Go backend API (for direct API testing)  
+  - hostname: api.vibetunnel-test-1754698012.trycloudflare.com
+    service: http://localhost:4021
+    
+  # Health endpoint - route to Go server directly (health will be at /health path)
+  - hostname: health.vibetunnel-test-1754698012.trycloudflare.com
+    service: http://localhost:4021
+    
+  # Catch-all rule (required)
+  - service: http_status:404

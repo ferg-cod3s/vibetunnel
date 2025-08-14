@@ -27,13 +27,13 @@ type JWT struct {
 
 // Claims represents JWT token claims
 type Claims struct {
-	UserID   string `json:"user_id"`
-	Username string `json:"username"`
-	Role     string `json:"role"`
-	Issuer   string `json:"iss"`
-	Audience string `json:"aud"`
-	IssuedAt int64  `json:"iat"`
-	ExpiresAt int64 `json:"exp"`
+	UserID    string `json:"user_id"`
+	Username  string `json:"username"`
+	Role      string `json:"role"`
+	Issuer    string `json:"iss"`
+	Audience  string `json:"aud"`
+	IssuedAt  int64  `json:"iat"`
+	ExpiresAt int64  `json:"exp"`
 }
 
 // UserContext holds authenticated user information

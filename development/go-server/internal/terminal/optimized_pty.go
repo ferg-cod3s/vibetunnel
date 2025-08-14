@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -75,7 +76,12 @@ func (m *OptimizedPTYManager) CreateSession(req *types.SessionCreateRequest) (*t
 	// Set defaults without expensive operations
 	command := req.Command
 	if command == "" {
-		command = "/usr/bin/zsh" // Default to zsh, fallback handled in init
+		// Use system shell or fallback to zsh on macOS
+		shell := os.Getenv("SHELL")
+		if shell == "" {
+			shell = "/bin/zsh" // fallback for macOS
+		}
+		command = shell
 	}
 
 	cwd := req.Cwd
@@ -174,16 +180,46 @@ func (s *OptimizedPTYSession) ensureInitialized(envTemplate []string) error {
 func (s *OptimizedPTYSession) initializePTY(envTemplate []string) error {
 	// Create command with optimized environment handling
 	command := s.Command
-	if command == "" || command == "/usr/bin/zsh" {
-		// Try zsh first, fallback to bash
-		if _, err := os.Stat("/usr/bin/zsh"); err == nil {
-			command = "/usr/bin/zsh"
+	if command == "" {
+		// Use system shell or fallback to zsh on macOS
+		shell := os.Getenv("SHELL")
+		if shell == "" {
+			shell = "/bin/zsh" // fallback for macOS
+		}
+		command = shell
+	}
+
+	// Determine how to execute the command
+	shell := os.Getenv("SHELL")
+	if shell == "" {
+		// Try to find zsh using which command first, fallback to /bin/sh
+		if whichCmd := exec.Command("which", "zsh"); whichCmd != nil {
+			if output, err := whichCmd.Output(); err == nil {
+				shell = strings.TrimSpace(string(output))
+				log.Printf("DEBUG: Found zsh via which: %q", shell)
+			} else {
+				log.Printf("DEBUG: which zsh failed: %v", err)
+				shell = "/bin/sh" // More portable fallback
+			}
 		} else {
-			command = "/bin/bash"
+			shell = "/bin/sh" // More portable fallback
 		}
 	}
 
-	cmd := exec.Command("/bin/bash", "-c", command)
+	var cmd *exec.Cmd
+	// Debug logging
+	log.Printf("DEBUG: Optimized PTY creation - command=%q, shell=%q", command, shell)
+
+	// If command is a shell path or shell name, run shell directly; otherwise use shell -c
+	if command == shell || command == "/bin/zsh" || command == "/bin/bash" || command == "/usr/bin/zsh" || command == "zsh" || command == "bash" {
+		// Run shell directly without -c, use full shell path
+		log.Printf("DEBUG: Running shell directly: %q", shell)
+		cmd = exec.Command(shell)
+	} else {
+		// Run command through shell
+		log.Printf("DEBUG: Running command through shell: %q -c %q", shell, command)
+		cmd = exec.Command(shell, "-c", command)
+	}
 	cmd.Dir = s.Cwd
 
 	// Use pre-computed environment template + PTY-specific vars
@@ -302,7 +338,7 @@ func (s *OptimizedPTYSession) handleOutput() {
 
 				select {
 				case s.outputCh <- data:
-					s.UpdatedAt = time.Now()
+					func() { s.mu.Lock(); s.UpdatedAt = time.Now(); s.mu.Unlock() }()
 				default:
 					log.Printf("Output channel full for session %s, dropping data", s.ID[:8])
 				}
@@ -327,7 +363,7 @@ func (s *OptimizedPTYSession) handleInput() {
 					log.Printf("Error writing to PTY %s: %v", s.ID[:8], err)
 					return
 				}
-				s.UpdatedAt = time.Now()
+				func() { s.mu.Lock(); s.UpdatedAt = time.Now(); s.mu.Unlock() }()
 			}
 		}
 	}

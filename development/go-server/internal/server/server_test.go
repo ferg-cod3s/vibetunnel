@@ -260,14 +260,14 @@ func TestServer_AuthConfig(t *testing.T) {
 
 	// Verify expected auth config fields that frontend expects
 	assert.Contains(t, response, "authRequired")
-	assert.Contains(t, response, "authMethods") 
+	assert.Contains(t, response, "authMethods")
 	assert.Contains(t, response, "sshKeyAuth")
 	assert.Contains(t, response, "passwordAuth")
-	
+
 	// Verify it's a boolean for authRequired
 	_, ok := response["authRequired"].(bool)
 	assert.True(t, ok, "authRequired should be a boolean")
-	
+
 	// Verify authMethods is an array
 	_, ok = response["authMethods"].([]interface{})
 	assert.True(t, ok, "authMethods should be an array")
@@ -454,29 +454,29 @@ func TestServer_SessionStream(t *testing.T) {
 	t.Run("valid stream request headers", func(t *testing.T) {
 		// Create a custom recorder that captures headers immediately
 		req := httptest.NewRequest("GET", "/api/sessions/"+session.ID+"/stream", nil)
-		
+
 		// Create a handler that stops after writing headers
 		handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			vars := map[string]string{"id": session.ID}
 			r = mux.SetURLVars(r, vars)
-			
+
 			// Call our handler but intercept to check headers
 			session := server.sessionManager.Get(session.ID)
 			if session == nil {
 				server.writeJSONError(w, "Session not found", http.StatusNotFound)
 				return
 			}
-			
+
 			// Set SSE headers (same as in handleSessionStream)
 			w.Header().Set("Content-Type", "text/event-stream")
 			w.Header().Set("Cache-Control", "no-cache")
 			w.Header().Set("Connection", "keep-alive")
 			w.Header().Set("Access-Control-Allow-Origin", "*")
-			
+
 			// Don't actually stream, just return after setting headers
 			w.WriteHeader(http.StatusOK)
 		})
-		
+
 		w := httptest.NewRecorder()
 		handlerFunc.ServeHTTP(w, req)
 

@@ -10,14 +10,14 @@ import (
 
 // PushSubscription represents a Web Push subscription
 type PushSubscription struct {
-	ID       string                 `json:"id"`
-	UserID   string                 `json:"userId"`
-	Endpoint string                 `json:"endpoint"`
-	Keys     PushSubscriptionKeys   `json:"keys"`
+	ID       string                  `json:"id"`
+	UserID   string                  `json:"userId"`
+	Endpoint string                  `json:"endpoint"`
+	Keys     PushSubscriptionKeys    `json:"keys"`
 	Options  PushSubscriptionOptions `json:"options"`
-	Created  time.Time              `json:"created"`
-	LastUsed *time.Time             `json:"lastUsed,omitempty"`
-	Active   bool                   `json:"active"`
+	Created  time.Time               `json:"created"`
+	LastUsed *time.Time              `json:"lastUsed,omitempty"`
+	Active   bool                    `json:"active"`
 }
 
 // PushSubscriptionKeys contains the encryption keys for the subscription
@@ -28,18 +28,18 @@ type PushSubscriptionKeys struct {
 
 // PushSubscriptionOptions contains subscription preferences
 type PushSubscriptionOptions struct {
-	ApplicationServerKey string                 `json:"applicationServerKey"`
-	UserVisibleOnly      bool                   `json:"userVisibleOnly"`
+	ApplicationServerKey string                  `json:"applicationServerKey"`
+	UserVisibleOnly      bool                    `json:"userVisibleOnly"`
 	Preferences          NotificationPreferences `json:"preferences"`
 }
 
 // NotificationPreferences defines what types of notifications a user wants
 type NotificationPreferences struct {
-	SessionEvents    bool `json:"sessionEvents"`    // Terminal session start/stop
-	GitEvents        bool `json:"gitEvents"`        // Git branch changes, commits
-	SystemEvents     bool `json:"systemEvents"`     // Server status, alerts
-	CommandFinished  bool `json:"commandFinished"`  // Long-running command completion
-	ErrorAlerts      bool `json:"errorAlerts"`      // System errors and failures
+	SessionEvents   bool `json:"sessionEvents"`   // Terminal session start/stop
+	GitEvents       bool `json:"gitEvents"`       // Git branch changes, commits
+	SystemEvents    bool `json:"systemEvents"`    // Server status, alerts
+	CommandFinished bool `json:"commandFinished"` // Long-running command completion
+	ErrorAlerts     bool `json:"errorAlerts"`     // System errors and failures
 }
 
 // DefaultNotificationPreferences returns sensible defaults
@@ -345,20 +345,20 @@ func (s *InMemorySubscriptionStore) deleteWithoutLock(id string) {
 
 // SubscriptionRequest represents a request to create/update a push subscription
 type SubscriptionRequest struct {
-	Endpoint string                 `json:"endpoint"`
-	Keys     PushSubscriptionKeys   `json:"keys"`
+	Endpoint string                  `json:"endpoint"`
+	Keys     PushSubscriptionKeys    `json:"keys"`
 	Options  PushSubscriptionOptions `json:"options"`
 }
 
 // ToSubscription converts a SubscriptionRequest to a PushSubscription
 func (sr *SubscriptionRequest) ToSubscription(userID string) *PushSubscription {
 	return &PushSubscription{
-		UserID:  userID,
+		UserID:   userID,
 		Endpoint: sr.Endpoint,
-		Keys:    sr.Keys,
-		Options: sr.Options,
-		Created: time.Now(),
-		Active:  true,
+		Keys:     sr.Keys,
+		Options:  sr.Options,
+		Created:  time.Now(),
+		Active:   true,
 	}
 }
 

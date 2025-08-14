@@ -9,26 +9,26 @@ type ServerEventType string
 
 const (
 	// Session lifecycle events
-	EventSessionStart      ServerEventType = "session-start"
-	EventSessionExit       ServerEventType = "session-exit"
-	EventCommandFinished   ServerEventType = "command-finished"
-	EventCommandError      ServerEventType = "command-error"
-	
+	EventSessionStart    ServerEventType = "session-start"
+	EventSessionExit     ServerEventType = "session-exit"
+	EventCommandFinished ServerEventType = "command-finished"
+	EventCommandError    ServerEventType = "command-error"
+
 	// Git events
 	EventGitFollowEnabled  ServerEventType = "git-follow-enabled"
 	EventGitFollowDisabled ServerEventType = "git-follow-disabled"
 	EventGitBranchSwitch   ServerEventType = "git-branch-switch"
 	EventGitWorktreeSync   ServerEventType = "git-worktree-sync"
-	
+
 	// System events
-	EventBell              ServerEventType = "bell"
-	EventClaudeTurn        ServerEventType = "claude-turn"
-	EventConnected         ServerEventType = "connected"
-	EventTestNotification  ServerEventType = "test-notification"
-	
+	EventBell             ServerEventType = "bell"
+	EventClaudeTurn       ServerEventType = "claude-turn"
+	EventConnected        ServerEventType = "connected"
+	EventTestNotification ServerEventType = "test-notification"
+
 	// Server events
-	EventHeartbeat         ServerEventType = "heartbeat"
-	EventServerShutdown    ServerEventType = "server-shutdown"
+	EventHeartbeat      ServerEventType = "heartbeat"
+	EventServerShutdown ServerEventType = "server-shutdown"
 )
 
 // ServerEvent represents an event that can be broadcast via Server-Sent Events
@@ -43,12 +43,12 @@ type ServerEvent struct {
 	ProcessInfo *string         `json:"processInfo,omitempty"`
 	Message     *string         `json:"message,omitempty"`
 	Timestamp   string          `json:"timestamp"` // ISO 8601 format
-	
+
 	// Git event specific fields
-	Branch      *string `json:"branch,omitempty"`
-	RepoPath    *string `json:"repoPath,omitempty"`
+	Branch       *string `json:"branch,omitempty"`
+	RepoPath     *string `json:"repoPath,omitempty"`
 	WorktreePath *string `json:"worktreePath,omitempty"`
-	
+
 	// Test notification specific fields
 	Title *string `json:"title,omitempty"`
 	Body  *string `json:"body,omitempty"`
@@ -56,9 +56,9 @@ type ServerEvent struct {
 
 // GitEvent represents a Git repository event
 type GitEvent struct {
-	Type     string `json:"type"`
-	Branch   string `json:"branch,omitempty"`
-	RepoPath string `json:"repoPath"`
+	Type      string    `json:"type"`
+	Branch    string    `json:"branch,omitempty"`
+	RepoPath  string    `json:"repoPath"`
 	Timestamp time.Time `json:"timestamp"`
 }
 

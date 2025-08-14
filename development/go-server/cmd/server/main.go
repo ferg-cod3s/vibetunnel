@@ -35,7 +35,7 @@ func main() {
 		log.Printf("VibeTunnel Go server starting on port %s", port)
 		log.Printf("WebSocket endpoint: ws://localhost:%s/ws", port)
 		log.Printf("Health check: http://localhost:%s/health", port)
-		
+
 		if err := srv.Start(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Failed to start server: %v", err)
 		}

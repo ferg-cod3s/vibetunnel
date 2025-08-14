@@ -23,7 +23,7 @@ func TestVAPIDKeyManager(t *testing.T) {
 		defer os.RemoveAll(tempDir)
 
 		manager := NewVAPIDKeyManager(tempDir)
-		
+
 		// Generate keys
 		keys, err := manager.GenerateKeys()
 		require.NoError(t, err)
@@ -42,18 +42,18 @@ func TestVAPIDKeyManager(t *testing.T) {
 		defer os.RemoveAll(tempDir)
 
 		manager := NewVAPIDKeyManager(tempDir)
-		
+
 		// Generate and save keys
 		originalKeys, err := manager.GenerateKeys()
 		require.NoError(t, err)
-		
+
 		err = manager.SaveKeys(originalKeys)
 		require.NoError(t, err)
 
 		// Load keys
 		loadedKeys, err := manager.LoadKeys()
 		require.NoError(t, err)
-		
+
 		assert.Equal(t, originalKeys.PublicKey, loadedKeys.PublicKey)
 		assert.Equal(t, originalKeys.PrivateKey, loadedKeys.PrivateKey)
 	})
@@ -65,15 +65,15 @@ func TestVAPIDKeyManager(t *testing.T) {
 		defer os.RemoveAll(tempDir)
 
 		manager := NewVAPIDKeyManager(tempDir)
-		
+
 		// First call should generate new keys
 		keys1, err := manager.GetOrGenerateKeys()
 		require.NoError(t, err)
-		
+
 		// Second call should load the same keys
 		keys2, err := manager.GetOrGenerateKeys()
 		require.NoError(t, err)
-		
+
 		assert.Equal(t, keys1.PublicKey, keys2.PublicKey)
 		assert.Equal(t, keys1.PrivateKey, keys2.PrivateKey)
 	})
@@ -82,7 +82,7 @@ func TestVAPIDKeyManager(t *testing.T) {
 func TestSubscriptionStore(t *testing.T) {
 	t.Run("Create and Get Subscription", func(t *testing.T) {
 		store := NewInMemorySubscriptionStore()
-		
+
 		subscription := &PushSubscription{
 			UserID:   "user123",
 			Endpoint: "https://fcm.googleapis.com/fcm/send/test",
@@ -112,7 +112,7 @@ func TestSubscriptionStore(t *testing.T) {
 
 	t.Run("Get Subscriptions by User ID", func(t *testing.T) {
 		store := NewInMemorySubscriptionStore()
-		
+
 		// Create multiple subscriptions for the same user
 		for i := 0; i < 3; i++ {
 			subscription := &PushSubscription{
@@ -136,7 +136,7 @@ func TestSubscriptionStore(t *testing.T) {
 
 	t.Run("Delete Subscription", func(t *testing.T) {
 		store := NewInMemorySubscriptionStore()
-		
+
 		subscription := &PushSubscription{
 			UserID:   "user123",
 			Endpoint: "https://fcm.googleapis.com/fcm/send/test",
@@ -161,7 +161,7 @@ func TestSubscriptionStore(t *testing.T) {
 
 	t.Run("Get Active Subscriptions", func(t *testing.T) {
 		store := NewInMemorySubscriptionStore()
-		
+
 		// Create active subscription
 		activeSubscription := &PushSubscription{
 			UserID:   "user123",
@@ -197,7 +197,7 @@ func TestSubscriptionStore(t *testing.T) {
 
 	t.Run("Subscription Stats", func(t *testing.T) {
 		store := NewInMemorySubscriptionStore()
-		
+
 		// Create subscriptions for different users
 		users := []string{"user1", "user2", "user3"}
 		for _, userID := range users {
@@ -218,11 +218,11 @@ func TestSubscriptionStore(t *testing.T) {
 
 		stats, err := store.GetStats()
 		require.NoError(t, err)
-		
-		assert.Equal(t, 6, stats.Total)       // 3 users × 2 subscriptions
-		assert.Equal(t, 3, stats.Active)      // 3 active subscriptions
-		assert.Equal(t, 3, stats.Inactive)    // 3 inactive subscriptions
-		assert.Equal(t, 3, stats.UniqueUsers) // 3 unique users
+
+		assert.Equal(t, 6, stats.Total)            // 3 users × 2 subscriptions
+		assert.Equal(t, 3, stats.Active)           // 3 active subscriptions
+		assert.Equal(t, 3, stats.Inactive)         // 3 inactive subscriptions
+		assert.Equal(t, 3, stats.UniqueUsers)      // 3 unique users
 		assert.Equal(t, 2.0, stats.AveragePerUser) // 6 / 3 = 2
 	})
 }
@@ -316,7 +316,7 @@ func TestPushService(t *testing.T) {
 		}
 
 		gitSubscription := &PushSubscription{
-			UserID:   "user2", 
+			UserID:   "user2",
 			Endpoint: "https://fcm.googleapis.com/fcm/send/git",
 			Keys:     PushSubscriptionKeys{P256dh: "test", Auth: "test"},
 			Options: PushSubscriptionOptions{
@@ -365,11 +365,11 @@ func TestPushHandlers(t *testing.T) {
 		handler.handleGetVAPIDPublicKey(w, req)
 
 		assert.Equal(t, http.StatusOK, w.Code)
-		
+
 		var response map[string]interface{}
 		err := json.NewDecoder(w.Body).Decode(&response)
 		require.NoError(t, err)
-		
+
 		assert.Contains(t, response, "publicKey")
 		assert.NotEmpty(t, response["publicKey"])
 		assert.IsType(t, "", response["publicKey"])
@@ -463,7 +463,7 @@ func TestSubscriptionRequest(t *testing.T) {
 
 func TestDefaultNotificationPreferences(t *testing.T) {
 	prefs := DefaultNotificationPreferences()
-	
+
 	assert.True(t, prefs.SessionEvents)
 	assert.True(t, prefs.GitEvents)
 	assert.False(t, prefs.SystemEvents) // Should be less noisy by default

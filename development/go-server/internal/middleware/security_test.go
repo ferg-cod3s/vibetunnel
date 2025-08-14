@@ -23,19 +23,19 @@ func mockHandler(w http.ResponseWriter, r *http.Request) {
 func TestRateLimiter_AllowedRequests(t *testing.T) {
 	// Create rate limiter: 5 requests per second
 	limiter := NewRateLimiter(5, time.Second)
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	rateLimitedHandler := limiter.Middleware(handler)
-	
+
 	// Should allow 5 requests
 	for i := 0; i < 5; i++ {
 		req := httptest.NewRequest("GET", "/test", nil)
 		req.RemoteAddr = "192.168.1.1:12345"
 		w := httptest.NewRecorder()
-		
+
 		rateLimitedHandler.ServeHTTP(w, req)
 		if w.Code != http.StatusOK {
 			t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
@@ -46,30 +46,30 @@ func TestRateLimiter_AllowedRequests(t *testing.T) {
 func TestRateLimiter_ExceedsLimit(t *testing.T) {
 	// Create rate limiter: 2 requests per second
 	limiter := NewRateLimiter(2, time.Second)
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	rateLimitedHandler := limiter.Middleware(handler)
-	
+
 	// First 2 requests should pass
 	for i := 0; i < 2; i++ {
 		req := httptest.NewRequest("GET", "/test", nil)
 		req.RemoteAddr = "192.168.1.1:12345"
 		w := httptest.NewRecorder()
-		
+
 		rateLimitedHandler.ServeHTTP(w, req)
 		if w.Code != http.StatusOK {
 			t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
 		}
 	}
-	
+
 	// 3rd request should be rate limited
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.RemoteAddr = "192.168.1.1:12345"
 	w := httptest.NewRecorder()
-	
+
 	rateLimitedHandler.ServeHTTP(w, req)
 	if w.Code != http.StatusTooManyRequests {
 		t.Errorf("expected status %d, got %d", http.StatusTooManyRequests, w.Code)
@@ -79,38 +79,38 @@ func TestRateLimiter_ExceedsLimit(t *testing.T) {
 func TestRateLimiter_DifferentIPs(t *testing.T) {
 	// Create rate limiter: 1 request per second
 	limiter := NewRateLimiter(1, time.Second)
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	rateLimitedHandler := limiter.Middleware(handler)
-	
+
 	// Request from IP 1
 	req1 := httptest.NewRequest("GET", "/test", nil)
 	req1.RemoteAddr = "192.168.1.1:12345"
 	w1 := httptest.NewRecorder()
-	
+
 	rateLimitedHandler.ServeHTTP(w1, req1)
 	if w1.Code != http.StatusOK {
 		t.Errorf("expected status %d, got %d", http.StatusOK, w1.Code)
 	}
-	
+
 	// Request from IP 2 should still work (different IP)
 	req2 := httptest.NewRequest("GET", "/test", nil)
 	req2.RemoteAddr = "192.168.1.2:12346"
 	w2 := httptest.NewRecorder()
-	
+
 	rateLimitedHandler.ServeHTTP(w2, req2)
 	if w2.Code != http.StatusOK {
 		t.Errorf("expected status %d, got %d", http.StatusOK, w2.Code)
 	}
-	
+
 	// Another request from IP 1 should be rate limited
 	req3 := httptest.NewRequest("GET", "/test", nil)
 	req3.RemoteAddr = "192.168.1.1:12347"
 	w3 := httptest.NewRecorder()
-	
+
 	rateLimitedHandler.ServeHTTP(w3, req3)
 	if w3.Code != http.StatusTooManyRequests {
 		t.Errorf("expected status %d, got %d", http.StatusTooManyRequests, w3.Code)
@@ -120,41 +120,41 @@ func TestRateLimiter_DifferentIPs(t *testing.T) {
 func TestRateLimiter_WindowReset(t *testing.T) {
 	// Create rate limiter: 1 request per 100ms
 	limiter := NewRateLimiter(1, 100*time.Millisecond)
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	rateLimitedHandler := limiter.Middleware(handler)
-	
+
 	// First request should pass
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.RemoteAddr = "192.168.1.1:12345"
 	w := httptest.NewRecorder()
-	
+
 	rateLimitedHandler.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
 		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
 	}
-	
+
 	// Second request should be rate limited
 	req = httptest.NewRequest("GET", "/test", nil)
 	req.RemoteAddr = "192.168.1.1:12345"
 	w = httptest.NewRecorder()
-	
+
 	rateLimitedHandler.ServeHTTP(w, req)
 	if w.Code != http.StatusTooManyRequests {
 		t.Errorf("expected status %d, got %d", http.StatusTooManyRequests, w.Code)
 	}
-	
+
 	// Wait for window to reset
 	time.Sleep(150 * time.Millisecond)
-	
+
 	// Request should now pass
 	req = httptest.NewRequest("GET", "/test", nil)
 	req.RemoteAddr = "192.168.1.1:12345"
 	w = httptest.NewRecorder()
-	
+
 	rateLimitedHandler.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
 		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
@@ -197,18 +197,18 @@ func TestRateLimiterConcurrency(t *testing.T) {
 
 func TestSecurityHeaders_AllHeaders(t *testing.T) {
 	headers := SecurityHeaders()
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	secureHandler := headers(handler)
-	
+
 	req := httptest.NewRequest("GET", "/test", nil)
 	w := httptest.NewRecorder()
-	
+
 	secureHandler.ServeHTTP(w, req)
-	
+
 	// Check all security headers are set
 	if got := w.Header().Get("X-Content-Type-Options"); got != "nosniff" {
 		t.Errorf("X-Content-Type-Options: expected 'nosniff', got '%s'", got)
@@ -254,19 +254,19 @@ func TestCORSMiddleware_AllowedOrigin(t *testing.T) {
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 		MaxAge:         3600,
 	})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	corsHandler := cors.Middleware(handler)
-	
+
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.Header.Set("Origin", "https://example.com")
 	w := httptest.NewRecorder()
-	
+
 	corsHandler.ServeHTTP(w, req)
-	
+
 	if got := w.Header().Get("Access-Control-Allow-Origin"); got != "https://example.com" {
 		t.Errorf("Access-Control-Allow-Origin: expected 'https://example.com', got '%s'", got)
 	}
@@ -287,19 +287,19 @@ func TestCORSMiddleware_DisallowedOrigin(t *testing.T) {
 		AllowedMethods: []string{"GET", "POST"},
 		AllowedHeaders: []string{"Content-Type"},
 	})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	corsHandler := cors.Middleware(handler)
-	
+
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.Header.Set("Origin", "https://malicious.com")
 	w := httptest.NewRecorder()
-	
+
 	corsHandler.ServeHTTP(w, req)
-	
+
 	// Should not set CORS headers for disallowed origin
 	if got := w.Header().Get("Access-Control-Allow-Origin"); got != "" {
 		t.Errorf("Access-Control-Allow-Origin should be empty for disallowed origin, got '%s'", got)
@@ -313,22 +313,22 @@ func TestCORSMiddleware_PreflightRequest(t *testing.T) {
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 		MaxAge:         7200,
 	})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t.Fatal("Handler should not be called for preflight request")
 	})
-	
+
 	corsHandler := cors.Middleware(handler)
-	
+
 	// Preflight request
 	req := httptest.NewRequest("OPTIONS", "/test", nil)
 	req.Header.Set("Origin", "https://example.com")
 	req.Header.Set("Access-Control-Request-Method", "PUT")
 	req.Header.Set("Access-Control-Request-Headers", "Content-Type,Authorization")
 	w := httptest.NewRecorder()
-	
+
 	corsHandler.ServeHTTP(w, req)
-	
+
 	if w.Code != http.StatusNoContent {
 		t.Errorf("expected status %d, got %d", http.StatusNoContent, w.Code)
 	}
@@ -352,19 +352,19 @@ func TestCORSMiddleware_WildcardOrigin(t *testing.T) {
 		AllowedMethods: []string{"GET", "POST"},
 		AllowedHeaders: []string{"Content-Type"},
 	})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	corsHandler := cors.Middleware(handler)
-	
+
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.Header.Set("Origin", "https://any-origin.com")
 	w := httptest.NewRecorder()
-	
+
 	corsHandler.ServeHTTP(w, req)
-	
+
 	if got := w.Header().Get("Access-Control-Allow-Origin"); got != "*" {
 		t.Errorf("Access-Control-Allow-Origin: expected '*', got '%s'", got)
 	}
@@ -375,22 +375,22 @@ func TestCSRFProtection_ValidToken(t *testing.T) {
 		Secret:    "test-secret-key",
 		TokenName: "csrf_token",
 	})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	csrfHandler := csrf.Middleware(handler)
-	
+
 	// Generate a valid token first
 	token := csrf.GenerateToken()
-	
+
 	req := httptest.NewRequest("POST", "/test", nil)
 	req.Header.Set("X-CSRF-Token", token)
 	w := httptest.NewRecorder()
-	
+
 	csrfHandler.ServeHTTP(w, req)
-	
+
 	if w.Code != http.StatusOK {
 		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
 	}
@@ -401,19 +401,19 @@ func TestCSRFProtection_InvalidToken(t *testing.T) {
 		Secret:    "test-secret-key",
 		TokenName: "csrf_token",
 	})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t.Fatal("Handler should not be called with invalid CSRF token")
 	})
-	
+
 	csrfHandler := csrf.Middleware(handler)
-	
+
 	req := httptest.NewRequest("POST", "/test", nil)
 	req.Header.Set("X-CSRF-Token", "invalid-token")
 	w := httptest.NewRecorder()
-	
+
 	csrfHandler.ServeHTTP(w, req)
-	
+
 	if w.Code != http.StatusForbidden {
 		t.Errorf("expected status %d, got %d", http.StatusForbidden, w.Code)
 	}
@@ -424,20 +424,20 @@ func TestCSRFProtection_SkipSafeMethods(t *testing.T) {
 		Secret:    "test-secret-key",
 		TokenName: "csrf_token",
 	})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	csrfHandler := csrf.Middleware(handler)
-	
+
 	// Safe methods (GET, HEAD, OPTIONS) should not require CSRF token
 	safeMethods := []string{"GET", "HEAD", "OPTIONS"}
-	
+
 	for _, method := range safeMethods {
 		req := httptest.NewRequest(method, "/test", nil)
 		w := httptest.NewRecorder()
-		
+
 		csrfHandler.ServeHTTP(w, req)
 		if w.Code != http.StatusOK {
 			t.Errorf("Safe method %s should not require CSRF token: expected %d, got %d", method, http.StatusOK, w.Code)
@@ -470,28 +470,28 @@ func TestCSRFTokenGeneration(t *testing.T) {
 
 func TestIPWhitelist_AllowedIP(t *testing.T) {
 	whitelist := NewIPWhitelist([]string{"192.168.1.0/24", "10.0.0.1"})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	
+
 	whitelistHandler := whitelist.Middleware(handler)
-	
+
 	// Test subnet match
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.RemoteAddr = "192.168.1.100:12345"
 	w := httptest.NewRecorder()
-	
+
 	whitelistHandler.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
 		t.Errorf("subnet IP should be allowed: expected %d, got %d", http.StatusOK, w.Code)
 	}
-	
+
 	// Test exact IP match
 	req = httptest.NewRequest("GET", "/test", nil)
 	req.RemoteAddr = "10.0.0.1:12345"
 	w = httptest.NewRecorder()
-	
+
 	whitelistHandler.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
 		t.Errorf("exact IP should be allowed: expected %d, got %d", http.StatusOK, w.Code)
@@ -500,17 +500,17 @@ func TestIPWhitelist_AllowedIP(t *testing.T) {
 
 func TestIPWhitelist_BlockedIP(t *testing.T) {
 	whitelist := NewIPWhitelist([]string{"192.168.1.0/24"})
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t.Fatal("Handler should not be called for blocked IP")
 	})
-	
+
 	whitelistHandler := whitelist.Middleware(handler)
-	
+
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.RemoteAddr = "172.16.0.1:12345" // Not in whitelist
 	w := httptest.NewRecorder()
-	
+
 	whitelistHandler.ServeHTTP(w, req)
 	if w.Code != http.StatusForbidden {
 		t.Errorf("blocked IP should return 403: expected %d, got %d", http.StatusForbidden, w.Code)
@@ -564,21 +564,21 @@ func TestIPWhitelistWithHeaders(t *testing.T) {
 
 func TestRequestLogger_LogsRequests(t *testing.T) {
 	logger := RequestLogger()
-	
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("test response"))
 	})
-	
+
 	loggedHandler := logger(handler)
-	
+
 	req := httptest.NewRequest("GET", "/test?param=value", nil)
 	req.Header.Set("User-Agent", "test-agent")
 	req.RemoteAddr = "192.168.1.1:12345"
 	w := httptest.NewRecorder()
-	
+
 	loggedHandler.ServeHTTP(w, req)
-	
+
 	// Should complete without error
 	if w.Code != http.StatusOK {
 		t.Errorf("expected status %d, got %d", http.StatusOK, w.Code)
@@ -591,7 +591,7 @@ func TestRequestLogger_LogsRequests(t *testing.T) {
 func TestRequestLoggerCapture(t *testing.T) {
 	// Create a buffer to capture log output
 	var logBuffer bytes.Buffer
-	
+
 	// Create a custom handler that writes to our buffer
 	logHandler := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -599,14 +599,14 @@ func TestRequestLoggerCapture(t *testing.T) {
 			wrapped := &testResponseWriter{ResponseWriter: w, statusCode: 200}
 			next.ServeHTTP(wrapped, r)
 			duration := time.Since(start)
-			
+
 			// Write to buffer instead of using log package
 			logBuffer.WriteString(fmt.Sprintf("%s %s %s %d %v %s\n",
 				getClientIP(r), r.Method, r.RequestURI,
 				wrapped.statusCode, duration, r.UserAgent()))
 		})
 	}
-	
+
 	handler := logHandler(http.HandlerFunc(mockHandler))
 
 	req := httptest.NewRequest("GET", "/test", nil)
@@ -617,7 +617,7 @@ func TestRequestLoggerCapture(t *testing.T) {
 
 	logOutput := logBuffer.String()
 	expectedParts := []string{"192.168.1.1", "GET", "/test", "200", "test-agent"}
-	
+
 	for _, part := range expectedParts {
 		if !strings.Contains(logOutput, part) {
 			t.Errorf("log output should contain %q, got: %s", part, logOutput)
@@ -725,7 +725,7 @@ func TestGetClientIP(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := httptest.NewRequest("GET", "/", nil)
 			req.RemoteAddr = tt.remoteAddr
-			
+
 			for header, value := range tt.headers {
 				req.Header.Set(header, value)
 			}

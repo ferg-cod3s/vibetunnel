@@ -300,12 +300,12 @@ func TestFrontendSecurityCompatibility(t *testing.T) {
 		// Should have CORS headers for preflight
 		headers := resp.Header
 		assert.NotEmpty(t, headers.Get("Access-Control-Allow-Origin"))
-		
+
 		// Test regular request has JSON content type
 		resp2, err := http.Get(baseURL + "/health")
 		require.NoError(t, err)
 		defer resp2.Body.Close()
-		
+
 		// Should have content type
 		assert.Contains(t, resp2.Header.Get("Content-Type"), "application/json")
 	})
@@ -367,7 +367,7 @@ func TestFrontendPerformanceCompatibility(t *testing.T) {
 				resp.Body.Close()
 
 				// Should respond within 100ms for good UX
-				assert.Less(t, duration, 100*time.Millisecond, 
+				assert.Less(t, duration, 100*time.Millisecond,
 					"Endpoint %s took %v, expected <100ms", endpoint, duration)
 			})
 		}
@@ -376,7 +376,7 @@ func TestFrontendPerformanceCompatibility(t *testing.T) {
 	t.Run("Concurrent_Session_Creation", func(t *testing.T) {
 		// Test handling multiple session creations (frontend might do this)
 		const numConcurrent = 10
-		
+
 		sessionPayload := map[string]interface{}{
 			"command": "echo test",
 			"title":   "Concurrent Test",
@@ -384,7 +384,7 @@ func TestFrontendPerformanceCompatibility(t *testing.T) {
 		jsonPayload, _ := json.Marshal(sessionPayload)
 
 		start := time.Now()
-		
+
 		// Create concurrent requests
 		results := make(chan error, numConcurrent)
 		for i := 0; i < numConcurrent; i++ {
@@ -395,12 +395,12 @@ func TestFrontendPerformanceCompatibility(t *testing.T) {
 					return
 				}
 				resp.Body.Close()
-				
+
 				if resp.StatusCode != http.StatusCreated {
 					results <- fmt.Errorf("unexpected status: %d", resp.StatusCode)
 					return
 				}
-				
+
 				results <- nil
 			}()
 		}
@@ -413,7 +413,7 @@ func TestFrontendPerformanceCompatibility(t *testing.T) {
 
 		duration := time.Since(start)
 		t.Logf("Created %d sessions concurrently in %v", numConcurrent, duration)
-		
+
 		// Should handle concurrent requests reasonably fast
 		assert.Less(t, duration, 2*time.Second)
 	})

@@ -15,13 +15,13 @@ import (
 func TestTmuxService_HandleAvailable(t *testing.T) {
 	sessionManager := session.NewManager()
 	tmuxService := NewTmuxService(sessionManager)
-	
+
 	router := mux.NewRouter()
 	tmuxService.RegisterRoutes(router)
 
 	req := httptest.NewRequest("GET", "/api/tmux/available", nil)
 	rr := httptest.NewRecorder()
-	
+
 	router.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusOK {
@@ -41,13 +41,13 @@ func TestTmuxService_HandleAvailable(t *testing.T) {
 func TestTmuxService_HandleListSessions(t *testing.T) {
 	sessionManager := session.NewManager()
 	tmuxService := NewTmuxService(sessionManager)
-	
+
 	router := mux.NewRouter()
 	tmuxService.RegisterRoutes(router)
 
 	req := httptest.NewRequest("GET", "/api/tmux/sessions", nil)
 	rr := httptest.NewRecorder()
-	
+
 	router.ServeHTTP(rr, req)
 
 	// Should return OK even if tmux is not available or no sessions exist
@@ -59,7 +59,7 @@ func TestTmuxService_HandleListSessions(t *testing.T) {
 func TestTmuxService_HandleCreateSession(t *testing.T) {
 	sessionManager := session.NewManager()
 	tmuxService := NewTmuxService(sessionManager)
-	
+
 	router := mux.NewRouter()
 	tmuxService.RegisterRoutes(router)
 
@@ -130,7 +130,7 @@ func TestTmuxService_HandleCreateSession(t *testing.T) {
 func TestTmuxService_HandleSendCommand(t *testing.T) {
 	sessionManager := session.NewManager()
 	tmuxService := NewTmuxService(sessionManager)
-	
+
 	router := mux.NewRouter()
 	tmuxService.RegisterRoutes(router)
 

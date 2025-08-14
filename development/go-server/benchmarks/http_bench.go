@@ -85,7 +85,7 @@ func main() {
 
 func runSessionCreateTest(config HTTPConfig) *HTTPStats {
 	stats := &HTTPStats{
-		StatusCodes: make(map[int]int64),
+		StatusCodes:     make(map[int]int64),
 		MinResponseTime: int64(^uint64(0) >> 1), // Max int64
 	}
 
@@ -103,7 +103,7 @@ func runSessionCreateTest(config HTTPConfig) *HTTPStats {
 
 func runSessionListTest(config HTTPConfig) *HTTPStats {
 	stats := &HTTPStats{
-		StatusCodes: make(map[int]int64),
+		StatusCodes:     make(map[int]int64),
 		MinResponseTime: int64(^uint64(0) >> 1), // Max int64
 	}
 
@@ -112,7 +112,7 @@ func runSessionListTest(config HTTPConfig) *HTTPStats {
 
 func runHealthCheckTest(config HTTPConfig) *HTTPStats {
 	stats := &HTTPStats{
-		StatusCodes: make(map[int]int64),
+		StatusCodes:     make(map[int]int64),
 		MinResponseTime: int64(^uint64(0) >> 1), // Max int64
 	}
 
@@ -122,7 +122,7 @@ func runHealthCheckTest(config HTTPConfig) *HTTPStats {
 func runHTTPTest(config HTTPConfig, method, endpoint string, body io.Reader, stats *HTTPStats) *HTTPStats {
 	var wg sync.WaitGroup
 	semaphore := make(chan struct{}, config.MaxConcurrent)
-	
+
 	// Calculate request interval for rate limiting
 	interval := time.Second / time.Duration(config.RequestsPerSec)
 	ticker := time.NewTicker(interval)
@@ -132,26 +132,26 @@ func runHTTPTest(config HTTPConfig, method, endpoint string, body io.Reader, sta
 
 	// Send requests
 	for i := 0; i < config.TotalRequests; i++ {
-		<-ticker.C // Rate limiting
+		<-ticker.C              // Rate limiting
 		semaphore <- struct{}{} // Concurrency limiting
-		
+
 		wg.Add(1)
 		go func(reqNum int) {
 			defer wg.Done()
 			defer func() { <-semaphore }()
-			
+
 			makeHTTPRequest(config.ServerURL, method, endpoint, body, stats)
 		}(i)
 	}
 
 	wg.Wait()
-	
+
 	duration := time.Since(startTime)
 	actualRPS := float64(config.TotalRequests) / duration.Seconds()
-	
-	fmt.Printf("   ⏱️  Completed %d requests in %v (%.1f RPS)\n", 
+
+	fmt.Printf("   ⏱️  Completed %d requests in %v (%.1f RPS)\n",
 		config.TotalRequests, duration, actualRPS)
-	
+
 	return stats
 }
 
@@ -182,7 +182,7 @@ func makeHTTPRequest(serverURL, method, endpoint string, body io.Reader, stats *
 	start := time.Now()
 	resp, err := client.Do(req)
 	responseTime := time.Since(start).Nanoseconds()
-	
+
 	atomic.AddInt64(&stats.TotalRequests, 1)
 	atomic.AddInt64(&stats.TotalResponseTime, responseTime)
 
@@ -220,15 +220,15 @@ func makeHTTPRequest(serverURL, method, endpoint string, body io.Reader, stats *
 
 func printHTTPResults(testName string, stats *HTTPStats, config HTTPConfig) {
 	fmt.Printf("   📊 %s Results:\n", testName)
-	
+
 	totalReqs := atomic.LoadInt64(&stats.TotalRequests)
 	successReqs := atomic.LoadInt64(&stats.SuccessfulReqs)
 	failedReqs := atomic.LoadInt64(&stats.FailedReqs)
-	
+
 	fmt.Printf("      Total Requests: %d\n", totalReqs)
-	fmt.Printf("      ✅ Successful: %d (%.2f%%)\n", 
+	fmt.Printf("      ✅ Successful: %d (%.2f%%)\n",
 		successReqs, float64(successReqs)/float64(totalReqs)*100)
-	fmt.Printf("      ❌ Failed: %d (%.2f%%)\n", 
+	fmt.Printf("      ❌ Failed: %d (%.2f%%)\n",
 		failedReqs, float64(failedReqs)/float64(totalReqs)*100)
 
 	// Response time stats

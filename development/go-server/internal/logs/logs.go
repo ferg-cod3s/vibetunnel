@@ -44,13 +44,13 @@ func NewLogService() *LogService {
 func (ls *LogService) RegisterRoutes(router *mux.Router) {
 	// Client-side logging endpoint
 	router.HandleFunc("/api/logs/client", ls.handleClientLog).Methods("POST")
-	
+
 	// Server log streaming endpoint (for future use)
 	router.HandleFunc("/api/logs/server", ls.handleServerLogs).Methods("GET")
-	
+
 	// Log file download endpoint (for debugging)
 	router.HandleFunc("/api/logs/download", ls.handleLogDownload).Methods("GET")
-	
+
 	// Additional log management endpoints
 	router.HandleFunc("/api/logs/info", ls.handleLogInfo).Methods("GET")
 	router.HandleFunc("/api/logs/raw", ls.handleRawLogs).Methods("GET")
@@ -60,18 +60,18 @@ func (ls *LogService) RegisterRoutes(router *mux.Router) {
 // handleClientLog processes client-side log messages
 func (ls *LogService) handleClientLog(w http.ResponseWriter, r *http.Request) {
 	var req ClientLogRequest
-	
+
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	
+
 	// Validate input
 	if req.Level == "" || req.Module == "" || len(req.Args) == 0 {
 		http.Error(w, "Invalid log request. Required: level, module, args[]", http.StatusBadRequest)
 		return
 	}
-	
+
 	// Validate log level
 	validLevels := map[LogLevel]bool{
 		LogLevelLog:   true,
@@ -79,25 +79,25 @@ func (ls *LogService) handleClientLog(w http.ResponseWriter, r *http.Request) {
 		LogLevelError: true,
 		LogLevelDebug: true,
 	}
-	
+
 	if !validLevels[req.Level] {
 		http.Error(w, "Invalid log level", http.StatusBadRequest)
 		return
 	}
-	
+
 	// Sanitize module name
 	req.Module = strings.TrimSpace(req.Module)
 	if len(req.Module) > 50 {
 		req.Module = req.Module[:50]
 	}
-	
+
 	// Format and log the client message
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
 	message := strings.Join(req.Args, " ")
-	
+
 	// Use appropriate log level
 	prefix := fmt.Sprintf("[CLIENT:%s] [%s] %s:", timestamp, strings.ToUpper(string(req.Level)), req.Module)
-	
+
 	switch req.Level {
 	case LogLevelError:
 		log.Printf("%s ERROR: %s", prefix, message)
@@ -108,7 +108,7 @@ func (ls *LogService) handleClientLog(w http.ResponseWriter, r *http.Request) {
 	default:
 		log.Printf("%s %s", prefix, message)
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "logged"})
 }
@@ -123,43 +123,43 @@ func (ls *LogService) handleServerLogs(w http.ResponseWriter, r *http.Request) {
 func (ls *LogService) handleLogDownload(w http.ResponseWriter, r *http.Request) {
 	// For security, only allow downloading from specific log directories
 	logDir := "/tmp/vibetunnel-logs" // Configure this appropriately
-	
+
 	// Check if log directory exists
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
 		http.Error(w, "No logs available", http.StatusNotFound)
 		return
 	}
-	
+
 	// List log files
 	files, err := filepath.Glob(filepath.Join(logDir, "*.log"))
 	if err != nil {
 		http.Error(w, "Failed to list log files", http.StatusInternalServerError)
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"logDirectory": logDir,
+		"logDirectory":   logDir,
 		"availableFiles": files,
-		"note": "Use query parameter ?file=filename.log to download specific file",
+		"note":           "Use query parameter ?file=filename.log to download specific file",
 	})
 }
 
 // handleLogInfo provides metadata about available logs
 func (ls *LogService) handleLogInfo(w http.ResponseWriter, r *http.Request) {
 	logDir := "/tmp/vibetunnel-logs"
-	
+
 	info := map[string]interface{}{
 		"logDirectory": logDir,
 		"available":    true,
 		"description":  "VibeTunnel log management",
 	}
-	
+
 	// Check if log directory exists and get file info
 	if stat, err := os.Stat(logDir); err == nil {
 		info["directoryExists"] = true
 		info["lastModified"] = stat.ModTime()
-		
+
 		// Count log files
 		if files, err := filepath.Glob(filepath.Join(logDir, "*.log")); err == nil {
 			info["fileCount"] = len(files)
@@ -168,7 +168,7 @@ func (ls *LogService) handleLogInfo(w http.ResponseWriter, r *http.Request) {
 		info["directoryExists"] = false
 		info["fileCount"] = 0
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(info)
 }
@@ -177,7 +177,7 @@ func (ls *LogService) handleLogInfo(w http.ResponseWriter, r *http.Request) {
 func (ls *LogService) handleRawLogs(w http.ResponseWriter, r *http.Request) {
 	logDir := "/tmp/vibetunnel-logs"
 	filename := r.URL.Query().Get("file")
-	
+
 	if filename == "" {
 		// Return list of available files if no specific file requested
 		files, err := filepath.Glob(filepath.Join(logDir, "*.log"))
@@ -185,21 +185,21 @@ func (ls *LogService) handleRawLogs(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Failed to list log files", http.StatusInternalServerError)
 			return
 		}
-		
+
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"availableFiles": files,
-			"usage": "Add ?file=filename.log to get raw content",
+			"usage":          "Add ?file=filename.log to get raw content",
 		})
 		return
 	}
-	
+
 	// Validate filename for security
 	if strings.Contains(filename, "..") || strings.Contains(filename, "/") {
 		http.Error(w, "Invalid filename", http.StatusBadRequest)
 		return
 	}
-	
+
 	filePath := filepath.Join(logDir, filename)
 	content, err := os.ReadFile(filePath)
 	if err != nil {
@@ -210,7 +210,7 @@ func (ls *LogService) handleRawLogs(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "text/plain")
 	w.Write(content)
 }
@@ -218,7 +218,7 @@ func (ls *LogService) handleRawLogs(w http.ResponseWriter, r *http.Request) {
 // handleClearLogs clears or rotates log files
 func (ls *LogService) handleClearLogs(w http.ResponseWriter, r *http.Request) {
 	logDir := "/tmp/vibetunnel-logs"
-	
+
 	// Check if log directory exists
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
 		w.Header().Set("Content-Type", "application/json")
@@ -228,14 +228,14 @@ func (ls *LogService) handleClearLogs(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	
+
 	// Find and remove log files
 	files, err := filepath.Glob(filepath.Join(logDir, "*.log"))
 	if err != nil {
 		http.Error(w, "Failed to list log files", http.StatusInternalServerError)
 		return
 	}
-	
+
 	clearedCount := 0
 	for _, file := range files {
 		if err := os.Remove(file); err != nil {
@@ -244,7 +244,7 @@ func (ls *LogService) handleClearLogs(w http.ResponseWriter, r *http.Request) {
 			clearedCount++
 		}
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message": fmt.Sprintf("Cleared %d log files", clearedCount),

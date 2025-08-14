@@ -9,11 +9,11 @@ import (
 )
 
 type Manager struct {
-	ptyManager     *terminal.PTYManager
-	optPtyManager  *terminal.OptimizedPTYManager
-	useOptimized   bool
-	sseStreams     map[string][]chan []byte
-	sseStreamsMu   sync.RWMutex
+	ptyManager    *terminal.PTYManager
+	optPtyManager *terminal.OptimizedPTYManager
+	useOptimized  bool
+	sseStreams    map[string][]chan []byte
+	sseStreamsMu  sync.RWMutex
 }
 
 func NewManager() *Manager {
@@ -51,18 +51,18 @@ func (m *Manager) Get(id string) *types.Session {
 			CreatedAt: optSession.CreatedAt,
 			UpdatedAt: optSession.UpdatedAt,
 			Active:    optSession.Active,
-			PTY:       nil, // Set during lazy init
-			Cmd:       nil, // Set during lazy init
+			PTY:       nil,                        // Set during lazy init
+			Cmd:       nil,                        // Set during lazy init
 			Clients:   make([]*types.WSClient, 0), // Will be populated when initialized
 		}
 	}
-	
+
 	// Fallback to original manager
 	ptySession := m.ptyManager.GetSession(id)
 	if ptySession == nil {
 		return nil
 	}
-	
+
 	// Convert PTYSession to types.Session
 	return &types.Session{
 		ID:        ptySession.ID,
@@ -85,7 +85,7 @@ func (m *Manager) List() []*types.Session {
 		// List optimized sessions
 		optSessions := m.optPtyManager.ListSessions()
 		sessions := make([]*types.Session, 0, len(optSessions))
-		
+
 		for _, optSession := range optSessions {
 			sessions = append(sessions, &types.Session{
 				ID:        optSession.ID,
@@ -97,19 +97,19 @@ func (m *Manager) List() []*types.Session {
 				CreatedAt: optSession.CreatedAt,
 				UpdatedAt: optSession.UpdatedAt,
 				Active:    optSession.Active,
-				PTY:       nil, // Set during lazy init
-				Cmd:       nil, // Set during lazy init
+				PTY:       nil,                        // Set during lazy init
+				Cmd:       nil,                        // Set during lazy init
 				Clients:   make([]*types.WSClient, 0), // Will be populated when initialized
 			})
 		}
-		
+
 		return sessions
 	}
-	
+
 	// Fallback to original manager
 	ptySessions := m.ptyManager.ListSessions()
 	sessions := make([]*types.Session, 0, len(ptySessions))
-	
+
 	for _, ptySession := range ptySessions {
 		sessions = append(sessions, &types.Session{
 			ID:        ptySession.ID,
@@ -126,7 +126,7 @@ func (m *Manager) List() []*types.Session {
 			Clients:   ptySession.GetClients(),
 		})
 	}
-	
+
 	return sessions
 }
 
@@ -160,17 +160,17 @@ func (m *Manager) AddClientToSession(sessionID string, client *types.WSClient) e
 		if optSession == nil {
 			return fmt.Errorf("session not found: %s", sessionID)
 		}
-		
+
 		// This will trigger lazy initialization if needed
 		return optSession.AddClient(client, m.optPtyManager.GetEnvTemplate())
 	}
-	
+
 	// Fallback to original manager
 	ptySession := m.ptyManager.GetSession(sessionID)
 	if ptySession == nil {
 		return fmt.Errorf("session not found: %s", sessionID)
 	}
-	
+
 	ptySession.AddClient(client)
 	return nil
 }
@@ -196,7 +196,7 @@ func (m *Manager) Resize(sessionID string, cols, rows int) error {
 		if optSession == nil {
 			return fmt.Errorf("session not found: %s", sessionID)
 		}
-		
+
 		// Ensure session is initialized by adding and immediately removing a dummy client
 		dummyClient := &types.WSClient{ID: "dummy-client-12345678", SessionID: sessionID}
 		if err := optSession.AddClient(dummyClient, m.optPtyManager.GetEnvTemplate()); err != nil {
@@ -204,10 +204,10 @@ func (m *Manager) Resize(sessionID string, cols, rows int) error {
 		}
 		// Remove the dummy client immediately
 		optSession.RemoveClient("dummy-client-12345678")
-		
+
 		return optSession.Resize(cols, rows)
 	}
-	
+
 	ptySession := m.ptyManager.GetSession(sessionID)
 	if ptySession == nil {
 		return fmt.Errorf("session not found: %s", sessionID)
@@ -222,7 +222,7 @@ func (m *Manager) WriteInput(sessionID string, input string) error {
 		if optSession == nil {
 			return fmt.Errorf("session not found: %s", sessionID)
 		}
-		
+
 		// Ensure session is initialized by adding and immediately removing a dummy client
 		dummyClient := &types.WSClient{ID: "dummy-client-12345678", SessionID: sessionID}
 		if err := optSession.AddClient(dummyClient, m.optPtyManager.GetEnvTemplate()); err != nil {
@@ -230,10 +230,10 @@ func (m *Manager) WriteInput(sessionID string, input string) error {
 		}
 		// Remove the dummy client immediately
 		optSession.RemoveClient("dummy-client-12345678")
-		
+
 		return optSession.WriteInput([]byte(input))
 	}
-	
+
 	ptySession := m.ptyManager.GetSession(sessionID)
 	if ptySession == nil {
 		return fmt.Errorf("session not found: %s", sessionID)
@@ -245,7 +245,7 @@ func (m *Manager) WriteInput(sessionID string, input string) error {
 func (m *Manager) AddSSEStream(sessionID string, stream chan []byte) error {
 	m.sseStreamsMu.Lock()
 	defer m.sseStreamsMu.Unlock()
-	
+
 	if m.sseStreams[sessionID] == nil {
 		m.sseStreams[sessionID] = make([]chan []byte, 0)
 	}
@@ -257,7 +257,7 @@ func (m *Manager) AddSSEStream(sessionID string, stream chan []byte) error {
 func (m *Manager) RemoveSSEStream(sessionID string, stream chan []byte) {
 	m.sseStreamsMu.Lock()
 	defer m.sseStreamsMu.Unlock()
-	
+
 	streams := m.sseStreams[sessionID]
 	for i, s := range streams {
 		if s == stream {
@@ -265,7 +265,7 @@ func (m *Manager) RemoveSSEStream(sessionID string, stream chan []byte) {
 			break
 		}
 	}
-	
+
 	if len(m.sseStreams[sessionID]) == 0 {
 		delete(m.sseStreams, sessionID)
 	}
@@ -275,7 +275,7 @@ func (m *Manager) RemoveSSEStream(sessionID string, stream chan []byte) {
 func (m *Manager) BroadcastToSSEStreams(sessionID string, data []byte) {
 	m.sseStreamsMu.RLock()
 	defer m.sseStreamsMu.RUnlock()
-	
+
 	streams := m.sseStreams[sessionID]
 	for _, stream := range streams {
 		select {

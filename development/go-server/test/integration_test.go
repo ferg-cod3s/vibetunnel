@@ -26,7 +26,7 @@ func TestFrontendIntegration(t *testing.T) {
 		Port: "0", // Use random port for testing
 	})
 	require.NoError(t, err)
-	
+
 	testServer := httptest.NewServer(srv.Handler())
 	defer testServer.Close()
 
@@ -67,7 +67,7 @@ func testFrontendAPICompatibility(t *testing.T, baseURL string) {
 		var health map[string]interface{}
 		err = json.NewDecoder(resp.Body).Decode(&health)
 		require.NoError(t, err)
-		
+
 		// Frontend expects these fields
 		assert.Contains(t, health, "status")
 		assert.Equal(t, "ok", health["status"])
@@ -81,7 +81,7 @@ func testFrontendAPICompatibility(t *testing.T, baseURL string) {
 		req.Header.Set("Origin", "http://localhost:3000")
 		req.Header.Set("Access-Control-Request-Method", "POST")
 		req.Header.Set("Access-Control-Request-Headers", "Content-Type")
-		
+
 		resp, err := client.Do(req)
 		require.NoError(t, err)
 		defer resp.Body.Close()
@@ -150,11 +150,11 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 
 		// Connect to WebSocket with session ID (frontend pattern)
 		wsURL := wsURL + "/ws?sessionId=" + session.ID
-		
+
 		dialer := websocket.Dialer{
 			HandshakeTimeout: 5 * time.Second,
 		}
-		
+
 		conn, _, err := dialer.Dial(wsURL, nil)
 		require.NoError(t, err)
 		defer conn.Close()
@@ -163,7 +163,7 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 		messageType, message, err := conn.ReadMessage()
 		require.NoError(t, err)
 		assert.Equal(t, websocket.TextMessage, messageType)
-		
+
 		// Should receive some initial shell output
 		assert.NotEmpty(t, string(message)) // Any initial terminal output
 	})
@@ -173,7 +173,7 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 		sessionData := map[string]interface{}{"shell": "/bin/bash"}
 		jsonData, _ := json.Marshal(sessionData)
 		httpURL := strings.Replace(wsURL, "ws://", "http://", 1)
-		
+
 		resp, err := http.Post(httpURL+"/api/sessions", "application/json", bytes.NewBuffer(jsonData))
 		require.NoError(t, err)
 		defer resp.Body.Close()
@@ -222,7 +222,7 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 		sessionData := map[string]interface{}{"shell": "/bin/bash"}
 		jsonData, _ := json.Marshal(sessionData)
 		httpURL := strings.Replace(wsURL, "ws://", "http://", 1)
-		
+
 		resp, err := http.Post(httpURL+"/api/sessions", "application/json", bytes.NewBuffer(jsonData))
 		require.NoError(t, err)
 		defer resp.Body.Close()
@@ -312,7 +312,7 @@ func testFrontendAuthenticationIntegration(t *testing.T, baseURL string) {
 		// Test JWT authentication flow that frontend would use
 		// This test will be skipped until authentication is fully integrated
 		t.Skip("Authentication integration not yet required - will implement in Priority 2")
-		
+
 		// Future implementation:
 		// 1. Frontend gets JWT token
 		// 2. Frontend includes token in requests
@@ -323,7 +323,7 @@ func testFrontendAuthenticationIntegration(t *testing.T, baseURL string) {
 	t.Run("CSRF_Protection", func(t *testing.T) {
 		// Test CSRF protection that frontend needs to handle
 		t.Skip("CSRF testing will be implemented in Priority 1.3 Security Testing")
-		
+
 		// Future implementation:
 		// 1. Frontend gets CSRF token
 		// 2. Frontend includes token in state-changing requests
@@ -334,7 +334,7 @@ func testFrontendAuthenticationIntegration(t *testing.T, baseURL string) {
 func testFrontendErrorHandling(t *testing.T, baseURL string) {
 	t.Run("API_Error_Responses", func(t *testing.T) {
 		// Test error response format that frontend expects
-		
+
 		// Test 404 for non-existent session
 		resp, err := http.Get(baseURL + "/api/sessions/nonexistent")
 		require.NoError(t, err)
@@ -345,7 +345,7 @@ func testFrontendErrorHandling(t *testing.T, baseURL string) {
 		var errorResp map[string]interface{}
 		err = json.NewDecoder(resp.Body).Decode(&errorResp)
 		require.NoError(t, err)
-		
+
 		// Frontend expects error field
 		assert.Contains(t, errorResp, "error")
 	})
@@ -353,7 +353,7 @@ func testFrontendErrorHandling(t *testing.T, baseURL string) {
 	t.Run("WebSocket_Error_Handling", func(t *testing.T) {
 		// Test WebSocket connection to non-existent session
 		wsURL := strings.Replace(baseURL, "http://", "ws://", 1)
-		
+
 		_, _, err := websocket.DefaultDialer.Dial(wsURL+"/ws?sessionId=nonexistent", nil)
 		// Should fail to connect or close connection immediately
 		assert.Error(t, err)
@@ -362,7 +362,7 @@ func testFrontendErrorHandling(t *testing.T, baseURL string) {
 	t.Run("Invalid_JSON_Handling", func(t *testing.T) {
 		// Test how server handles invalid JSON from frontend
 		invalidJSON := bytes.NewBuffer([]byte(`{"invalid": json`))
-		
+
 		resp, err := http.Post(baseURL+"/api/sessions", "application/json", invalidJSON)
 		require.NoError(t, err)
 		defer resp.Body.Close()

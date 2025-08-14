@@ -96,14 +96,14 @@ func TestControlService_HandleControlStream(t *testing.T) {
 	cs.RegisterRoutes(router)
 
 	req := httptest.NewRequest("GET", "/api/control/stream", nil)
-	
+
 	// Create a context with timeout to avoid hanging
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	req = req.WithContext(ctx)
 
 	rr := httptest.NewRecorder()
-	
+
 	// Run the handler in a goroutine
 	done := make(chan bool)
 	go func() {
@@ -111,35 +111,29 @@ func TestControlService_HandleControlStream(t *testing.T) {
 		done <- true
 	}()
 
-	// Wait a bit for initial response
-	time.Sleep(100 * time.Millisecond)
+	// Wait for context to cancel (simulating client disconnect) before assertions
+	select {
+	case <-done:
+		// Handler finished
+	case <-time.After(3 * time.Second):
+		t.Fatal("Handler did not finish within timeout")
+	}
 
-	// Check headers
+	// After handler completes, it's safe to read headers/body
 	expectedHeaders := map[string]string{
 		"Content-Type":      "text/event-stream",
 		"Cache-Control":     "no-cache",
 		"Connection":        "keep-alive",
 		"X-Accel-Buffering": "no",
 	}
-
 	for header, expectedValue := range expectedHeaders {
 		if rr.Header().Get(header) != expectedValue {
 			t.Errorf("Expected header %s: %s, got: %s", header, expectedValue, rr.Header().Get(header))
 		}
 	}
-
-	// Check for initial connection message
 	body := rr.Body.String()
 	if !strings.Contains(body, ":ok") {
 		t.Errorf("Expected response to contain ':ok', got: %q", body)
-	}
-
-	// Wait for context to cancel (simulating client disconnect)
-	select {
-	case <-done:
-		// Handler finished
-	case <-time.After(3 * time.Second):
-		t.Error("Handler did not finish within timeout")
 	}
 }
 
@@ -230,26 +224,26 @@ func TestControlEvent_JSON(t *testing.T) {
 
 func TestControlService_ClientLifecycle(t *testing.T) {
 	cs := NewControlService()
-	
+
 	// Test client creation and cleanup
 	client := &Client{
 		id:       "lifecycle-test",
 		done:     make(chan bool),
 		lastSeen: time.Now().Add(-10 * time.Minute), // Stale client
 	}
-	
+
 	cs.clientsMux.Lock()
 	cs.clients["lifecycle-test"] = client
 	cs.clientsMux.Unlock()
-	
+
 	// Verify client exists
 	if cs.GetClientCount() != 1 {
 		t.Error("Expected client to be registered")
 	}
-	
+
 	// Mark client as done
 	close(client.done)
-	
+
 	// Trigger cleanup manually (in real scenario this runs in goroutine)
 	cs.clientsMux.Lock()
 	for clientID, client := range cs.clients {
@@ -260,7 +254,7 @@ func TestControlService_ClientLifecycle(t *testing.T) {
 		}
 	}
 	cs.clientsMux.Unlock()
-	
+
 	// Verify client was cleaned up
 	if cs.GetClientCount() != 0 {
 		t.Error("Expected stale client to be cleaned up")

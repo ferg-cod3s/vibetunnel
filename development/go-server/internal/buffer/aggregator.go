@@ -13,26 +13,26 @@ import (
 
 // TerminalSnapshot represents a terminal buffer state
 type TerminalSnapshot struct {
-	Cols      int           `json:"cols"`
-	Rows      int           `json:"rows"`
-	ViewportY int           `json:"viewportY"`
-	CursorX   int           `json:"cursorX"`
-	CursorY   int           `json:"cursorY"`
+	Cols      int            `json:"cols"`
+	Rows      int            `json:"rows"`
+	ViewportY int            `json:"viewportY"`
+	CursorX   int            `json:"cursorX"`
+	CursorY   int            `json:"cursorY"`
 	Cells     [][]BufferCell `json:"cells"`
 }
 
 // BufferCell represents a single terminal cell
 type BufferCell struct {
-	Char       string `json:"char"`
-	FgColor    int    `json:"fgColor"`
-	BgColor    int    `json:"bgColor"`
-	Bold       bool   `json:"bold"`
-	Italic     bool   `json:"italic"`
-	Underline  bool   `json:"underline"`
-	Strikeout  bool   `json:"strikeout"`
-	Inverse    bool   `json:"inverse"`
-	Dim        bool   `json:"dim"`
-	Blink      bool   `json:"blink"`
+	Char      string `json:"char"`
+	FgColor   int    `json:"fgColor"`
+	BgColor   int    `json:"bgColor"`
+	Bold      bool   `json:"bold"`
+	Italic    bool   `json:"italic"`
+	Underline bool   `json:"underline"`
+	Strikeout bool   `json:"strikeout"`
+	Inverse   bool   `json:"inverse"`
+	Dim       bool   `json:"dim"`
+	Blink     bool   `json:"blink"`
 }
 
 // WebSocket message types
@@ -68,6 +68,26 @@ type BufferAggregator struct {
 	stopChan      chan struct{}
 }
 
+// AggregatorState is a read-only snapshot of aggregator internals
+type AggregatorState struct {
+	ClientCount        int
+	SubscriptionsCount map[string]int
+}
+
+// StateSnapshot returns a thread-safe snapshot for tests/metrics
+func (ba *BufferAggregator) StateSnapshot() AggregatorState {
+	ba.mu.RLock()
+	defer ba.mu.RUnlock()
+	state := AggregatorState{
+		ClientCount:        len(ba.clients),
+		SubscriptionsCount: make(map[string]int, len(ba.subscriptions)),
+	}
+	for sid, clients := range ba.subscriptions {
+		state.SubscriptionsCount[sid] = len(clients)
+	}
+	return state
+}
+
 // BufferMessage represents a buffer update message
 type BufferMessage struct {
 	SessionID string
@@ -77,7 +97,7 @@ type BufferMessage struct {
 const (
 	// Magic byte for binary buffer messages
 	BufferMagicByte = 0xBF
-	
+
 	// WebSocket configuration
 	writeWait      = 10 * time.Second
 	pongWait       = 60 * time.Second
@@ -151,7 +171,7 @@ func (ba *BufferAggregator) HandleWebSocket(w http.ResponseWriter, r *http.Reque
 
 	ba.register <- client
 
-	// Start client goroutines
+	// Start client goroutines AFTER registration to avoid race with test reads
 	go ba.clientWritePump(client)
 	go ba.clientReadPump(client)
 }
@@ -199,7 +219,7 @@ func (ba *BufferAggregator) unregisterClient(client *Client) {
 		delete(ba.clients, client)
 		close(client.send)
 		client.ws.Close()
-		
+
 		log.Printf("Buffer client disconnected (total: %d)", len(ba.clients))
 	}
 }
@@ -207,19 +227,20 @@ func (ba *BufferAggregator) unregisterClient(client *Client) {
 // broadcastMessage sends buffer updates to subscribed clients
 func (ba *BufferAggregator) broadcastMessage(message BufferMessage) {
 	ba.mu.RLock()
-	clients := ba.subscriptions[message.SessionID]
+	orig := ba.subscriptions[message.SessionID]
+	// Snapshot clients under lock to avoid concurrent map iteration
+	var clients []*Client
+	for c := range orig {
+		clients = append(clients, c)
+	}
 	ba.mu.RUnlock()
 
-	if clients != nil {
-		for client := range clients {
-			select {
-			case client.send <- message.Buffer:
-			default:
-				// Client send channel is full, remove it
-				go func(c *Client) {
-					ba.unregister <- c
-				}(client)
-			}
+	for _, client := range clients {
+		select {
+		case client.send <- message.Buffer:
+		default:
+			// Client send channel is full, remove it via control channel
+			go func(c *Client) { ba.unregister <- c }(client)
 		}
 	}
 }
@@ -386,7 +407,7 @@ func (ba *BufferAggregator) unsubscribeClient(client *Client, sessionID string) 
 func (ba *BufferAggregator) BroadcastBuffer(sessionID string, snapshot TerminalSnapshot) {
 	// Encode snapshot to binary format
 	buffer := ba.encodeSnapshot(snapshot)
-	
+
 	// Create binary message with protocol format
 	sessionIDBytes := []byte(sessionID)
 	totalLength := 1 + 4 + len(sessionIDBytes) + len(buffer)
@@ -449,7 +470,7 @@ func (ba *BufferAggregator) Stop() {
 		close(client.done)
 		client.ws.Close()
 	}
-	
+
 	// Clear all data
 	ba.clients = make(map[*Client]bool)
 	ba.subscriptions = make(map[string]map[*Client]bool)

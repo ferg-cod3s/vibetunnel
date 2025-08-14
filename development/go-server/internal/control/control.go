@@ -40,13 +40,13 @@ func NewControlService() *ControlService {
 		clients: make(map[string]*Client),
 		events:  make(chan ControlEvent, 100), // Buffered channel
 	}
-	
+
 	// Start the event broadcaster goroutine
 	go cs.broadcastEvents()
-	
+
 	// Start cleanup goroutine for stale clients
 	go cs.cleanupStaleClients()
-	
+
 	return cs
 }
 
@@ -95,12 +95,12 @@ func (cs *ControlService) sendEventToClient(client *Client, event ControlEvent) 
 	if err != nil {
 		return fmt.Errorf("failed to marshal event: %w", err)
 	}
-	
+
 	_, err = fmt.Fprintf(client.writer, "data: %s\n\n", eventData)
 	if err != nil {
 		return fmt.Errorf("failed to write event: %w", err)
 	}
-	
+
 	client.flusher.Flush()
 	return nil
 }
@@ -109,7 +109,7 @@ func (cs *ControlService) sendEventToClient(client *Client, event ControlEvent) 
 func (cs *ControlService) cleanupStaleClients() {
 	ticker := time.NewTicker(1 * time.Minute)
 	defer ticker.Stop()
-	
+
 	for range ticker.C {
 		cs.clientsMux.Lock()
 		for clientID, client := range cs.clients {
@@ -139,17 +139,17 @@ func (cs *ControlService) handleControlStream(w http.ResponseWriter, r *http.Req
 		http.Error(w, "Streaming unsupported", http.StatusInternalServerError)
 		return
 	}
-	
+
 	// Set SSE headers
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 	w.Header().Set("X-Accel-Buffering", "no") // Disable Nginx buffering
-	
+
 	// Send initial connection message
 	fmt.Fprint(w, ":ok\n\n")
 	flusher.Flush()
-	
+
 	// Create client
 	clientID := fmt.Sprintf("client_%d", time.Now().UnixNano())
 	client := &Client{
@@ -159,18 +159,18 @@ func (cs *ControlService) handleControlStream(w http.ResponseWriter, r *http.Req
 		done:     make(chan bool),
 		lastSeen: time.Now(),
 	}
-	
+
 	// Register client
 	cs.clientsMux.Lock()
 	cs.clients[clientID] = client
 	cs.clientsMux.Unlock()
-	
+
 	log.Printf("Control event stream connected: %s", clientID)
-	
+
 	// Send heartbeat messages
 	heartbeatTicker := time.NewTicker(30 * time.Second)
 	defer heartbeatTicker.Stop()
-	
+
 	// Handle client lifecycle
 	defer func() {
 		cs.clientsMux.Lock()
@@ -179,7 +179,7 @@ func (cs *ControlService) handleControlStream(w http.ResponseWriter, r *http.Req
 		close(client.done)
 		log.Printf("Control event stream disconnected: %s", clientID)
 	}()
-	
+
 	// Event loop
 	for {
 		select {
@@ -204,21 +204,21 @@ func (cs *ControlService) handleControlStream(w http.ResponseWriter, r *http.Req
 // handleSendEvent handles manual event sending (for testing)
 func (cs *ControlService) handleSendEvent(w http.ResponseWriter, r *http.Request) {
 	var event ControlEvent
-	
+
 	if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	
+
 	// Validate event
 	if event.Category == "" || event.Action == "" {
 		http.Error(w, "Missing category or action", http.StatusBadRequest)
 		return
 	}
-	
+
 	// Broadcast the event
 	cs.BroadcastEvent(event)
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "event sent"})
 }

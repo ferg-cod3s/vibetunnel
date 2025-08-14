@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/gorilla/mux"
 )
 
 // EventBroadcaster interface for broadcasting events
@@ -34,16 +34,16 @@ type RepositoryStatus struct {
 
 // Branch represents a Git branch
 type Branch struct {
-	Name      string `json:"name"`
-	IsCurrent bool   `json:"isCurrent"`
+	Name       string `json:"name"`
+	IsCurrent  bool   `json:"isCurrent"`
 	LastCommit string `json:"lastCommit,omitempty"`
 }
 
 // Repository represents a discovered Git repository
 type Repository struct {
-	Path        string `json:"path"`
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
+	Path        string    `json:"path"`
+	Name        string    `json:"name"`
+	Description string    `json:"description,omitempty"`
 	LastUpdate  time.Time `json:"lastUpdate"`
 }
 
@@ -55,8 +55,8 @@ type BranchListResponse struct {
 
 // GitService provides secure Git operations
 type GitService struct {
-	basePath         string      // Base path for security restrictions
-	followMode       *FollowMode // Git follow mode manager
+	basePath         string           // Base path for security restrictions
+	followMode       *FollowMode      // Git follow mode manager
 	eventBroadcaster EventBroadcaster // Interface for broadcasting events
 }
 
@@ -70,7 +70,6 @@ func NewGitService(basePath string, eventBroadcaster EventBroadcaster) *GitServi
 	return service
 }
 
-
 // validatePath ensures the path is safe and within allowed bounds
 func (g *GitService) validatePath(requestedPath string) (string, error) {
 	if requestedPath == "" {
@@ -79,17 +78,17 @@ func (g *GitService) validatePath(requestedPath string) (string, error) {
 
 	// Clean path to prevent traversal
 	cleanPath := filepath.Clean(requestedPath)
-	
+
 	// Convert to absolute path
 	var absPath string
 	var err error
-	
+
 	if filepath.IsAbs(cleanPath) {
 		absPath = cleanPath
 	} else {
 		absPath = filepath.Join(g.basePath, cleanPath)
 	}
-	
+
 	absPath, err = filepath.Abs(absPath)
 	if err != nil {
 		return "", fmt.Errorf("invalid path: %v", err)
@@ -100,7 +99,7 @@ func (g *GitService) validatePath(requestedPath string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("invalid base path")
 	}
-	
+
 	if !strings.HasPrefix(absPath, absBasePath) {
 		return "", fmt.Errorf("access denied: path outside allowed directory")
 	}
@@ -144,7 +143,7 @@ func (g *GitService) validateBranchName(branchName string) error {
 	if strings.HasPrefix(branchName, "-") {
 		return fmt.Errorf("invalid branch name: cannot start with dash")
 	}
-	
+
 	if strings.Contains(branchName, "..") {
 		return fmt.Errorf("invalid branch name: cannot contain '..'")
 	}
@@ -162,8 +161,8 @@ func (g *GitService) runGitCommand(repoPath string, args ...string) ([]byte, err
 
 	// Validate arguments - prevent command injection
 	for _, arg := range args {
-		if strings.Contains(arg, ";") || strings.Contains(arg, "&") || 
-		   strings.Contains(arg, "|") || strings.Contains(arg, "`") {
+		if strings.Contains(arg, ";") || strings.Contains(arg, "&") ||
+			strings.Contains(arg, "|") || strings.Contains(arg, "`") {
 			return nil, fmt.Errorf("invalid git command argument: %s", arg)
 		}
 	}
@@ -171,7 +170,7 @@ func (g *GitService) runGitCommand(repoPath string, args ...string) ([]byte, err
 	// Construct command
 	cmd := exec.Command("git", args...)
 	cmd.Dir = validatedPath
-	
+
 	// Set secure environment
 	cmd.Env = []string{
 		"PATH=" + os.Getenv("PATH"),
@@ -225,24 +224,24 @@ func (g *GitService) GetRepositoryStatus(repoPath string) (*RepositoryStatus, er
 			if line == "" {
 				continue
 			}
-			
+
 			if len(line) < 3 {
 				continue
 			}
-			
+
 			statusCode := line[:2]
 			fileName := line[3:]
-			
+
 			switch statusCode[0] {
 			case 'A', 'M', 'D', 'R', 'C':
 				status.StagedFiles = append(status.StagedFiles, fileName)
 			}
-			
+
 			switch statusCode[1] {
 			case 'M', 'D':
 				status.UnstagedFiles = append(status.UnstagedFiles, fileName)
 			}
-			
+
 			if statusCode == "??" {
 				status.UntrackedFiles = append(status.UntrackedFiles, fileName)
 			}
@@ -285,7 +284,7 @@ func (g *GitService) ListBranches() ([]Branch, error) {
 		}
 
 		branch := Branch{}
-		
+
 		// Check if current branch (marked with *)
 		if strings.HasPrefix(line, "* ") {
 			branch.IsCurrent = true
@@ -351,7 +350,7 @@ func (g *GitService) DiscoverRepositories(searchPath string) ([]Repository, erro
 		// Check if this directory contains .git
 		if info.IsDir() && info.Name() == ".git" {
 			repoPath := filepath.Dir(path)
-			
+
 			// Ensure repo is within bounds
 			if _, err := g.validatePath(repoPath); err != nil {
 				return nil // Skip repositories outside allowed path
@@ -459,18 +458,18 @@ func (g *GitService) handleDiscoverRepositories(w http.ResponseWriter, r *http.R
 func (g *GitService) RegisterRoutes(router *mux.Router) {
 	// Git API routes
 	gitRouter := router.PathPrefix("/api/git").Subrouter()
-	
+
 	gitRouter.HandleFunc("/status", g.handleGetStatus).Methods("GET")
 	gitRouter.HandleFunc("/branches", g.handleListBranches).Methods("GET")
 	gitRouter.HandleFunc("/checkout", g.handleCheckoutBranch).Methods("POST")
 	gitRouter.HandleFunc("/event", g.handleGitEvent).Methods("POST")
 	gitRouter.HandleFunc("/follow", g.handleGetFollowStatus).Methods("GET")
-	
+
 	// Worktree API routes
 	worktreeRouter := router.PathPrefix("/api/worktrees").Subrouter()
 	worktreeRouter.HandleFunc("", g.handleListWorktrees).Methods("GET")
 	worktreeRouter.HandleFunc("/follow", g.handleFollowMode).Methods("POST")
-	
+
 	// Repository discovery
 	router.HandleFunc("/api/repositories", g.handleDiscoverRepositories).Methods("GET")
 }
@@ -672,7 +671,7 @@ func (g *GitService) handleGitEvent(w http.ResponseWriter, r *http.Request) {
 			serverEvent = types.NewServerEvent(types.EventGitWorktreeSync).
 				WithMessage(fmt.Sprintf("Git event: %s", gitEvent.Type))
 		}
-		
+
 		serverEvent.Branch = &gitEvent.Branch
 		serverEvent.RepoPath = &gitEvent.RepoPath
 		g.eventBroadcaster.Broadcast(serverEvent)

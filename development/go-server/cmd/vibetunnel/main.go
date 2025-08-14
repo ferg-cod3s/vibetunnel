@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	Version = "1.0.0-dev"
+	Version     = "1.0.0-dev"
 	DefaultPort = "4021"
 )
 
@@ -115,7 +115,7 @@ func startServer() {
 		log.Printf("WebSocket endpoint: ws://localhost:%s/ws", port)
 		log.Printf("Health check: http://localhost:%s/health", port)
 		log.Printf("API endpoints: http://localhost:%s/api", port)
-		
+
 		if err := srv.Start(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Failed to start server: %v", err)
 		}
@@ -175,19 +175,19 @@ func handleStatusCommand() {
 	} else {
 		fmt.Printf("  Healthy: No\n")
 	}
-	
+
 	if sessions, ok := status["sessions"].(float64); ok {
 		fmt.Printf("  Active Sessions: %.0f\n", sessions)
 	}
-	
+
 	if uptime, ok := status["uptime"].(string); ok {
 		fmt.Printf("  Uptime: %s\n", uptime)
 	}
-	
+
 	if serverName, ok := status["serverName"].(string); ok {
 		fmt.Printf("  Server Name: %s\n", serverName)
 	}
-	
+
 	if version, ok := status["version"].(string); ok {
 		fmt.Printf("  Version: %s\n", version)
 	}
@@ -227,7 +227,7 @@ func handleFollowCommand() {
 	fmt.Println("🔄 Main repository will now sync with this worktree's branch changes")
 }
 
-// handleUnfollowCommand disables Git follow mode  
+// handleUnfollowCommand disables Git follow mode
 func handleUnfollowCommand() {
 	// Get current working directory
 	cwd, err := os.Getwd()
@@ -252,7 +252,7 @@ func handleUnfollowCommand() {
 func handleGitEventCommand() {
 	// Parse command line arguments for git event
 	var eventType, branch, repoPath string
-	
+
 	for i := 2; i < len(os.Args); i++ {
 		arg := os.Args[i]
 		if strings.HasPrefix(arg, "--type=") {

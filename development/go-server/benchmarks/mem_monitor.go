@@ -93,7 +93,7 @@ func findProcessByName(name string) (int, error) {
 
 	pidStr := strings.TrimSpace(string(output))
 	lines := strings.Split(pidStr, "\n")
-	
+
 	// Take the first PID if multiple processes found
 	pid, err := strconv.Atoi(lines[0])
 	if err != nil {
@@ -108,19 +108,19 @@ func (m *MemoryMonitor) Run() error {
 	defer ticker.Stop()
 
 	timeout := time.After(m.Duration)
-	
+
 	// Take initial sample
 	stat, err := m.takeSample()
 	if err != nil {
 		return fmt.Errorf("initial sample failed: %v", err)
 	}
 	m.Stats = append(m.Stats, stat)
-	fmt.Printf("⏱️  Sample 1: RSS=%dMB VSZ=%dMB CPU=%.1f%% GoHeap=%dMB\n", 
-		stat.RSS/1024, stat.VSZ/1024, stat.CPUPercent, 
+	fmt.Printf("⏱️  Sample 1: RSS=%dMB VSZ=%dMB CPU=%.1f%% GoHeap=%dMB\n",
+		stat.RSS/1024, stat.VSZ/1024, stat.CPUPercent,
 		stat.GoMemStats.HeapAlloc/(1024*1024))
 
 	sampleCount := 1
-	
+
 	for {
 		select {
 		case <-timeout:
@@ -132,11 +132,11 @@ func (m *MemoryMonitor) Run() error {
 				log.Printf("Sample failed: %v", err)
 				continue
 			}
-			
+
 			m.Stats = append(m.Stats, stat)
 			sampleCount++
-			
-			fmt.Printf("⏱️  Sample %d: RSS=%dMB VSZ=%dMB CPU=%.1f%% GoHeap=%dMB\n", 
+
+			fmt.Printf("⏱️  Sample %d: RSS=%dMB VSZ=%dMB CPU=%.1f%% GoHeap=%dMB\n",
 				sampleCount, stat.RSS/1024, stat.VSZ/1024, stat.CPUPercent,
 				stat.GoMemStats.HeapAlloc/(1024*1024))
 		}
@@ -186,11 +186,11 @@ func (m *MemoryMonitor) PrintResults() {
 
 	// Calculate statistics
 	var (
-		totalRSS, maxRSS, minRSS         = uint64(0), uint64(0), uint64(^uint64(0))
-		totalVSZ, maxVSZ, minVSZ         = uint64(0), uint64(0), uint64(^uint64(0))
-		totalCPU, maxCPU, minCPU         = 0.0, 0.0, 100.0
-		totalHeap, maxHeap, minHeap       = uint64(0), uint64(0), uint64(^uint64(0))
-		totalSys, maxSys, minSys          = uint64(0), uint64(0), uint64(^uint64(0))
+		totalRSS, maxRSS, minRSS    = uint64(0), uint64(0), uint64(^uint64(0))
+		totalVSZ, maxVSZ, minVSZ    = uint64(0), uint64(0), uint64(^uint64(0))
+		totalCPU, maxCPU, minCPU    = 0.0, 0.0, 100.0
+		totalHeap, maxHeap, minHeap = uint64(0), uint64(0), uint64(^uint64(0))
+		totalSys, maxSys, minSys    = uint64(0), uint64(0), uint64(^uint64(0))
 	)
 
 	for _, stat := range m.Stats {
@@ -203,7 +203,7 @@ func (m *MemoryMonitor) PrintResults() {
 			minRSS = stat.RSS
 		}
 
-		// VSZ stats  
+		// VSZ stats
 		totalVSZ += stat.VSZ
 		if stat.VSZ > maxVSZ {
 			maxVSZ = stat.VSZ
@@ -268,7 +268,7 @@ func (m *MemoryMonitor) PrintResults() {
 	fmt.Printf("\n🎯 Performance Targets:\n")
 	avgRSSMB := (totalRSS / uint64(count)) / 1024
 	maxRSSMB := maxRSS / 1024
-	avgHeapMB := (totalHeap / uint64(count)) / (1024*1024)
+	avgHeapMB := (totalHeap / uint64(count)) / (1024 * 1024)
 
 	if avgRSSMB < 100 {
 		fmt.Printf("   ✅ Average RSS < 100MB: ACHIEVED (%d MB)\n", avgRSSMB)

@@ -68,7 +68,7 @@ func (m *PTYManager) CreateSession(req *types.SessionCreateRequest) (*types.Sess
 		// Default to user's shell
 		shell := os.Getenv("SHELL")
 		if shell == "" {
-			shell = "/bin/bash" // fallback
+			shell = "/bin/zsh" // fallback for macOS
 		}
 		command = shell
 	}
@@ -99,8 +99,26 @@ func (m *PTYManager) CreateSession(req *types.SessionCreateRequest) (*types.Sess
 		return nil, fmt.Errorf("invalid characters in title")
 	}
 
-	// Create command
-	cmd := exec.Command("/bin/bash", "-c", command)
+	// Create command - use the detected shell or fallback to zsh
+	shell := os.Getenv("SHELL")
+	if shell == "" {
+		shell = "/bin/zsh" // fallback for macOS
+	}
+
+	var cmd *exec.Cmd
+	// Debug logging
+	log.Printf("DEBUG: PTY creation - command=%q, shell=%q", command, shell)
+
+	// If command is a shell path or shell name, run shell directly; otherwise use shell -c
+	if command == shell || command == "/bin/zsh" || command == "/bin/bash" || command == "/usr/bin/zsh" || command == "zsh" || command == "bash" {
+		// Run shell directly without -c, use full shell path
+		log.Printf("DEBUG: Running shell directly: %q", shell)
+		cmd = exec.Command(shell)
+	} else {
+		// Run command through shell
+		log.Printf("DEBUG: Running command through shell: %q -c %q", shell, command)
+		cmd = exec.Command(shell, "-c", command)
+	}
 	cmd.Dir = cwd
 
 	// Set environment variables
@@ -248,7 +266,7 @@ func (s *PTYSession) handleOutput() {
 
 				select {
 				case s.outputCh <- data:
-					s.UpdatedAt = time.Now()
+					func() { s.mu.Lock(); s.UpdatedAt = time.Now(); s.mu.Unlock() }()
 				default:
 					// Channel is full, skip this data to prevent blocking
 					log.Printf("Output channel full for session %s, dropping data", s.ID[:8])
@@ -271,7 +289,7 @@ func (s *PTYSession) handleInput() {
 					log.Printf("Error writing to PTY %s: %v", s.ID[:8], err)
 					return
 				}
-				s.UpdatedAt = time.Now()
+				func() { s.mu.Lock(); s.UpdatedAt = time.Now(); s.mu.Unlock() }()
 			}
 		}
 	}
@@ -381,7 +399,7 @@ func (s *PTYSession) Resize(cols, rows int) error {
 			s.mu.Lock()
 			s.Cols = cols
 			s.Rows = rows
-			s.UpdatedAt = time.Now()
+			func() { s.mu.Lock(); s.UpdatedAt = time.Now(); s.mu.Unlock() }()
 			s.mu.Unlock()
 		}
 		return err
@@ -405,7 +423,7 @@ func (s *PTYSession) Resize(cols, rows int) error {
 
 	s.Cols = cols
 	s.Rows = rows
-	s.UpdatedAt = time.Now()
+	func() { s.mu.Lock(); s.UpdatedAt = time.Now(); s.mu.Unlock() }()
 
 	log.Printf("Resized session %s to %dx%d", s.ID[:8], cols, rows)
 	return nil

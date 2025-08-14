@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/ferg-cod3s/vibetunnel/go-server/internal/middleware"
+	"github.com/gorilla/mux"
 )
 
 // PushHandler provides HTTP handlers for push notification management
@@ -30,17 +30,17 @@ func NewPushHandler(pushService *PushService, vapidKeyManager *VAPIDKeyManager, 
 func (h *PushHandler) RegisterRoutes(router *mux.Router) {
 	// Push notification routes
 	pushRouter := router.PathPrefix("/api/push").Subrouter()
-	
+
 	// Public endpoints
 	pushRouter.HandleFunc("/vapid-public-key", h.handleGetVAPIDPublicKey).Methods("GET")
-	
+
 	// Protected endpoints (require authentication)
 	pushRouter.HandleFunc("/subscribe", h.handleSubscribe).Methods("POST")
 	pushRouter.HandleFunc("/unsubscribe", h.handleUnsubscribe).Methods("POST")
 	pushRouter.HandleFunc("/subscriptions", h.handleGetSubscriptions).Methods("GET")
 	pushRouter.HandleFunc("/subscriptions/{id}", h.handleUpdateSubscription).Methods("PUT")
 	pushRouter.HandleFunc("/subscriptions/{id}", h.handleDeleteSubscription).Methods("DELETE")
-	
+
 	// Admin endpoints
 	pushRouter.HandleFunc("/test", h.handleTestNotification).Methods("POST")
 	pushRouter.HandleFunc("/stats", h.handleGetStats).Methods("GET")
@@ -52,7 +52,7 @@ func (h *PushHandler) RegisterRoutes(router *mux.Router) {
 // handleGetVAPIDPublicKey returns the VAPID public key for frontend use
 func (h *PushHandler) handleGetVAPIDPublicKey(w http.ResponseWriter, r *http.Request) {
 	// This endpoint needs to be public so the frontend can get the key
-	
+
 	keys, err := h.vapidKeyManager.GetOrGenerateKeys()
 	if err != nil {
 		h.writeJSONError(w, fmt.Sprintf("Failed to get VAPID keys: %v", err), http.StatusInternalServerError)
@@ -101,7 +101,7 @@ func (h *PushHandler) handleSubscribe(w http.ResponseWriter, r *http.Request) {
 			sub.Keys = subscription.Keys
 			sub.Options = subscription.Options
 			sub.Active = true
-			
+
 			if err := h.subscriptionStore.Update(sub); err != nil {
 				h.writeJSONError(w, fmt.Sprintf("Failed to update subscription: %v", err), http.StatusInternalServerError)
 				return
@@ -110,8 +110,8 @@ func (h *PushHandler) handleSubscribe(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(map[string]interface{}{
-				"success": true,
-				"message": "Subscription updated",
+				"success":      true,
+				"message":      "Subscription updated",
 				"subscription": sub,
 			})
 			return
@@ -127,8 +127,8 @@ func (h *PushHandler) handleSubscribe(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success": true,
-		"message": "Subscription created",
+		"success":      true,
+		"message":      "Subscription created",
 		"subscription": subscription,
 	})
 }
@@ -256,8 +256,8 @@ func (h *PushHandler) handleUpdateSubscription(w http.ResponseWriter, r *http.Re
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success": true,
-		"message": "Subscription updated",
+		"success":      true,
+		"message":      "Subscription updated",
 		"subscription": subscription,
 	})
 }
@@ -338,7 +338,7 @@ func (h *PushHandler) handleTestNotification(w http.ResponseWriter, r *http.Requ
 func (h *PushHandler) handleGetStats(w http.ResponseWriter, r *http.Request) {
 	// Get push service stats
 	pushStats := h.pushService.GetStats()
-	
+
 	// Get subscription stats
 	subscriptionStats, err := h.getSubscriptionStats()
 	if err != nil {
@@ -347,9 +347,9 @@ func (h *PushHandler) handleGetStats(w http.ResponseWriter, r *http.Request) {
 	}
 
 	stats := map[string]interface{}{
-		"push": pushStats,
+		"push":          pushStats,
 		"subscriptions": subscriptionStats,
-		"timestamp": time.Now().Unix(),
+		"timestamp":     time.Now().Unix(),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -359,13 +359,13 @@ func (h *PushHandler) handleGetStats(w http.ResponseWriter, r *http.Request) {
 // handleBroadcast sends a broadcast notification to all users
 func (h *PushHandler) handleBroadcast(w http.ResponseWriter, r *http.Request) {
 	// This is an admin-only endpoint - in a real implementation you'd check admin role
-	
+
 	var req struct {
-		Title   string                 `json:"title"`
-		Body    string                 `json:"body"`
-		Icon    string                 `json:"icon,omitempty"`
-		Tag     string                 `json:"tag,omitempty"`
-		Data    map[string]interface{} `json:"data,omitempty"`
+		Title string                 `json:"title"`
+		Body  string                 `json:"body"`
+		Icon  string                 `json:"icon,omitempty"`
+		Tag   string                 `json:"tag,omitempty"`
+		Data  map[string]interface{} `json:"data,omitempty"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -403,30 +403,30 @@ func (h *PushHandler) handleGetStatus(w http.ResponseWriter, r *http.Request) {
 	// Get VAPID key status
 	keys, err := h.vapidKeyManager.GetOrGenerateKeys()
 	hasKeys := err == nil && keys != nil
-	
+
 	// Get subscription count
 	all, err := h.subscriptionStore.GetAll()
 	subscriptionCount := 0
 	if err == nil {
 		subscriptionCount = len(all)
 	}
-	
+
 	// Get active subscription count
 	active, err := h.subscriptionStore.GetActive()
 	activeCount := 0
 	if err == nil {
 		activeCount = len(active)
 	}
-	
+
 	status := map[string]interface{}{
-		"enabled":         true,
-		"vapidKeysReady":  hasKeys,
-		"subscriptions":   subscriptionCount,
+		"enabled":             true,
+		"vapidKeysReady":      hasKeys,
+		"subscriptions":       subscriptionCount,
 		"activeSubscriptions": activeCount,
-		"serviceUp":       true,
-		"timestamp":       time.Now().Unix(),
+		"serviceUp":           true,
+		"timestamp":           time.Now().Unix(),
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(status)
 }
@@ -443,13 +443,13 @@ func (h *PushHandler) getSubscriptionStats() (interface{}, error) {
 	if statsProvider, ok := h.subscriptionStore.(*InMemorySubscriptionStore); ok {
 		return statsProvider.GetStats()
 	}
-	
+
 	// Fallback to basic stats
 	all, err := h.subscriptionStore.GetAll()
 	if err != nil {
 		return nil, err
 	}
-	
+
 	active, err := h.subscriptionStore.GetActive()
 	if err != nil {
 		return nil, err

@@ -39,9 +39,9 @@ func setupTestEnvironment(t *testing.T) (string, *FileSystemService, func()) {
 
 	// Create test files
 	testFiles := map[string]string{
-		"file1.txt":        "Hello World",
-		"file2.json":       `{"test": true}`,
-		".hidden_file":     "secret",
+		"file1.txt":          "Hello World",
+		"file2.json":         `{"test": true}`,
+		".hidden_file":       "secret",
 		"subdir1/nested.txt": "nested content",
 	}
 
@@ -69,11 +69,11 @@ func TestFileSystemService_ListDirectory(t *testing.T) {
 	defer cleanup()
 
 	tests := []struct {
-		name       string
-		path       string
-		showHidden bool
-		expectCode int
-		expectDirs int
+		name        string
+		path        string
+		showHidden  bool
+		expectCode  int
+		expectDirs  int
 		expectFiles int
 	}{
 		{
@@ -155,9 +155,9 @@ func TestFileSystemService_DownloadFile(t *testing.T) {
 	defer cleanup()
 
 	tests := []struct {
-		name       string
-		path       string
-		expectCode int
+		name          string
+		path          string
+		expectCode    int
 		expectContent string
 	}{
 		{
@@ -217,9 +217,9 @@ func TestFileSystemService_CreateDirectory(t *testing.T) {
 	defer cleanup()
 
 	tests := []struct {
-		name       string
-		path       string
-		expectCode int
+		name        string
+		path        string
+		expectCode  int
 		shouldExist bool
 	}{
 		{
@@ -527,11 +527,11 @@ func TestFileSystemService_PathValidation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := fs.validatePath(tt.path)
-			
+
 			if tt.shouldError && err == nil {
 				t.Errorf("Expected error for path %s, but got none", tt.path)
 			}
-			
+
 			if !tt.shouldError && err != nil {
 				t.Errorf("Expected no error for path %s, but got: %v", tt.path, err)
 			}

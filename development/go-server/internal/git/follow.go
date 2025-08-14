@@ -17,22 +17,22 @@ type FollowMode struct {
 
 // FollowStatus represents the current follow mode status
 type FollowStatus struct {
-	Enabled         bool   `json:"enabled"`
-	Branch          string `json:"branch,omitempty"`
-	WorktreePath    string `json:"worktreePath,omitempty"`
-	HooksInstalled  bool   `json:"hooksInstalled"`
-	CanEnable       bool   `json:"canEnable"`
-	DisabledReason  string `json:"disabledReason,omitempty"`
+	Enabled        bool   `json:"enabled"`
+	Branch         string `json:"branch,omitempty"`
+	WorktreePath   string `json:"worktreePath,omitempty"`
+	HooksInstalled bool   `json:"hooksInstalled"`
+	CanEnable      bool   `json:"canEnable"`
+	DisabledReason string `json:"disabledReason,omitempty"`
 }
 
 // Worktree represents a Git worktree
 type Worktree struct {
-	Path                   string `json:"path"`
-	Branch                 string `json:"branch"`
-	HEAD                   string `json:"head"`
-	Detached               bool   `json:"detached"`
-	CommitsAhead           int    `json:"commitsAhead,omitempty"`
-	HasUncommittedChanges  bool   `json:"hasUncommittedChanges,omitempty"`
+	Path                  string `json:"path"`
+	Branch                string `json:"branch"`
+	HEAD                  string `json:"head"`
+	Detached              bool   `json:"detached"`
+	CommitsAhead          int    `json:"commitsAhead,omitempty"`
+	HasUncommittedChanges bool   `json:"hasUncommittedChanges,omitempty"`
 }
 
 // NewFollowMode creates a new follow mode manager
@@ -236,7 +236,7 @@ func (fm *FollowMode) getWorktrees(repoPath string) ([]Worktree, error) {
 func (fm *FollowMode) parseWorktreePorcelain(output string) []Worktree {
 	var worktrees []Worktree
 	lines := strings.Split(strings.TrimSpace(output), "\n")
-	
+
 	var current *Worktree
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -324,7 +324,7 @@ func (fm *FollowMode) areHooksInstalled(repoPath string) (bool, error) {
 // installGitHooks installs VibeTunnel Git hooks for follow mode
 func (fm *FollowMode) installGitHooks(repoPath string) error {
 	hooksDir := filepath.Join(repoPath, ".git", "hooks")
-	
+
 	// Ensure hooks directory exists
 	err := os.MkdirAll(hooksDir, 0755)
 	if err != nil {
@@ -383,7 +383,7 @@ func (fm *FollowMode) uninstallGitHooks(repoPath string) error {
 
 	for _, hook := range hooks {
 		hookPath := filepath.Join(hooksDir, hook)
-		
+
 		// Check if the hook exists and is ours
 		if content, err := os.ReadFile(hookPath); err == nil {
 			if strings.Contains(string(content), "VibeTunnel") {
@@ -435,7 +435,7 @@ func (fm *FollowMode) handleBranchChange(mainRepoPath, worktreePath, expectedBra
 func (fm *FollowMode) handleMergeEvent(mainRepoPath, worktreePath string) error {
 	// For merge events, we might want to pull the latest changes to main repo
 	// This is optional and depends on the desired behavior
-	
+
 	// Check if main repo is clean
 	hasChanges, err := fm.hasUncommittedChanges(mainRepoPath)
 	if err != nil {
