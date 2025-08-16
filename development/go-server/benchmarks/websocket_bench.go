@@ -121,7 +121,12 @@ func runWebSocketConnection(connID int, config Config, stats *Stats, testStartTi
 	}
 
 	// Connect to WebSocket
-	wsURL := fmt.Sprintf("ws://localhost:4021/ws?sessionId=%s", sessionID)
+	wsURL, err := buildWebSocketURL(config.ServerURL, sessionID)
+	if err != nil {
+		atomic.AddInt64(&stats.ConnectionsFailed, 1)
+		log.Printf("Connection %d: Invalid WebSocket URL: %v", connID, err)
+		return
+	}
 	u, err := url.Parse(wsURL)
 	if err != nil {
 		atomic.AddInt64(&stats.ConnectionsFailed, 1)
