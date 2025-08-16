@@ -165,7 +165,15 @@ func makeHTTPRequest(serverURL, method, endpoint string, body io.Reader, stats *
 	if body != nil {
 		// For simplicity, we'll recreate the body each time
 		// In a real test, you'd want to handle this more efficiently
-		reqBody = body
+func makeHTTPRequest(serverURL, method, endpoint string, bodyFactory func() io.Reader, stats *HTTPStats) {
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	// Create a fresh body reader for each request
+	var reqBody io.Reader
+	if bodyFactory != nil {
+		reqBody = bodyFactory()
 	}
 
 	url := serverURL + endpoint
