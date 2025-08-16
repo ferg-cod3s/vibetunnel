@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  vibetunnel-go:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4021:4021"
+    environment:
+      - PORT=4021
+      - HOST=0.0.0.0
+      - AUTH_REQUIRED=false
+      - ENABLE_RATE_LIMIT=true
+      - RATE_LIMIT_PER_MIN=100
+      - ENABLE_REQUEST_LOG=true
+      - FILESYSTEM_BASE_PATH=/app/data
+      - GIT_BASE_PATH=/app/data
+    volumes:
+      - vibetunnel_data:/app/data
+      - vibetunnel_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4021/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - vibetunnel
+
+  # Optional: Add a reverse proxy for production deployment
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - vibetunnel_ssl:/etc/nginx/ssl
+    depends_on:
+      vibetunnel-go:
+        condition: service_healthy
+    networks:
+      - vibetunnel
+    profiles:
+      - production
+
+  # Optional: PostgreSQL for future database features
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: vibetunnel
+      POSTGRES_USER: vibetunnel
+      POSTGRES_PASSWORD: vibetunnel_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vibetunnel"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vibetunnel
+    profiles:
+      - database
+
+  # Optional: Redis for session storage and caching
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vibetunnel
+    profiles:
+      - cache
+
+  # Optional: Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - vibetunnel
+    profiles:
+      - monitoring
+
+  # Optional: Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - vibetunnel
+    profiles:
+      - monitoring
+
+networks:
+  vibetunnel:
+    driver: bridge
+
+volumes:
+  vibetunnel_data:
+  vibetunnel_logs:
+  vibetunnel_ssl:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:

@@ -1,0 +1,41 @@
+# Prometheus Configuration
+# Scrapes metrics from OpenTelemetry Collector
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # OpenTelemetry Collector metrics
+  - job_name: 'otel-collector'
+    static_configs:
+      - targets: ['otel-collector:8889']
+    scrape_interval: 10s
+    metrics_path: /metrics
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # VibeTunnel Go Server direct metrics (if implemented)
+  - job_name: 'vibetunnel-go-server'
+    static_configs:
+      - targets: ['vibetunnel-go-server:4021']
+    metrics_path: /metrics
+    scrape_interval: 15s
+    # Optional: Skip if /metrics endpoint doesn't exist yet
+    # honor_labels: true
+
+  # VibeTunnel Bun Web Server metrics (if implemented)
+  - job_name: 'vibetunnel-bun-web'
+    static_configs:
+      - targets: ['vibetunnel-bun-web:3000']
+    metrics_path: /metrics
+    scrape_interval: 15s
+    # Optional: Skip if /metrics endpoint doesn't exist yet
+    # honor_labels: true

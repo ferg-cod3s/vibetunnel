@@ -1,0 +1,84 @@
+🔍 Memory Monitor Configuration:
+   Process: vibetunnel (PID: 12861)
+   Interval: 1s
+   Duration: 1m0s
+   Samples: 60
+
+📊 Starting memory monitoring...
+⏱️  Sample 1: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 2: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 3: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 4: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 5: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 6: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 7: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 8: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 9: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 10: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 11: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 12: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=0MB
+⏱️  Sample 13: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 14: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 15: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 16: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 17: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 18: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 19: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 20: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 21: RSS=85MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 22: RSS=86MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 23: RSS=86MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 24: RSS=86MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 25: RSS=86MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 26: RSS=86MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 27: RSS=86MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 28: RSS=87MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 29: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=1MB
+⏱️  Sample 30: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 31: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 32: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 33: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 34: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 35: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 36: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 37: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 38: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 39: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 40: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 41: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=2MB
+⏱️  Sample 42: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=3MB
+⏱️  Sample 43: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=3MB
+⏱️  Sample 44: RSS=88MB VSZ=1275MB CPU=2.8% GoHeap=3MB
+
+✅ Monitoring completed (44 samples collected)
+
+📈 Memory Usage Analysis:
+════════════════════════════════════════
+📊 System Memory (RSS - Resident Set Size):
+   Average: 86 MB
+   Maximum: 88 MB
+   Minimum: 85 MB
+
+📊 Virtual Memory (VSZ):
+   Average: 1275 MB
+   Maximum: 1275 MB
+   Minimum: 1275 MB
+
+📊 CPU Usage:
+   Average: 2.80%
+   Maximum: 2.80%
+   Minimum: 2.80%
+
+📊 Go Runtime Memory:
+   Heap Average: 1 MB
+   Heap Maximum: 3 MB
+   Heap Minimum: 0 MB
+   System Average: 7 MB
+   System Maximum: 10 MB
+
+🎯 Performance Targets:
+   ✅ Average RSS < 100MB: ACHIEVED (86 MB)
+   ✅ Maximum RSS < 200MB: ACHIEVED (88 MB)
+   ✅ Average Go Heap < 50MB: ACHIEVED (1 MB)
+
+💾 Results saved to ./benchmark_results/memory_go_20250806_092001.csv

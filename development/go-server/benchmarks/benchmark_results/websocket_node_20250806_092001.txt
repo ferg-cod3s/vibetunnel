@@ -1,0 +1,125 @@
+🚀 WebSocket Load Test Configuration:
+   Server URL: http://localhost:3000
+   Max Connections: 100
+   Duration: 30s
+   Ramp-up Time: 10s
+
+⏱️  Starting load test (spawning connection every 100ms)...
+2025/08/06 09:21:01 Connection 0: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:01 Connection 1: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:01 Connection 2: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 3: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 4: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 5: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 6: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 7: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 8: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 9: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 10: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:02 Connection 11: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 12: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 13: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 14: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 15: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 16: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 17: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 18: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 19: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 20: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:03 Connection 21: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 22: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 23: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 24: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 25: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 26: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 27: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 28: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 29: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 30: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:04 Connection 31: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 32: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 33: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 34: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 35: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 36: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 37: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 38: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 39: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 40: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:05 Connection 41: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 42: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 43: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 44: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 45: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 46: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 47: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 48: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 49: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 50: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:06 Connection 51: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 52: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 53: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 54: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 55: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 56: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 57: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 58: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 59: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 60: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:07 Connection 61: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 62: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 63: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 64: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 65: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 66: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 67: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 68: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 69: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 70: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:08 Connection 71: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 72: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 73: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 74: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 75: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 76: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 77: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 78: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 79: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 80: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:09 Connection 81: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 82: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 83: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 84: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 85: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 86: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 87: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 88: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 89: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 90: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:10 Connection 91: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:11 Connection 92: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:11 Connection 93: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:11 Connection 94: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:11 Connection 95: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:11 Connection 96: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:11 Connection 97: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:11 Connection 98: Failed to connect: websocket: bad handshake
+2025/08/06 09:21:11 Connection 99: Failed to connect: websocket: bad handshake
+
+📊 Load Test Results:
+════════════════════════════════════════
+Configuration:
+  Target Connections: 100
+  Test Duration: 30s
+
+Connection Stats:
+  ✅ Successful Connections: 0
+  ❌ Failed Connections: 100
+  📊 Success Rate: 0.00%
+
+Message Stats:
+  📤 Messages Sent: 0
+  📥 Messages Received: 0
+  ⚠️  Errors: 0
+  🔗 ❌ Target 100 concurrent connections: MISSED (got 0)
+

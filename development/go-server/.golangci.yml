@@ -1,0 +1,148 @@
+run:
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+  skip-dirs:
+    - bin
+    - vendor
+    - node_modules
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  
+  gocritic:
+    enabled-tags:
+      - performance
+      - style
+      - experimental
+      - diagnostic
+    disabled-checks:
+      - hugeParam
+      - whyNoLint
+  
+  gofmt:
+    simplify: true
+  
+  goimports:
+    local-prefixes: github.com/ferg-cod3s/vibetunnel/go-server
+  
+  golint:
+    min-confidence: 0.8
+  
+  govet:
+    check-shadowing: true
+    enable-all: true
+    disable:
+      - fieldalignment
+  
+  lll:
+    line-length: 120
+  
+  misspell:
+    locale: US
+  
+  nakedret:
+    max-func-lines: 30
+  
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+  
+  unparam:
+    check-exported: true
+  
+  unused:
+    check-exported: false
+  
+  whitespace:
+    multi-if: false
+    multi-func: false
+
+linters:
+  disable-all: true
+  enable:
+    # Default linters
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    
+    # Additional linters for quality
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - exportloopref
+    - exhaustive
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - lll
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - prealloc
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - structcheck
+    - stylecheck
+    - unconvert
+    - unparam
+    - varcheck
+    - whitespace
+
+issues:
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gomnd
+        - goconst
+        - dupl
+        - lll
+        - gosec
+    
+    # Exclude lll issues for long lines with go:generate
+    - linters:
+        - lll
+      source: "^//go:generate "
+    
+    # Exclude some gosec issues
+    - linters:
+        - gosec
+      text: "G404:"  # Use of weak random number generator
+    
+    # Allow embedding for certain files
+    - path: "internal/server/server.go"
+      linters:
+        - gocyclo
+        - gocognit
+        - funlen
+
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false

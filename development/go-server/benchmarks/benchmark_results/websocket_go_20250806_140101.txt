@@ -1,0 +1,30 @@
+🚀 WebSocket Load Test Configuration:
+   Server URL: http://localhost:4021
+   Max Connections: 100
+   Duration: 30s
+   Ramp-up Time: 10s
+
+⏱️  Starting load test (spawning connection every 100ms)...
+
+📊 Load Test Results:
+════════════════════════════════════════
+Configuration:
+  Target Connections: 100
+  Test Duration: 30s
+
+Connection Stats:
+  ✅ Successful Connections: 100
+  ❌ Failed Connections: 0
+  📊 Success Rate: 100.00%
+
+Message Stats:
+  📤 Messages Sent: 2450
+  📥 Messages Received: 10996
+  ⚠️  Errors: 100
+
+Performance Stats:
+  📏 Average Response Time: 222.816407ms
+  🔝 Max Response Time: 1.002234772s
+  🎯 ❌ Target <10ms average response time: MISSED
+  🔗 ✅ Target 100 concurrent connections: ACHIEVED
+

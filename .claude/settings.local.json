@@ -4,7 +4,18 @@
       "Bash(pnpm test:*)",
       "Bash(rg:*)",
       "Bash(./scripts/vtlog.sh:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(go:*)",
+      "Bash(bun:*)",
+      "Bash(chmod:*)",
+      "Bash(make:*)",
+      "Bash(./bin/vibetunnel:*)",
+      "Bash(./vibetunnel:*)",
+      "Bash(development/go-server/vibetunnel follow:*)",
+      "Bash(development/go-server/vibetunnel unfollow:*)",
+      "Bash(development/go-server/vibetunnel git-event --type branch-switch --branch feature/test --repo /home/f3rg/Documents/git/vibetunnel)",
+      "Bash(development/go-server/vibetunnel git-event --type=branch-switch --branch=feature/test --repo=/home/f3rg/Documents/git/vibetunnel)",
+      "Bash(pkill:*)"
     ],
     "deny": []
   },

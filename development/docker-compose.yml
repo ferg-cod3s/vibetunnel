@@ -1,0 +1,183 @@
+# VibeTunnel Development Stack
+# Docker Compose configuration for Go server + Bun web server
+
+version: '3.8'
+
+services:
+  # VibeTunnel Go Server - Core terminal server
+  vibetunnel-go-server:
+    build:
+      context: ./go-server
+      dockerfile: Dockerfile
+      target: production
+      args:
+        - SENTRY_DSN=${SENTRY_DSN:-}
+        - BUILD_VERSION=${BUILD_VERSION:-1.0.0}
+        - BUILD_ENV=${BUILD_ENV:-development}
+    image: vibetunnel-go-server:latest
+    container_name: vibetunnel-go
+    restart: unless-stopped
+    ports:
+      - "4021:4021"
+    environment:
+      # Server configuration
+      - PORT=4021
+      - HOST=0.0.0.0
+      - MAX_SESSIONS=100
+      - SESSION_TIMEOUT=1440
+      - ENABLE_AUTH=false
+      - LOG_LEVEL=info
+      
+      # Security configuration
+      - FILESYSTEM_BASE_PATH=/app/data
+      - GIT_BASE_PATH=/app/data
+      
+      # OpenTelemetry configuration
+      - OTEL_SERVICE_NAME=vibetunnel-go-server
+      - OTEL_SERVICE_VERSION=1.0.0
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=vibetunnel-go-server,service.version=1.0.0,deployment.environment=development
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      
+      # Sentry configuration (set your DSN)
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      - SENTRY_ENVIRONMENT=development
+      - SENTRY_TRACES_SAMPLE_RATE=0.1
+      - SENTRY_PROFILES_SAMPLE_RATE=0.1
+    volumes:
+      - go-server-data:/app/data
+      - go-server-logs:/app/logs
+      # Mount host directory for development (optional)
+      - ${PWD}/go-server/data:/app/data:rw
+    networks:
+      - vibetunnel-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4021/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+
+  # VibeTunnel Bun Web Server - Frontend proxy
+  vibetunnel-bun-web:
+    build:
+      context: ./bun-web
+      dockerfile: Dockerfile
+      target: production
+      args:
+        - SENTRY_DSN=${SENTRY_DSN:-}
+        - BUILD_VERSION=${BUILD_VERSION:-1.0.0}
+        - BUILD_ENV=${BUILD_ENV:-development}
+    image: vibetunnel-bun-web:latest
+    container_name: vibetunnel-bun
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Server configuration
+      - PORT=3000
+      - HOST=0.0.0.0
+      - NODE_ENV=production
+      - GO_SERVER_URL=http://vibetunnel-go-server:4021
+      
+      # OpenTelemetry configuration
+      - OTEL_SERVICE_NAME=vibetunnel-bun-web
+      - OTEL_SERVICE_VERSION=1.0.0
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=vibetunnel-bun-web,service.version=1.0.0,deployment.environment=development
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      
+      # Sentry configuration
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      - SENTRY_ENVIRONMENT=development
+    volumes:
+      - bun-web-logs:/app/logs
+      # Mount static files (optional)
+      - ${PWD}/bun-web/public:/app/public:ro
+    networks:
+      - vibetunnel-network
+    depends_on:
+      vibetunnel-go-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+
+  # OpenTelemetry Collector (for monitoring)
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./monitoring/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "8889:8889"   # Prometheus metrics endpoint
+    networks:
+      - vibetunnel-network
+    restart: unless-stopped
+    depends_on:
+      - jaeger
+      - prometheus
+
+  # Jaeger - Distributed tracing
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14250:14250"  # Jaeger gRPC
+    networks:
+      - vibetunnel-network
+    restart: unless-stopped
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - vibetunnel-network
+    restart: unless-stopped
+
+
+# Networks
+networks:
+  vibetunnel-network:
+    driver: bridge
+    name: vibetunnel-network
+
+# Volumes
+volumes:
+  go-server-data:
+    name: vibetunnel-go-server-data
+  go-server-logs:
+    name: vibetunnel-go-server-logs
+  bun-web-logs:
+    name: vibetunnel-bun-web-logs
+  prometheus-data:
+    name: vibetunnel-prometheus-data

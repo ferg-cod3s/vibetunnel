@@ -1,0 +1,52 @@
+🚀 HTTP API Load Test Configuration:
+   Server URL: http://localhost:3000
+   Total Requests: 1000
+   Max Concurrent: 50
+   Target RPS: 100
+
+📋 Testing different endpoints...
+
+🔧 Test 1: Session Creation (POST /api/sessions)
+   ⏱️  Completed 1000 requests in 10.001211366s (100.0 RPS)
+   📊 Session Creation Results:
+      Total Requests: 1000
+      ✅ Successful: 1000 (100.00%)
+      ❌ Failed: 0 (0.00%)
+      📏 Response Times:
+         Average: 509.793µs
+         Min: 406.967µs
+         Max: 1.741721ms
+      🎯 ✅ Target <50ms average: ACHIEVED
+      🎯 ✅ Target <200ms max: ACHIEVED
+      📋 Status Codes:
+         403: 1000 requests
+
+🔍 Test 2: Session Listing (GET /api/sessions)
+   ⏱️  Completed 1000 requests in 10.001661926s (100.0 RPS)
+   📊 Session Listing Results:
+      Total Requests: 1000
+      ✅ Successful: 1000 (100.00%)
+      ❌ Failed: 0 (0.00%)
+      📏 Response Times:
+         Average: 728.481µs
+         Min: 629.575µs
+         Max: 3.715895ms
+      🎯 ✅ Target <50ms average: ACHIEVED
+      🎯 ✅ Target <200ms max: ACHIEVED
+      📋 Status Codes:
+         401: 1000 requests
+
+❤️ Test 3: Health Check (GET /api/health)
+   ⏱️  Completed 1000 requests in 10.000808673s (100.0 RPS)
+   📊 Health Check Results:
+      Total Requests: 1000
+      ✅ Successful: 1000 (100.00%)
+      ❌ Failed: 0 (0.00%)
+      📏 Response Times:
+         Average: 652.998µs
+         Min: 583.18µs
+         Max: 3.312341ms
+      🎯 ✅ Target <50ms average: ACHIEVED
+      🎯 ✅ Target <200ms max: ACHIEVED
+      📋 Status Codes:
+         200: 1000 requests
