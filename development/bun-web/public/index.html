@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
     />
-    <title>VibeTunnel - Terminal Multiplexer</title>
+    <title>TunnelForge - Terminal Multiplexer</title>
     <meta
       name="description"
       content="Interactive terminal sessions in your browser with real-time streaming and mobile support"
@@ -31,6 +31,7 @@
 
     <!-- Styles -->
     <link href="/bundle/styles.css" rel="stylesheet" />
+    <link href="/styles/tunnelforge-theme.css" rel="stylesheet" />
 
     <!-- Mobile viewport and address bar handling -->
     <style>
@@ -57,7 +58,7 @@
       }
 
       /* Ensure app takes full viewport */
-      vibetunnel-app {
+      tunnelforge-app {
         display: block;
         width: 100%;
         min-height: 100%;
@@ -78,7 +79,7 @@
     <script>
       (function() {
         // Load saved theme preference or use system preference
-        const saved = localStorage.getItem('vibetunnel-theme');
+        const saved = localStorage.getItem('tunnelforge-theme');
         const theme = saved || 'system';
         
         // Apply theme immediately
@@ -94,13 +95,13 @@
           ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
           : theme;
         
-        // Set initial background color
-        document.documentElement.style.backgroundColor = effectiveTheme === 'dark' ? '#0a0a0a' : '#fafafa';
+        // Set initial background color using TunnelForge theme
+        document.documentElement.style.backgroundColor = effectiveTheme === 'dark' ? '#1A1A1A' : '#fafafa';
       })();
     </script>
   </head>
   <body class="m-0 p-0 bg-bg text-text">
-    <vibetunnel-app></vibetunnel-app>
+    <tunnelforge-app></tunnelforge-app>
 
     <!-- Mobile viewport height fix -->
     <script>

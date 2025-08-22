@@ -1,0 +1,124 @@
+{
+  "build": {
+    "beforeDevCommand": "",
+    "beforeBuildCommand": "",
+    "devPath": "http://localhost:4021",
+    "distDir": "../dist",
+    "withGlobalTauri": false
+  },
+  "package": {
+    "productName": "TunnelForge",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "scope": ["$HOME/**", "$APPDATA/**", "$APPCONFIG/**", "$APPLOCALDATA/**", "$APPLOG/**"]
+      },
+      "process": {
+        "all": false,
+        "command": true,
+        "commandScope": {
+          "allow": [
+            {
+              "name": "tunnelforge-server",
+              "cmd": "",
+              "args": true,
+              "sidecar": true
+            }
+          ],
+          "deny": []
+        }
+      },
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
+      },
+      "notification": {
+        "all": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "dev.tunnelforge.linux",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "resources": [],
+      "externalBin": [
+        "tunnelforge-server"
+      ],
+      "copyright": "Copyright © 2024 TunnelForge Team",
+      "category": "Developer Tool",
+      "shortDescription": "Terminal sharing made simple",
+      "longDescription": "TunnelForge allows you to share terminal sessions through any web browser with a beautiful, fast desktop interface.",
+      "deb": {
+        "depends": ["libwebkit2gtk-4.0-37", "libgtk-3-0", "libayatana-appindicator3-1"]
+      },
+      "appimage": {
+        "bundleMediaFramework": false
+      },
+      "linux": {
+        "deb": {
+          "depends": ["libwebkit2gtk-4.0-37", "libgtk-3-0", "libayatana-appindicator3-1"],
+          "files": {
+            "/usr/share/applications/tunnelforge.desktop": "assets/tunnelforge.desktop"
+          }
+        }
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://releases.tunnelforge.dev/linux/{{current_version}}/{{target}}/{{arch}}"
+      ],
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJBMUY0QkU5RkQ4NEUyOUEKUldSWXR0L3VyRWY3TXE4dFJhWkZOS3FzZWFJS2tCdnVuNzN2SFhBaDhJbzE5RVoxU2RmZzNKZwoK"
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "TunnelForge",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "visible": false,
+        "decorations": true,
+        "alwaysOnTop": false,
+        "skipTaskbar": false
+      }
+    ],
+    "systemTray": {
+      "iconPath": "icons/tray.png",
+      "iconAsTemplate": true,
+      "menuOnLeftClick": false,
+      "tooltip": "TunnelForge - Terminal Sharing"
+    }
+  }
+}

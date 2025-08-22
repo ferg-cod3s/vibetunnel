@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/session"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/session"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 func TestWebSocket_OriginDisallowed(t *testing.T) {

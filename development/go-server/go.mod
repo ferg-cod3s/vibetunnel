@@ -1,4 +1,4 @@
-module github.com/ferg-cod3s/vibetunnel/go-server
+module github.com/ferg-cod3s/tunnelforge/go-server
 
 go 1.23.0
 

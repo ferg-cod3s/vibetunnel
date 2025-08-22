@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/server"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/server"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 // Frontend Integration Test Suite
@@ -98,7 +98,8 @@ func testFrontendAPICompatibility(t *testing.T, baseURL string) {
 			"shell": "/bin/bash",
 			"cwd":   "/tmp",
 		}
-		jsonData, _ := json.Marshal(sessionData)
+		jsonData, err := json.Marshal(sessionData)
+		require.NoError(t, err)
 
 		resp, err := http.Post(baseURL+"/api/sessions", "application/json", bytes.NewBuffer(jsonData))
 		require.NoError(t, err)
@@ -137,7 +138,8 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 		sessionData := map[string]interface{}{
 			"shell": "/bin/bash",
 		}
-		jsonData, _ := json.Marshal(sessionData)
+		jsonData, err := json.Marshal(sessionData)
+		require.NoError(t, err)
 
 		httpURL := strings.Replace(wsURL, "ws://", "http://", 1)
 		resp, err := http.Post(httpURL+"/api/sessions", "application/json", bytes.NewBuffer(jsonData))
@@ -171,7 +173,8 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 	t.Run("WebSocket_Message_Format", func(t *testing.T) {
 		// Create session and connect
 		sessionData := map[string]interface{}{"shell": "/bin/bash"}
-		jsonData, _ := json.Marshal(sessionData)
+		jsonData, err := json.Marshal(sessionData)
+		require.NoError(t, err)
 		httpURL := strings.Replace(wsURL, "ws://", "http://", 1)
 
 		resp, err := http.Post(httpURL+"/api/sessions", "application/json", bytes.NewBuffer(jsonData))
@@ -179,7 +182,8 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 		defer resp.Body.Close()
 
 		var session types.SessionResponse
-		json.NewDecoder(resp.Body).Decode(&session)
+		err = json.NewDecoder(resp.Body).Decode(&session)
+		require.NoError(t, err)
 
 		// Connect WebSocket
 		conn, _, err := (&websocket.Dialer{}).Dial(wsURL+"/ws?sessionId="+session.ID, nil)
@@ -196,7 +200,8 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 			"type": "input",
 			"data": "echo 'test'\n",
 		}
-		msgBytes, _ := json.Marshal(inputMsg)
+		msgBytes, err := json.Marshal(inputMsg)
+		require.NoError(t, err)
 		err = conn.WriteMessage(websocket.TextMessage, msgBytes)
 		require.NoError(t, err)
 
@@ -220,7 +225,8 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 	t.Run("WebSocket_Ping_Pong", func(t *testing.T) {
 		// Create session and connect
 		sessionData := map[string]interface{}{"shell": "/bin/bash"}
-		jsonData, _ := json.Marshal(sessionData)
+		jsonData, err := json.Marshal(sessionData)
+		require.NoError(t, err)
 		httpURL := strings.Replace(wsURL, "ws://", "http://", 1)
 
 		resp, err := http.Post(httpURL+"/api/sessions", "application/json", bytes.NewBuffer(jsonData))
@@ -228,7 +234,8 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 		defer resp.Body.Close()
 
 		var session types.SessionResponse
-		json.NewDecoder(resp.Body).Decode(&session)
+		err = json.NewDecoder(resp.Body).Decode(&session)
+		require.NoError(t, err)
 
 		// Connect WebSocket
 		conn, _, err := (&websocket.Dialer{}).Dial(wsURL+"/ws?sessionId="+session.ID, nil)
@@ -239,7 +246,8 @@ func testFrontendWebSocketIntegration(t *testing.T, wsURL string) {
 		pingMsg := map[string]interface{}{
 			"type": "ping",
 		}
-		msgBytes, _ := json.Marshal(pingMsg)
+		msgBytes, err := json.Marshal(pingMsg)
+		require.NoError(t, err)
 		err = conn.WriteMessage(websocket.TextMessage, msgBytes)
 		require.NoError(t, err)
 
@@ -255,7 +263,8 @@ func testFrontendSessionLifecycle(t *testing.T, baseURL, wsURL string) {
 			"shell": "/bin/bash",
 			"cwd":   "/tmp",
 		}
-		jsonData, _ := json.Marshal(sessionData)
+		jsonData, err := json.Marshal(sessionData)
+		require.NoError(t, err)
 
 		resp, err := http.Post(baseURL+"/api/sessions", "application/json", bytes.NewBuffer(jsonData))
 		require.NoError(t, err)
@@ -275,7 +284,8 @@ func testFrontendSessionLifecycle(t *testing.T, baseURL, wsURL string) {
 			"type": "input",
 			"data": "pwd\n",
 		}
-		msgBytes, _ := json.Marshal(inputMsg)
+		msgBytes, err := json.Marshal(inputMsg)
+		require.NoError(t, err)
 		err = conn.WriteMessage(websocket.TextMessage, msgBytes)
 		require.NoError(t, err)
 
@@ -377,7 +387,8 @@ func createTestSession(t *testing.T, baseURL string) types.SessionResponse {
 	sessionData := map[string]interface{}{
 		"shell": "/bin/bash",
 	}
-	jsonData, _ := json.Marshal(sessionData)
+	jsonData, err := json.Marshal(sessionData)
+	require.NoError(t, err)
 
 	resp, err := http.Post(baseURL+"/api/sessions", "application/json", bytes.NewBuffer(jsonData))
 	require.NoError(t, err)
@@ -401,8 +412,9 @@ func sendWebSocketMessage(t *testing.T, conn *websocket.Conn, msgType string, da
 		"type": msgType,
 		"data": data,
 	}
-	msgBytes, _ := json.Marshal(msg)
-	err := conn.WriteMessage(websocket.TextMessage, msgBytes)
+	msgBytes, err := json.Marshal(msg)
+	require.NoError(t, err)
+	err = conn.WriteMessage(websocket.TextMessage, msgBytes)
 	require.NoError(t, err)
 }
 

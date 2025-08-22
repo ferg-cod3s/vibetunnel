@@ -15,11 +15,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/server"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/server"
 )
 
-// TestVibeTunnelFrontendCompatibility tests compatibility with the VibeTunnel frontend
-func TestVibeTunnelFrontendCompatibility(t *testing.T) {
+// TestTunnelForgeFrontendCompatibility tests compatibility with the TunnelForge frontend
+func TestTunnelForgeFrontendCompatibility(t *testing.T) {
 	// Create test server
 	cfg := &server.Config{Port: "0"} // Use random port
 	testServer, err := server.New(cfg)

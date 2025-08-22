@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel Swift Linting and Formatting Script
+# TunnelForge Swift Linting and Formatting Script
 # =============================================================================
 #
-# This script runs SwiftFormat and SwiftLint on the VibeTunnel codebase
+# This script runs SwiftFormat and SwiftLint on the TunnelForge codebase
 # to ensure consistent code style and catch potential issues.
 #
 # USAGE:

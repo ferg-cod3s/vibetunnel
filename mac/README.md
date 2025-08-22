@@ -1,13 +1,13 @@
-# VibeTunnel macOS App
+# TunnelForge macOS App
 
-This directory contains the macOS version of VibeTunnel.
+This directory contains the macOS version of TunnelForge.
 
 ## Quick Start
 
 ### Building
 ```bash
 # Using Xcode
-xcodebuild -workspace VibeTunnel.xcworkspace -scheme VibeTunnel build
+xcodebuild -workspace TunnelForge.xcworkspace -scheme TunnelForge build
 
 # Using build script
 ./scripts/build.sh
@@ -15,24 +15,24 @@ xcodebuild -workspace VibeTunnel.xcworkspace -scheme VibeTunnel build
 
 ### Running Tests
 ```bash
-xcodebuild -workspace VibeTunnel.xcworkspace -scheme VibeTunnel test
+xcodebuild -workspace TunnelForge.xcworkspace -scheme TunnelForge test
 ```
 
 ### Creating Release
 ```bash
 ./scripts/build.sh --configuration Release --sign
-./scripts/create-dmg.sh build/Build/Products/Release/VibeTunnel.app
+./scripts/create-dmg.sh build/Build/Products/Release/TunnelForge.app
 ```
 
 ## Project Structure
 
 ```
 mac/
-├── VibeTunnel/           # Source code
+├── TunnelForge/           # Source code
 │   ├── Core/            # Core services and models
 │   ├── Presentation/    # Views and UI components
 │   └── Utilities/       # Helper utilities
-├── VibeTunnelTests/     # Unit tests
+├── TunnelForgeTests/     # Unit tests
 ├── scripts/             # Build and release scripts
 ├── docs/                # macOS-specific documentation
 └── private/             # Signing keys (not in git)

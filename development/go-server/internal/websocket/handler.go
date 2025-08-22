@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/session"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/terminal"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/session"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/terminal"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 // buildUpgrader builds a websocket.Upgrader with origin checks against allowedOrigins.
@@ -165,7 +165,10 @@ func (h *Handler) handleClientOutput(client *Client, ptySession *terminal.PTYSes
 	})
 
 	// Set read deadline for ping/pong
-	client.Conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	if err := client.Conn.SetReadDeadline(time.Now().Add(60 * time.Second)); err != nil {
+		log.Printf("Failed to set read deadline for client %s: %v", client.ID[:8], err)
+		return
+	}
 
 	for {
 		select {

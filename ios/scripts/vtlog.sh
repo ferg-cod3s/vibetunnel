@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# VibeTunnel Logging Utility
-# Simplifies access to VibeTunnel logs using macOS unified logging system
+# TunnelForge Logging Utility
+# Simplifies access to TunnelForge logs using macOS unified logging system
 
 set -euo pipefail
 
 # Configuration
-SUBSYSTEM="sh.vibetunnel.ios"
+SUBSYSTEM="dev.tunnelforge.ios"
 DEFAULT_LEVEL="info"
 
 # Colors for output

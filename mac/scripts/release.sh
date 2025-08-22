@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel Automated Release Script
+# TunnelForge Automated Release Script
 # =============================================================================
 #
-# This script handles the complete end-to-end release process for VibeTunnel,
+# This script handles the complete end-to-end release process for TunnelForge,
 # including building, signing, notarization, DMG creation, GitHub releases,
 # and appcast updates. It supports both stable and pre-release versions.
 #
@@ -233,7 +233,7 @@ elif [[ -n "$PRERELEASE_NUMBER" ]]; then
     PRERELEASE_NUMBER=""
 fi
 
-echo -e "${BLUE}🚀 VibeTunnel Automated Release${NC}"
+echo -e "${BLUE}🚀 TunnelForge Automated Release${NC}"
 echo "=============================="
 echo ""
 
@@ -248,9 +248,9 @@ echo -e "${BLUE}🔍 Running strict pre-conditions...${NC}"
 
 # CHANGELOG.md will be checked later with proper fallback logic
 
-# Clean up any stuck VibeTunnel volumes before starting
+# Clean up any stuck TunnelForge volumes before starting
 echo "🧹 Cleaning up any stuck DMG volumes..."
-for volume in /Volumes/VibeTunnel*; do
+for volume in /Volumes/TunnelForge*; do
     if [ -d "$volume" ]; then
         echo "   Unmounting $volume..."
         hdiutil detach "$volume" -force 2>/dev/null || true
@@ -348,7 +348,7 @@ echo -e "${GREEN}✅ Pre-flight check passed!${NC}"
 echo ""
 
 # Get version info
-VERSION_CONFIG="$PROJECT_ROOT/VibeTunnel/version.xcconfig"
+VERSION_CONFIG="$PROJECT_ROOT/TunnelForge/version.xcconfig"
 if [[ -f "$VERSION_CONFIG" ]]; then
     MARKETING_VERSION=$(grep 'MARKETING_VERSION' "$VERSION_CONFIG" | sed 's/.*MARKETING_VERSION = //')
     BUILD_NUMBER=$(grep 'CURRENT_PROJECT_VERSION' "$VERSION_CONFIG" | sed 's/.*CURRENT_PROJECT_VERSION = //')
@@ -425,7 +425,7 @@ echo -e "${BLUE}📋 Step 2/8: Cleaning build directory...${NC}"
 rm -rf "$PROJECT_ROOT/build"
 rm -rf "$PROJECT_ROOT/DerivedData"
 # rm -rf "$PROJECT_ROOT/.build"
-rm -rf ~/Library/Developer/Xcode/DerivedData/VibeTunnel-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/TunnelForge-*
 echo "✓ Cleaned all build artifacts"
 
 # Step 3: Update version in version.xcconfig
@@ -467,13 +467,13 @@ else
 fi
 
 # Check if Xcode project was modified and commit if needed
-if ! git diff --quiet "$PROJECT_ROOT/VibeTunnel.xcodeproj/project.pbxproj"; then
+if ! git diff --quiet "$PROJECT_ROOT/TunnelForge.xcodeproj/project.pbxproj"; then
     if [[ "$DRY_RUN" == "true" ]]; then
         echo "📝 Would commit Xcode project changes"
         echo "   Commit message: Update Xcode project for build $BUILD_NUMBER"
     else
         echo "📝 Committing Xcode project changes..."
-        git add "$PROJECT_ROOT/VibeTunnel.xcodeproj/project.pbxproj"
+        git add "$PROJECT_ROOT/TunnelForge.xcodeproj/project.pbxproj"
         git commit -m "Update Xcode project for build $BUILD_NUMBER"
         echo -e "${GREEN}✅ Xcode project changes committed${NC}"
     fi
@@ -533,11 +533,11 @@ else
     "$SCRIPT_DIR/build.sh" --configuration Release
     
     # Find the built app - could be in build directory or DerivedData
-    APP_PATH="$PROJECT_ROOT/build/Build/Products/Release/VibeTunnel.app"
+    APP_PATH="$PROJECT_ROOT/build/Build/Products/Release/TunnelForge.app"
     if [[ ! -d "$APP_PATH" ]]; then
         # Check DerivedData
         DEFAULT_DERIVED_DATA="$HOME/Library/Developer/Xcode/DerivedData"
-        APP_PATH=$(find "$DEFAULT_DERIVED_DATA" -name "VibeTunnel.app" -path "*/Build/Products/Release/*" ! -path "*/Index.noindex/*" 2>/dev/null | head -n 1)
+        APP_PATH=$(find "$DEFAULT_DERIVED_DATA" -name "TunnelForge.app" -path "*/Build/Products/Release/*" ! -path "*/Index.noindex/*" 2>/dev/null | head -n 1)
         
         if [[ ! -d "$APP_PATH" ]]; then
             echo -e "${RED}❌ Build failed - app not found${NC}"
@@ -547,7 +547,7 @@ else
         # Copy to expected location for consistency
         mkdir -p "$PROJECT_ROOT/build/Build/Products/Release"
         cp -R "$APP_PATH" "$PROJECT_ROOT/build/Build/Products/Release/"
-        APP_PATH="$PROJECT_ROOT/build/Build/Products/Release/VibeTunnel.app"
+        APP_PATH="$PROJECT_ROOT/build/Build/Products/Release/TunnelForge.app"
     fi
     
     # Verify build number
@@ -558,7 +558,7 @@ else
     fi
     
     # Verify it's an ARM64 binary
-    APP_BINARY="$APP_PATH/Contents/MacOS/VibeTunnel"
+    APP_BINARY="$APP_PATH/Contents/MacOS/TunnelForge"
     if [[ -f "$APP_BINARY" ]]; then
         ARCH_INFO=$(lipo -info "$APP_BINARY" 2>/dev/null || echo "")
         if [[ "$ARCH_INFO" == *"arm64"* ]]; then
@@ -630,9 +630,9 @@ echo -e "${GREEN}✅ All Sparkle components properly signed${NC}"
 # Step 6: Create DMG and ZIP
 echo ""
 echo -e "${BLUE}📋 Step 6/8: Creating DMG and ZIP...${NC}"
-DMG_NAME="VibeTunnel-$RELEASE_VERSION.dmg"
+DMG_NAME="TunnelForge-$RELEASE_VERSION.dmg"
 DMG_PATH="$PROJECT_ROOT/build/$DMG_NAME"
-ZIP_NAME="VibeTunnel-$RELEASE_VERSION.zip"
+ZIP_NAME="TunnelForge-$RELEASE_VERSION.zip"
 ZIP_PATH="$PROJECT_ROOT/build/$ZIP_NAME"
 
 "$SCRIPT_DIR/create-dmg.sh" "$APP_PATH" "$DMG_PATH"
@@ -687,7 +687,7 @@ fi
 # Verify app inside DMG
 DMG_MOUNT=$(mktemp -d)
 if hdiutil attach "$DMG_PATH" -mountpoint "$DMG_MOUNT" -nobrowse -quiet; then
-    DMG_APP="$DMG_MOUNT/VibeTunnel.app"
+    DMG_APP="$DMG_MOUNT/TunnelForge.app"
     
     # Check if app is notarized
     if spctl -a -t exec -vv "$DMG_APP" 2>&1 | grep -q "source=Notarized Developer ID"; then
@@ -729,7 +729,7 @@ elif [[ $DMG_SIZE_MB -gt $MAX_SIZE_MB ]]; then
     # Mount DMG and check for common issues
     DMG_MOUNT_CHECK=$(mktemp -d)
     if hdiutil attach "$DMG_PATH" -mountpoint "$DMG_MOUNT_CHECK" -nobrowse -quiet; then
-        APP_IN_DMG="$DMG_MOUNT_CHECK/VibeTunnel.app"
+        APP_IN_DMG="$DMG_MOUNT_CHECK/TunnelForge.app"
         
         # Check for node_modules
         if find "$APP_IN_DMG" -name "node_modules" -type d | grep -q .; then
@@ -849,7 +849,7 @@ fi
 # Fallback to basic release notes if changelog extraction fails
 if [[ -z "$RELEASE_NOTES" ]]; then
     echo "   Generating fallback release notes..."
-    RELEASE_NOTES="## VibeTunnel $RELEASE_VERSION
+    RELEASE_NOTES="## TunnelForge $RELEASE_VERSION
 
 This release includes various improvements and bug fixes.
 
@@ -859,20 +859,20 @@ For details, please see the [CHANGELOG](https://github.com/amantus-ai/vibetunnel
 fi
 
 # Format the release title properly
-# Convert "1.0.0-beta.10" to "VibeTunnel 1.0.0 Beta 10"
-RELEASE_TITLE="VibeTunnel $RELEASE_VERSION"
+# Convert "1.0.0-beta.10" to "TunnelForge 1.0.0 Beta 10"
+RELEASE_TITLE="TunnelForge $RELEASE_VERSION"
 if [[ "$RELEASE_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta\.([0-9]+)$ ]]; then
     VERSION_BASE="${BASH_REMATCH[1]}"
     BETA_NUM="${BASH_REMATCH[2]}"
-    RELEASE_TITLE="VibeTunnel $VERSION_BASE Beta $BETA_NUM"
+    RELEASE_TITLE="TunnelForge $VERSION_BASE Beta $BETA_NUM"
 elif [[ "$RELEASE_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-alpha\.([0-9]+)$ ]]; then
     VERSION_BASE="${BASH_REMATCH[1]}"
     ALPHA_NUM="${BASH_REMATCH[2]}"
-    RELEASE_TITLE="VibeTunnel $VERSION_BASE Alpha $ALPHA_NUM"
+    RELEASE_TITLE="TunnelForge $VERSION_BASE Alpha $ALPHA_NUM"
 elif [[ "$RELEASE_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-rc\.([0-9]+)$ ]]; then
     VERSION_BASE="${BASH_REMATCH[1]}"
     RC_NUM="${BASH_REMATCH[2]}"
-    RELEASE_TITLE="VibeTunnel $VERSION_BASE RC $RC_NUM"
+    RELEASE_TITLE="TunnelForge $VERSION_BASE RC $RC_NUM"
 fi
 
 if [[ "$RELEASE_TYPE" == "stable" ]]; then
@@ -899,7 +899,7 @@ echo -e "${BLUE}📋 Step 8/9: Updating appcast...${NC}"
 # Generate appcast
 echo "🔐 Generating appcast with EdDSA signatures..."
 # Set the Sparkle account for sign_update
-export SPARKLE_ACCOUNT="VibeTunnel"
+export SPARKLE_ACCOUNT="TunnelForge"
 echo "   Using Sparkle account: $SPARKLE_ACCOUNT"
 "$SCRIPT_DIR/generate-appcast.sh"
 
@@ -964,7 +964,7 @@ echo ""
 echo -e "${GREEN}🎉 Release Complete!${NC}"
 echo "=================="
 echo ""
-echo -e "${GREEN}✅ Successfully released VibeTunnel $RELEASE_VERSION${NC}"
+echo -e "${GREEN}✅ Successfully released TunnelForge $RELEASE_VERSION${NC}"
 echo ""
 echo "Release details:"
 echo "  - Version: $RELEASE_VERSION"

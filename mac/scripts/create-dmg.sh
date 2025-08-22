@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel DMG Creation Script
+# TunnelForge DMG Creation Script
 # =============================================================================
 #
-# This script creates a DMG disk image for VibeTunnel distribution.
+# This script creates a DMG disk image for TunnelForge distribution.
 #
 # USAGE:
 #   ./scripts/create-dmg.sh <app_path> [output_path]
 #
 # ARGUMENTS:
 #   app_path      Path to the .app bundle
-#   output_path   Path for output DMG (optional, defaults to build/VibeTunnel-<version>.dmg)
+#   output_path   Path for output DMG (optional, defaults to build/TunnelForge-<version>.dmg)
 #
 # ENVIRONMENT VARIABLES:
 #   DMG_VOLUME_NAME   Name for the DMG volume (optional, defaults to app name)
@@ -41,7 +41,7 @@ if [[ ! -d "$APP_PATH" ]]; then
 fi
 
 # Get app name and version info
-APP_NAME=$(/usr/libexec/PlistBuddy -c "Print CFBundleName" "$APP_PATH/Contents/Info.plist" 2>/dev/null || echo "VibeTunnel")
+APP_NAME=$(/usr/libexec/PlistBuddy -c "Print CFBundleName" "$APP_PATH/Contents/Info.plist" 2>/dev/null || echo "TunnelForge")
 VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$APP_PATH/Contents/Info.plist")
 DMG_NAME="${APP_NAME}-${VERSION}.dmg"
 DMG_VOLUME_NAME="${DMG_VOLUME_NAME:-$APP_NAME}"
@@ -55,9 +55,9 @@ fi
 
 echo "Creating DMG: $DMG_NAME"
 
-# Clean up any stuck VibeTunnel volumes before starting
+# Clean up any stuck TunnelForge volumes before starting
 echo "Checking for stuck DMG volumes..."
-for volume in /Volumes/VibeTunnel* "/Volumes/$DMG_VOLUME_NAME"*; do
+for volume in /Volumes/TunnelForge* "/Volumes/$DMG_VOLUME_NAME"*; do
     if [ -d "$volume" ]; then
         echo "  Unmounting stuck volume: $volume"
         hdiutil detach "$volume" -force 2>/dev/null || true
@@ -66,9 +66,9 @@ for volume in /Volumes/VibeTunnel* "/Volumes/$DMG_VOLUME_NAME"*; do
 done
 
 # Also check for any DMG processes that might be stuck
-if pgrep -f "VibeTunnel.*\.dmg" > /dev/null; then
+if pgrep -f "TunnelForge.*\.dmg" > /dev/null; then
     echo "  Found stuck DMG processes, killing them..."
-    pkill -f "VibeTunnel.*\.dmg" || true
+    pkill -f "TunnelForge.*\.dmg" || true
     sleep 2
 fi
 
@@ -147,7 +147,7 @@ tell application "Finder"
         set label position of viewOptions to bottom
         
         -- Position items
-        set position of item "VibeTunnel.app" of container window to {125, 160}
+        set position of item "TunnelForge.app" of container window to {125, 160}
         set position of item "Applications" of container window to {375, 160}
         
         -- Set extended attributes for better appearance

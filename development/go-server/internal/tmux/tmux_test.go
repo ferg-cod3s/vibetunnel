@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/session"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/session"
 )
 
 func TestTmuxService_HandleAvailable(t *testing.T) {

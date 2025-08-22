@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel Common Script Library
+# TunnelForge Common Script Library
 # =============================================================================
 #
-# This file provides common functions and utilities for all VibeTunnel scripts
+# This file provides common functions and utilities for all TunnelForge scripts
 # to ensure consistency in error handling, logging, and output formatting.
 #
 # USAGE:

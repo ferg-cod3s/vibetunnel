@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel Build Script
+# TunnelForge Build Script
 # =============================================================================
 # 
-# This script builds the VibeTunnel application using xcodebuild with optional
+# This script builds the TunnelForge application using xcodebuild with optional
 # code signing support. It includes comprehensive error checking and reports
 # build details including the IS_PRERELEASE_BUILD flag status.
 #
@@ -23,7 +23,7 @@
 #                                   Swift package resolution
 #
 # OUTPUTS:
-#   - Built app at: build/Build/Products/<Configuration>/VibeTunnel.app
+#   - Built app at: build/Build/Products/<Configuration>/TunnelForge.app
 #   - Version and build number information
 #   - IS_PRERELEASE_BUILD flag status verification
 #
@@ -69,7 +69,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-echo "Building VibeTunnel..."
+echo "Building TunnelForge..."
 echo "Configuration: $CONFIGURATION"
 echo "Code signing: $SIGN_APP"
 echo "Architecture: ARM64 only"
@@ -114,8 +114,8 @@ fi
 if command -v xcbeautify &> /dev/null; then
     echo "🔨 Building ARM64-only binary with xcbeautify..."
     xcodebuild \
-        -project VibeTunnel.xcodeproj \
-        -scheme VibeTunnel \
+        -project TunnelForge.xcodeproj \
+        -scheme TunnelForge \
         -configuration "$CONFIGURATION" \
         $DERIVED_DATA_ARG \
         -destination "platform=macOS,arch=arm64" \
@@ -127,8 +127,8 @@ if command -v xcbeautify &> /dev/null; then
 else
     echo "🔨 Building ARM64-only binary (install xcbeautify for cleaner output)..."
     xcodebuild \
-        -project VibeTunnel.xcodeproj \
-        -scheme VibeTunnel \
+        -project TunnelForge.xcodeproj \
+        -scheme TunnelForge \
         -configuration "$CONFIGURATION" \
         $DERIVED_DATA_ARG \
         -destination "platform=macOS,arch=arm64" \
@@ -141,18 +141,18 @@ fi
 
 # Find the app in the appropriate location
 if [[ "${CI:-false}" == "true" ]] || [[ "${USE_CUSTOM_DERIVED_DATA:-false}" == "true" ]]; then
-    APP_PATH="$BUILD_DIR/Build/Products/$CONFIGURATION/VibeTunnel.app"
+    APP_PATH="$BUILD_DIR/Build/Products/$CONFIGURATION/TunnelForge.app"
 else
     # When using default derived data, get the build product path from xcodebuild
     DEFAULT_DERIVED_DATA="$HOME/Library/Developer/Xcode/DerivedData"
-    # Find the most recent VibeTunnel build (exclude Index.noindex)
-    APP_PATH=$(find "$DEFAULT_DERIVED_DATA" -name "VibeTunnel.app" -path "*/Build/Products/$CONFIGURATION/*" ! -path "*/Index.noindex/*" 2>/dev/null | head -n 1)
+    # Find the most recent TunnelForge build (exclude Index.noindex)
+    APP_PATH=$(find "$DEFAULT_DERIVED_DATA" -name "TunnelForge.app" -path "*/Build/Products/$CONFIGURATION/*" ! -path "*/Index.noindex/*" 2>/dev/null | head -n 1)
     
     if [[ -z "$APP_PATH" ]]; then
         # Fallback: try to get from xcode-select
-        BUILT_PRODUCTS_DIR=$(xcodebuild -project VibeTunnel.xcodeproj -scheme VibeTunnel -configuration "$CONFIGURATION" -showBuildSettings | grep "BUILT_PRODUCTS_DIR" | head -n 1 | awk '{print $3}')
+        BUILT_PRODUCTS_DIR=$(xcodebuild -project TunnelForge.xcodeproj -scheme TunnelForge -configuration "$CONFIGURATION" -showBuildSettings | grep "BUILT_PRODUCTS_DIR" | head -n 1 | awk '{print $3}')
         if [[ -n "$BUILT_PRODUCTS_DIR" ]]; then
-            APP_PATH="$BUILT_PRODUCTS_DIR/VibeTunnel.app"
+            APP_PATH="$BUILT_PRODUCTS_DIR/TunnelForge.app"
         fi
     fi
 fi
@@ -198,9 +198,9 @@ BUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$APP_PATH/Contents/I
 echo "Version: $VERSION ($BUILD)"
 
 # Verify version matches xcconfig
-if [[ -f "$MAC_DIR/VibeTunnel/version.xcconfig" ]]; then
-    EXPECTED_VERSION=$(grep 'MARKETING_VERSION' "$MAC_DIR/VibeTunnel/version.xcconfig" | sed 's/.*MARKETING_VERSION = //')
-    EXPECTED_BUILD=$(grep 'CURRENT_PROJECT_VERSION' "$MAC_DIR/VibeTunnel/version.xcconfig" | sed 's/.*CURRENT_PROJECT_VERSION = //')
+if [[ -f "$MAC_DIR/TunnelForge/version.xcconfig" ]]; then
+    EXPECTED_VERSION=$(grep 'MARKETING_VERSION' "$MAC_DIR/TunnelForge/version.xcconfig" | sed 's/.*MARKETING_VERSION = //')
+    EXPECTED_BUILD=$(grep 'CURRENT_PROJECT_VERSION' "$MAC_DIR/TunnelForge/version.xcconfig" | sed 's/.*CURRENT_PROJECT_VERSION = //')
     
     if [[ "$VERSION" != "$EXPECTED_VERSION" ]]; then
         echo "⚠️  WARNING: Built version ($VERSION) doesn't match version.xcconfig ($EXPECTED_VERSION)"

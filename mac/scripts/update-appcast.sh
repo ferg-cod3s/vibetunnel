@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel Appcast Update Script
+# TunnelForge Appcast Update Script
 # =============================================================================
 #
 # This script updates the appcast files after a release has been created.
@@ -30,7 +30,7 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-echo -e "${BLUE}🔄 VibeTunnel Appcast Update${NC}"
+echo -e "${BLUE}🔄 TunnelForge Appcast Update${NC}"
 echo "============================"
 
 # Check GitHub CLI authentication
@@ -51,7 +51,7 @@ if ! command -v sign_update &>/dev/null; then
 fi
 
 # Set Sparkle account
-export SPARKLE_ACCOUNT="VibeTunnel"
+export SPARKLE_ACCOUNT="TunnelForge"
 echo "Using Sparkle account: $SPARKLE_ACCOUNT"
 
 # Run generate-appcast.sh

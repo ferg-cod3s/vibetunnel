@@ -122,7 +122,7 @@ func (ls *LogService) handleServerLogs(w http.ResponseWriter, r *http.Request) {
 // handleLogDownload allows downloading log files for debugging
 func (ls *LogService) handleLogDownload(w http.ResponseWriter, r *http.Request) {
 	// For security, only allow downloading from specific log directories
-	logDir := "/tmp/vibetunnel-logs" // Configure this appropriately
+	logDir := "/tmp/tunnelforge-logs" // Configure this appropriately
 
 	// Check if log directory exists
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
@@ -147,12 +147,12 @@ func (ls *LogService) handleLogDownload(w http.ResponseWriter, r *http.Request) 
 
 // handleLogInfo provides metadata about available logs
 func (ls *LogService) handleLogInfo(w http.ResponseWriter, r *http.Request) {
-	logDir := "/tmp/vibetunnel-logs"
+	logDir := "/tmp/tunnelforge-logs"
 
 	info := map[string]interface{}{
 		"logDirectory": logDir,
 		"available":    true,
-		"description":  "VibeTunnel log management",
+		"description":  "TunnelForge log management",
 	}
 
 	// Check if log directory exists and get file info
@@ -175,7 +175,7 @@ func (ls *LogService) handleLogInfo(w http.ResponseWriter, r *http.Request) {
 
 // handleRawLogs provides raw log content
 func (ls *LogService) handleRawLogs(w http.ResponseWriter, r *http.Request) {
-	logDir := "/tmp/vibetunnel-logs"
+	logDir := "/tmp/tunnelforge-logs"
 	filename := r.URL.Query().Get("file")
 
 	if filename == "" {
@@ -217,7 +217,7 @@ func (ls *LogService) handleRawLogs(w http.ResponseWriter, r *http.Request) {
 
 // handleClearLogs clears or rotates log files
 func (ls *LogService) handleClearLogs(w http.ResponseWriter, r *http.Request) {
-	logDir := "/tmp/vibetunnel-logs"
+	logDir := "/tmp/tunnelforge-logs"
 
 	// Check if log directory exists
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {

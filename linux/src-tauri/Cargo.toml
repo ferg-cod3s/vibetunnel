@@ -1,0 +1,40 @@
+[package]
+name = "tunnelforge"
+version = "1.0.0"
+description = "TunnelForge Desktop App for Linux - Terminal sharing with web interface"
+authors = ["TunnelForge Team"]
+license = "MIT"
+repository = "https://github.com/ferg-cod3s/tunnelforge"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+tauri = { version = "1.5", features = [
+  "api-all",
+  "system-tray",
+  "updater",
+  "window-all",
+  "process-command-api",
+  "fs-all",
+  "path-all",
+  "shell-open"
+] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+log = "0.4"
+env_logger = "0.10"
+anyhow = "1.0"
+dirs = "5.0"
+
+[features]
+# This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
+
+[[bin]]
+name = "tunnelforge"
+path = "src/main.rs"

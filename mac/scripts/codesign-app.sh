@@ -1,5 +1,5 @@
 #!/bin/bash
-# codesign-app.sh - Code signing script for VibeTunnel
+# codesign-app.sh - Code signing script for TunnelForge
 
 set -euo pipefail
 
@@ -8,7 +8,7 @@ log() {
 }
 
 # Default parameters
-APP_BUNDLE="${1:-build/Build/Products/Release/VibeTunnel.app}"
+APP_BUNDLE="${1:-build/Build/Products/Release/TunnelForge.app}"
 SIGN_IDENTITY="${2:-Developer ID Application}"
 
 # Validate input
@@ -21,14 +21,14 @@ fi
 log "Code signing $APP_BUNDLE with identity: $SIGN_IDENTITY"
 
 # Create entitlements with hardened runtime
-ENTITLEMENTS_FILE="VibeTunnel/VibeTunnel.entitlements"
-TMP_ENTITLEMENTS="/tmp/VibeTunnel_entitlements.plist"
+ENTITLEMENTS_FILE="TunnelForge/TunnelForge.entitlements"
+TMP_ENTITLEMENTS="/tmp/TunnelForge_entitlements.plist"
 
 if [ -f "$ENTITLEMENTS_FILE" ]; then
     log "Using entitlements from $ENTITLEMENTS_FILE"
     
     # Get the bundle identifier from the Info.plist
-    BUNDLE_ID=$(defaults read "$APP_BUNDLE/Contents/Info.plist" CFBundleIdentifier 2>/dev/null || echo "sh.vibetunnel.vibetunnel")
+    BUNDLE_ID=$(defaults read "$APP_BUNDLE/Contents/Info.plist" CFBundleIdentifier 2>/dev/null || echo "dev.tunnelforge.tunnelforge")
     log "Bundle identifier: $BUNDLE_ID"
     
     # Copy entitlements and replace variables
@@ -42,7 +42,7 @@ if [ -f "$ENTITLEMENTS_FILE" ]; then
 else
     log "Creating entitlements file with hardened runtime..."
     # Get the bundle identifier
-    BUNDLE_ID=$(defaults read "$APP_BUNDLE/Contents/Info.plist" CFBundleIdentifier 2>/dev/null || echo "sh.vibetunnel.vibetunnel")
+    BUNDLE_ID=$(defaults read "$APP_BUNDLE/Contents/Info.plist" CFBundleIdentifier 2>/dev/null || echo "dev.tunnelforge.tunnelforge")
     log "Bundle identifier: $BUNDLE_ID"
     
     cat > "$TMP_ENTITLEMENTS" << EOF
@@ -101,7 +101,7 @@ fi
 
 # Sign the main executable
 log "Signing main executable..."
-codesign --force --options runtime --timestamp --entitlements "$TMP_ENTITLEMENTS" --sign "$SIGN_IDENTITY" $KEYCHAIN_OPTS "$APP_BUNDLE/Contents/MacOS/VibeTunnel" || true
+codesign --force --options runtime --timestamp --entitlements "$TMP_ENTITLEMENTS" --sign "$SIGN_IDENTITY" $KEYCHAIN_OPTS "$APP_BUNDLE/Contents/MacOS/TunnelForge" || true
 
 # Sign the app bundle WITHOUT deep signing (per Sparkle documentation)
 # "Due to different code signing requirements, please do not add --deep to 

@@ -2,36 +2,104 @@ package session
 
 import (
 	"fmt"
+	"log"
 	"sync"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/terminal"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/persistence"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/terminal"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 type Manager struct {
-	ptyManager    *terminal.PTYManager
-	optPtyManager *terminal.OptimizedPTYManager
-	useOptimized  bool
-	sseStreams    map[string][]chan []byte
-	sseStreamsMu  sync.RWMutex
+	ptyManager        *terminal.PTYManager
+	optPtyManager     *terminal.OptimizedPTYManager
+	useOptimized      bool
+	sseStreams        map[string][]chan []byte
+	sseStreamsMu      sync.RWMutex
+	persistenceService *persistence.Service
+	persistenceEnabled bool
 }
 
 func NewManager() *Manager {
-	return &Manager{
-		ptyManager:    terminal.NewPTYManager(),
-		optPtyManager: terminal.NewOptimizedPTYManager(),
-		useOptimized:  true, // Enable optimizations by default
-		sseStreams:    make(map[string][]chan []byte),
+	m := &Manager{
+		ptyManager:        terminal.NewPTYManager(),
+		optPtyManager:     terminal.NewOptimizedPTYManager(),
+		useOptimized:      true, // Enable optimizations by default
+		sseStreams:        make(map[string][]chan []byte),
+		persistenceEnabled: false, // Disabled by default
 	}
+	
+	// Set up SSE broadcasting - the manager implements the interface
+	m.optPtyManager.SetSSEBroadcaster(m)
+	
+	return m
+}
+
+// NewManagerWithPersistence creates a new manager with persistence enabled
+func NewManagerWithPersistence(persistenceService *persistence.Service) *Manager {
+	m := &Manager{
+		ptyManager:         terminal.NewPTYManager(),
+		optPtyManager:      terminal.NewOptimizedPTYManager(),
+		useOptimized:       true,
+		sseStreams:         make(map[string][]chan []byte),
+		persistenceService: persistenceService,
+		persistenceEnabled: true,
+	}
+	
+	// Set up SSE broadcasting - the manager implements the interface
+	m.optPtyManager.SetSSEBroadcaster(m)
+	
+	return m
+}
+
+// RestorePersistedSessions restores sessions from persistent storage
+func (m *Manager) RestorePersistedSessions() error {
+	if !m.persistenceEnabled || m.persistenceService == nil {
+		return nil // Persistence not enabled
+	}
+
+	sessions, err := m.persistenceService.RestoreSessions()
+	if err != nil {
+		return fmt.Errorf("failed to restore sessions: %w", err)
+	}
+
+	// For now, we only restore session metadata
+	// The actual PTY processes are not restored (this would require more complex state management)
+	// Sessions will be marked as inactive until a client connects and reinitializes them
+	for _, session := range sessions {
+		session.Active = false // Mark as inactive since PTY process is not running
+		log.Printf("📁 Restored session metadata: %s (%s)", session.ID, session.Title)
+	}
+
+	return nil
 }
 
 func (m *Manager) Create(req *types.SessionCreateRequest) (*types.Session, error) {
+	var session *types.Session
+	var err error
+
 	if m.useOptimized {
 		// Use optimized manager for fast session creation
-		return m.optPtyManager.CreateSession(req)
+		session, err = m.optPtyManager.CreateSession(req)
+	} else {
+		// Fallback to original manager
+		session, err = m.ptyManager.CreateSession(req)
 	}
-	// Fallback to original manager
-	return m.ptyManager.CreateSession(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// Save to persistence if enabled
+	if m.persistenceEnabled && m.persistenceService != nil {
+		if persistErr := m.persistenceService.SaveSession(session); persistErr != nil {
+			log.Printf("Warning: failed to persist session %s: %v", session.ID, persistErr)
+		} else {
+			log.Printf("📁 Session %s persisted", session.ID)
+		}
+	}
+
+	return session, nil
 }
 
 func (m *Manager) Get(id string) *types.Session {
@@ -131,10 +199,28 @@ func (m *Manager) List() []*types.Session {
 }
 
 func (m *Manager) Close(id string) error {
+	var err error
+
 	if m.useOptimized {
-		return m.optPtyManager.CloseSession(id)
+		err = m.optPtyManager.CloseSession(id)
+	} else {
+		err = m.ptyManager.CloseSession(id)
 	}
-	return m.ptyManager.CloseSession(id)
+
+	if err != nil {
+		return err
+	}
+
+	// Remove from persistence if enabled
+	if m.persistenceEnabled && m.persistenceService != nil {
+		if persistErr := m.persistenceService.DeleteSession(id); persistErr != nil {
+			log.Printf("Warning: failed to remove session %s from persistence: %v", id, persistErr)
+		} else {
+			log.Printf("📁 Session %s removed from persistence", id)
+		}
+	}
+
+	return nil
 }
 
 func (m *Manager) CloseAll() {

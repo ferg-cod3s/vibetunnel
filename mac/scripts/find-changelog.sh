@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel Changelog Finder
+# TunnelForge Changelog Finder
 # =============================================================================
 #
 # Finds the CHANGELOG.md file from various possible locations.

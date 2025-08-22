@@ -13,8 +13,8 @@ import (
 	"github.com/creack/pty"
 	"github.com/google/uuid"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/security"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/security"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 // PTYManager manages terminal PTY sessions

@@ -7,7 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="${PROJECT_DIR}/build/Build/Products/Debug"
-APP_PATH="${BUILD_DIR}/VibeTunnel.app"
+APP_PATH="${BUILD_DIR}/TunnelForge.app"
 VT_PATH="${APP_PATH}/Contents/Resources/vt"
 VIBETUNNEL_BIN="${APP_PATH}/Contents/Resources/vibetunnel"
 

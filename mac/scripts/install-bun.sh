@@ -2,7 +2,7 @@
 #
 # Install Bun locally for the build process if not already available
 #
-# This script ensures Bun is available for building VibeTunnel without
+# This script ensures Bun is available for building TunnelForge without
 # requiring any pre-installed tools except Xcode.
 #
 

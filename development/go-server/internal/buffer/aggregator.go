@@ -253,9 +253,14 @@ func (ba *BufferAggregator) clientReadPump(client *Client) {
 	}()
 
 	client.ws.SetReadLimit(maxMessageSize)
-	client.ws.SetReadDeadline(time.Now().Add(pongWait))
+	if err := client.ws.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+		log.Printf("Failed to set read deadline: %v", err)
+		return
+	}
 	client.ws.SetPongHandler(func(string) error {
-		client.ws.SetReadDeadline(time.Now().Add(pongWait))
+		if err := client.ws.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+			log.Printf("Failed to set read deadline in pong handler: %v", err)
+		}
 		return nil
 	})
 
@@ -289,9 +294,14 @@ func (ba *BufferAggregator) clientWritePump(client *Client) {
 	for {
 		select {
 		case message, ok := <-client.send:
-			client.ws.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := client.ws.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+				log.Printf("Failed to set write deadline: %v", err)
+				return
+			}
 			if !ok {
-				client.ws.WriteMessage(websocket.CloseMessage, []byte{})
+				if err := client.ws.WriteMessage(websocket.CloseMessage, []byte{}); err != nil {
+					log.Printf("Failed to write close message: %v", err)
+				}
 				return
 			}
 
@@ -310,8 +320,12 @@ func (ba *BufferAggregator) clientWritePump(client *Client) {
 			}
 
 		case <-ticker.C:
-			client.ws.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := client.ws.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+				log.Printf("Failed to set write deadline for ping: %v", err)
+				return
+			}
 			if err := client.ws.WriteMessage(websocket.PingMessage, nil); err != nil {
+				log.Printf("Ping error: %v", err)
 				return
 			}
 

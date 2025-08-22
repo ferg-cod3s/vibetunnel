@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 // FollowMode manages Git repository follow mode functionality
@@ -303,7 +303,7 @@ func (fm *FollowMode) hasUncommittedChanges(repoPath string) (bool, error) {
 	return strings.TrimSpace(string(output)) != "", nil
 }
 
-// areHooksInstalled checks if VibeTunnel Git hooks are installed
+// areHooksInstalled checks if TunnelForge Git hooks are installed
 func (fm *FollowMode) areHooksInstalled(repoPath string) (bool, error) {
 	// Check for post-checkout hook
 	hookPath := filepath.Join(repoPath, ".git", "hooks", "post-checkout")
@@ -317,11 +317,11 @@ func (fm *FollowMode) areHooksInstalled(repoPath string) (bool, error) {
 		return false, err
 	}
 
-	// Look for VibeTunnel signature in hook
-	return strings.Contains(string(content), "VibeTunnel"), nil
+	// Look for TunnelForge signature in hook
+	return strings.Contains(string(content), "TunnelForge"), nil
 }
 
-// installGitHooks installs VibeTunnel Git hooks for follow mode
+// installGitHooks installs TunnelForge Git hooks for follow mode
 func (fm *FollowMode) installGitHooks(repoPath string) error {
 	hooksDir := filepath.Join(repoPath, ".git", "hooks")
 
@@ -334,13 +334,13 @@ func (fm *FollowMode) installGitHooks(repoPath string) error {
 	// Install post-checkout hook
 	postCheckoutHook := filepath.Join(hooksDir, "post-checkout")
 	hookContent := `#!/bin/bash
-# VibeTunnel Git Hook - Post Checkout
-# This hook notifies VibeTunnel of branch changes for follow mode
+# TunnelForge Git Hook - Post Checkout
+# This hook notifies TunnelForge of branch changes for follow mode
 
 # Get the current branch
 current_branch=$(git branch --show-current)
 
-# Notify VibeTunnel server of the branch change
+# Notify TunnelForge server of the branch change
 if command -v vibetunnel >/dev/null 2>&1; then
     vibetunnel git-event --type="post-checkout" --branch="$current_branch" --repo="$(pwd)" &
 fi
@@ -354,13 +354,13 @@ fi
 	// Install post-commit hook
 	postCommitHook := filepath.Join(hooksDir, "post-commit")
 	commitHookContent := `#!/bin/bash
-# VibeTunnel Git Hook - Post Commit
-# This hook notifies VibeTunnel of commits for follow mode
+# TunnelForge Git Hook - Post Commit
+# This hook notifies TunnelForge of commits for follow mode
 
 # Get the current branch
 current_branch=$(git branch --show-current)
 
-# Notify VibeTunnel server of the commit
+# Notify TunnelForge server of the commit
 if command -v vibetunnel >/dev/null 2>&1; then
     vibetunnel git-event --type="post-commit" --branch="$current_branch" --repo="$(pwd)" &
 fi
@@ -374,7 +374,7 @@ fi
 	return nil
 }
 
-// uninstallGitHooks removes VibeTunnel Git hooks
+// uninstallGitHooks removes TunnelForge Git hooks
 func (fm *FollowMode) uninstallGitHooks(repoPath string) error {
 	hooksDir := filepath.Join(repoPath, ".git", "hooks")
 
@@ -386,7 +386,7 @@ func (fm *FollowMode) uninstallGitHooks(repoPath string) error {
 
 		// Check if the hook exists and is ours
 		if content, err := os.ReadFile(hookPath); err == nil {
-			if strings.Contains(string(content), "VibeTunnel") {
+			if strings.Contains(string(content), "TunnelForge") {
 				// It's our hook, safe to remove
 				os.Remove(hookPath)
 			}

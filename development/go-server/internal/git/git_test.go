@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 // mockEventBroadcaster is a mock implementation of EventBroadcaster for tests
@@ -35,7 +35,7 @@ func newMockEventBroadcaster() *mockEventBroadcaster {
 
 // setupTestRepo creates a temporary Git repository for testing
 func setupTestRepo(t *testing.T) (string, func()) {
-	tempDir, err := os.MkdirTemp("", "vibetunnel_git_test_*")
+	tempDir, err := os.MkdirTemp("", "tunnelforge_git_test_*")
 	require.NoError(t, err)
 
 	// Initialize git repo

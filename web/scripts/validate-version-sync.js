@@ -6,7 +6,7 @@ const path = require('path');
 const { version } = require('../package.json');
 
 // Path to the xcconfig file
-const xcconfigPath = path.join(__dirname, '../../mac/VibeTunnel/version.xcconfig');
+const xcconfigPath = path.join(__dirname, '../../mac/TunnelForge/version.xcconfig');
 
 // Check if xcconfig file exists
 if (!fs.existsSync(xcconfigPath)) {
@@ -33,7 +33,7 @@ if (version !== xconfigVersion) {
   console.error('');
   console.error('To fix this:');
   console.error('1. Update package.json version field to match xcconfig');
-  console.error('2. Or update MARKETING_VERSION in mac/VibeTunnel/version.xcconfig');
+  console.error('2. Or update MARKETING_VERSION in mac/TunnelForge/version.xcconfig');
   process.exit(1);
 }
 

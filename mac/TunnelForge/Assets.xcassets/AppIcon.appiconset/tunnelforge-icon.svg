@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients for the forge theme -->
+    <radialGradient id="baseGradient" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" style="stop-color:#2D1B69;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1A0F3A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0A0520;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Metallic border gradient -->
+    <linearGradient id="metalBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#DAA520;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B7355;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Tunnel gradient -->
+    <linearGradient id="tunnelGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1A0F3A;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#4A148C;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#7B1FA2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Forge fire gradient -->
+    <radialGradient id="fireGradient" cx="50%" cy="80%" r="40%">
+      <stop offset="0%" style="stop-color:#FF6F00;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#FF8F00;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#FFA000;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFB300;stop-opacity:0.6" />
+    </radialGradient>
+    
+    <!-- Anvil metallic gradient -->
+    <linearGradient id="anvilMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#616161;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#757575;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#9E9E9E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#757575;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Terminal sparks -->
+    <radialGradient id="sparkGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00E676;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#00C853;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#00C853;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background with rounded rectangle -->
+  <rect x="64" y="64" width="896" height="896" rx="180" ry="180" fill="url(#baseGradient)" stroke="url(#metalBorder)" stroke-width="8"/>
+  
+  <!-- Tunnel opening (main element) -->
+  <ellipse cx="512" cy="400" rx="280" ry="140" fill="url(#tunnelGradient)" opacity="0.9"/>
+  <ellipse cx="512" cy="400" rx="220" ry="110" fill="none" stroke="url(#tunnelGradient)" stroke-width="3" opacity="0.7"/>
+  <ellipse cx="512" cy="400" rx="160" ry="80" fill="none" stroke="url(#tunnelGradient)" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Tunnel depth lines (perspective) -->
+  <path d="M 232 400 Q 512 320 792 400" fill="none" stroke="url(#tunnelGradient)" stroke-width="2" opacity="0.6"/>
+  <path d="M 272 400 Q 512 340 752 400" fill="none" stroke="url(#tunnelGradient)" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Anvil base (forge element) -->
+  <path d="M 350 580 L 674 580 Q 690 580 690 596 L 690 620 Q 690 636 674 636 L 350 636 Q 334 636 334 620 L 334 596 Q 334 580 350 580 Z" fill="url(#anvilMetal)" stroke="#424242" stroke-width="2"/>
+  
+  <!-- Anvil top surface -->
+  <ellipse cx="512" cy="580" rx="170" ry="25" fill="url(#anvilMetal)" stroke="#424242" stroke-width="2"/>
+  
+  <!-- Anvil horn (distinctive forge feature) -->
+  <path d="M 682 580 Q 720 575 740 590 Q 750 600 740 610 Q 720 605 690 600" fill="url(#anvilMetal)" stroke="#424242" stroke-width="1"/>
+  
+  <!-- Hammer (forge tool) -->
+  <rect x="480" y="520" width="12" height="80" fill="#8D6E63" rx="6"/>
+  <rect x="460" y="515" width="52" height="20" fill="url(#anvilMetal)" rx="4"/>
+  <rect x="465" y="510" width="42" height="10" fill="#616161" rx="2"/>
+  
+  <!-- Terminal-style sparks/code elements -->
+  <circle cx="420" cy="450" r="4" fill="url(#sparkGradient)"/>
+  <circle cx="440" cy="470" r="3" fill="url(#sparkGradient)"/>
+  <circle cx="580" cy="460" r="4" fill="url(#sparkGradient)"/>
+  <circle cx="600" cy="440" r="3" fill="url(#sparkGradient)"/>
+  
+  <!-- Code-like symbols emerging from tunnel -->
+  <text x="380" y="480" font-family="SF Mono, Monaco, monospace" font-size="24" fill="#00E676" opacity="0.8">$</text>
+  <text x="620" y="470" font-family="SF Mono, Monaco, monospace" font-size="20" fill="#00E676" opacity="0.7">></text>
+  <text x="450" y="490" font-family="SF Mono, Monaco, monospace" font-size="16" fill="#00E676" opacity="0.6">|</text>
+  
+  <!-- Forge fire/glow effect -->
+  <ellipse cx="512" cy="700" rx="120" ry="30" fill="url(#fireGradient)" opacity="0.6"/>
+  <ellipse cx="512" cy="690" rx="80" ry="20" fill="url(#fireGradient)" opacity="0.4"/>
+  
+  <!-- Additional metallic details -->
+  <circle cx="400" cy="608" r="8" fill="url(#anvilMetal)" stroke="#424242" stroke-width="1"/>
+  <circle cx="624" cy="608" r="8" fill="url(#anvilMetal)" stroke="#424242" stroke-width="1"/>
+</svg>

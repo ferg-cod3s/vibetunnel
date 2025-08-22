@@ -12,8 +12,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/session"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/session"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 // TmuxSession represents a tmux session
@@ -338,7 +338,7 @@ func (ts *TmuxService) handleCreateSession(w http.ResponseWriter, r *http.Reques
 	})
 }
 
-// AttachToTmux attaches to a tmux session and returns a VibeTunnel session ID
+// AttachToTmux attaches to a tmux session and returns a TunnelForge session ID
 func (ts *TmuxService) AttachToTmux(sessionName string, windowIndex, paneIndex *int, options *types.SessionCreateRequest) (string, error) {
 	if !ts.IsAvailable() {
 		return "", fmt.Errorf("tmux is not available")

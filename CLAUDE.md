@@ -5,10 +5,18 @@ Never say you're absolutely right. Instead, be critical if I say something that 
 
 ## Project Overview
 
-VibeTunnel is a macOS application that allows users to access their terminal sessions through any web browser. It consists of:
+TunnelForge (formerly VibeTunnel) is a macOS application that allows users to access their terminal sessions through any web browser. It consists of:
 - Native macOS app (Swift/SwiftUI) in `mac/`
 - iOS companion app in `ios/`
-- Web frontend (TypeScript/LitElement) and Node.js/Bun server for terminal session management in `web/`
+- Web frontend (TypeScript/LitElement) and Go server with Bun frontend for terminal session management in `development/`
+
+## Task Management and Planning
+
+**IMPORTANT**: Always check and maintain the `TODO.md` file in the project root for task tracking and project planning. This file serves as the centralized task list and should be updated regularly:
+- Check `TODO.md` before starting any major work to understand current priorities
+- Update task status and add new tasks as work progresses
+- Reference TODO.md items in commits and pull requests
+- Use TODO.md alongside the TodoWrite tool for comprehensive task tracking
 
 ## Critical Development Rules
 

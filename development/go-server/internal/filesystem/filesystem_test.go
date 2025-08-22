@@ -18,7 +18,7 @@ import (
 
 func setupTestEnvironment(t *testing.T) (string, *FileSystemService, func()) {
 	// Create temporary directory for testing
-	tempDir, err := os.MkdirTemp("", "vibetunnel_fs_test_*")
+	tempDir, err := os.MkdirTemp("", "tunnelforge_fs_test_*")
 	if err != nil {
 		t.Fatal("Failed to create temp directory:", err)
 	}

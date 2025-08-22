@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Download pre-built Bun binaries for ARM64
-# VibeTunnel only supports Apple Silicon Macs
+# TunnelForge only supports Apple Silicon Macs
 #
 
 set -euo pipefail

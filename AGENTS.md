@@ -1,0 +1,23 @@
+# AGENTS.md
+
+- Build/lint/test
+  - Web: cd web; pnpm install; pnpm run check (format+lint+type), pnpm run dev (4020; use 4021 with --port). Tests: pnpm run test; single: pnpm test -- path/to/file.spec.ts -t "test name". Typecheck only: pnpm run typecheck. Lint fix: pnpm run check:fix.
+  - Mac: cd mac; ./scripts/build.sh [--configuration Debug|Release] [--sign]; lint: ./scripts/lint.sh. iOS similar in ios/ with run-tests.sh. Never start the mac app or server; verify via xcodebuild only.
+  - Repo: scripts/test-all-coverage.sh, scripts/validate-docs.sh. CI via .github/workflows.
+- Import/style
+  - TypeScript: strict mode; prefer const; named imports; external before internal; absolute aliases where configured, else relative; no default-export utilities; PascalCase types/classes, camelCase vars/functions, UPPER_SNAKE_CASE constants. Prettier config in web/.prettierrc.json; keep formatting via pnpm run check:fix.
+  - Swift: PascalCase types, camelCase members; use // MARK: - sections; protocol-oriented; @MainActor for UI; organize imports Foundation, OSLog, then local modules. SwiftFormat/SwiftLint enforced by mac/.swiftformat and .swiftlint.yml.
+- Types and errors
+  - TS: explicit types on public APIs; narrow unknown; never any in app code; use Result-like returns or throw Error with message+code; bubble errors with context; log server errors with tags [SRV], frontend with [FE].
+  - Swift: define error enums conforming to LocalizedError; use Result and throws; never fatalError in production paths; log with OSLog categories (see apple/logging/README.md).
+- Testing
+  - Vitest for web; group by feature; Arrange/Act/Assert; include edge cases. Single test selection with -t. Avoid network in unit tests.
+  - Swift tests under VibeTunnelTests; do not launch app; use xcodebuild via provided scripts; beware simulator boot in CI.
+- Conventions
+  - Early returns; small functions (<30 lines); max 3 nesting levels; DRY; SRP. No backwards compatibility layers—change both sides.
+- Tools/rules
+  - Husky pre-commit runs format/lint. CLAUDE.md contains critical repo rules (read it). No Cursor or Copilot rules found; if added at .cursor/rules/ or .cursorrules or .github/copilot-instructions.md, follow them.
+- Single-test quick refs
+  - Web: pnpm test -- src/path/file.spec.ts
+  - Web (name): pnpm test -- -t "name"
+  - Mac: xcodebuild test -workspace VibeTunnel.xcworkspace -scheme VibeTunnel -destination 'platform=macOS'

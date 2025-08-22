@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel ZIP Creation Script
+# TunnelForge ZIP Creation Script
 # =============================================================================
 #
-# This script creates a ZIP archive for VibeTunnel distribution.
+# This script creates a ZIP archive for TunnelForge distribution.
 #
 # USAGE:
 #   ./scripts/create-zip.sh <app_path> [output_path]
 #
 # ARGUMENTS:
 #   app_path      Path to the .app bundle
-#   output_path   Path for output ZIP (optional, defaults to build/VibeTunnel-<version>-<arch>.zip)
+#   output_path   Path for output ZIP (optional, defaults to build/TunnelForge-<version>-<arch>.zip)
 #
 # =============================================================================
 
@@ -38,7 +38,7 @@ if [[ ! -d "$APP_PATH" ]]; then
 fi
 
 # Get app name and version info
-APP_NAME=$(/usr/libexec/PlistBuddy -c "Print CFBundleName" "$APP_PATH/Contents/Info.plist" 2>/dev/null || echo "VibeTunnel")
+APP_NAME=$(/usr/libexec/PlistBuddy -c "Print CFBundleName" "$APP_PATH/Contents/Info.plist" 2>/dev/null || echo "TunnelForge")
 VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$APP_PATH/Contents/Info.plist")
 ZIP_NAME="${APP_NAME}-${VERSION}.zip"
 

@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 // Client represents a connected SSE client

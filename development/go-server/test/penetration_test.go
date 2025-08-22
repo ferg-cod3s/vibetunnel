@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/server"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/server"
 )
 
 // TestAdvancedSecurityPenetration performs advanced security testing

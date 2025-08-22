@@ -15,7 +15,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/server"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/server"
 )
 
 const (
@@ -57,15 +57,15 @@ func main() {
 
 // printVersion displays the version information
 func printVersion() {
-	fmt.Printf("VibeTunnel Server v%s\n", Version)
+	fmt.Printf("TunnelForge Server v%s\n", Version)
 }
 
 // printHelp displays the help information
 func printHelp() {
-	fmt.Printf("VibeTunnel Server v%s\n", Version)
+	fmt.Printf("TunnelForge Server v%s\n", Version)
 	fmt.Println()
 	fmt.Println("Usage:")
-	fmt.Println("  vibetunnel [options]                    Start VibeTunnel server")
+	fmt.Println("  vibetunnel [options]                    Start TunnelForge server")
 	fmt.Println("  vibetunnel fwd <session-id> <command>   Forward command to session")
 	fmt.Println("  vibetunnel status                       Show server status")
 	fmt.Println("  vibetunnel follow [branch]              Enable Git follow mode")
@@ -76,8 +76,8 @@ func printHelp() {
 	fmt.Println("  vibetunnel help                         Show this help")
 	fmt.Println()
 	fmt.Println("Systemd Service Actions:")
-	fmt.Println("  install   - Install VibeTunnel as systemd service (default)")
-	fmt.Println("  uninstall - Remove VibeTunnel systemd service")
+	fmt.Println("  install   - Install TunnelForge as systemd service (default)")
+	fmt.Println("  uninstall - Remove TunnelForge systemd service")
 	fmt.Println("  status    - Check systemd service status")
 	fmt.Println()
 	fmt.Println("Environment Variables:")
@@ -94,7 +94,7 @@ func printHelp() {
 	fmt.Println("  vibetunnel systemd install")
 }
 
-// startServer starts the VibeTunnel server
+// startServer starts the TunnelForge server
 func startServer() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -111,7 +111,7 @@ func startServer() {
 
 	// Start server in goroutine
 	go func() {
-		log.Printf("VibeTunnel Go server starting on port %s", port)
+		log.Printf("TunnelForge Go server starting on port %s", port)
 		log.Printf("WebSocket endpoint: ws://localhost:%s/ws", port)
 		log.Printf("Health check: http://localhost:%s/health", port)
 		log.Printf("API endpoints: http://localhost:%s/api", port)
@@ -168,7 +168,7 @@ func handleStatusCommand() {
 		os.Exit(1)
 	}
 
-	fmt.Println("VibeTunnel Server Status:")
+	fmt.Println("TunnelForge Server Status:")
 	fmt.Printf("  Status: %s\n", status["status"])
 	if healthy, ok := status["healthy"].(bool); ok && healthy {
 		fmt.Printf("  Healthy: Yes\n")
@@ -290,15 +290,15 @@ func handleSystemdCommand() {
 
 	switch action {
 	case "install":
-		fmt.Println("Installing VibeTunnel as systemd service...")
+		fmt.Println("Installing TunnelForge as systemd service...")
 		fmt.Println("Feature planned for future implementation")
 		// TODO: Implement systemd service installation
 	case "uninstall":
-		fmt.Println("Uninstalling VibeTunnel systemd service...")
+		fmt.Println("Uninstalling TunnelForge systemd service...")
 		fmt.Println("Feature planned for future implementation")
 		// TODO: Implement systemd service removal
 	case "status":
-		fmt.Println("Checking VibeTunnel systemd service status...")
+		fmt.Println("Checking TunnelForge systemd service status...")
 		fmt.Println("Feature planned for future implementation")
 		// TODO: Implement systemd service status check
 	default:
@@ -398,7 +398,7 @@ func sendFollowRequest(repoPath, branch string, enable bool) error {
 	// Try to send to local server
 	resp, err := http.Post("http://localhost:4021/api/worktrees/follow", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return fmt.Errorf("failed to connect to VibeTunnel server (is it running?): %w", err)
+		return fmt.Errorf("failed to connect to TunnelForge server (is it running?): %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -428,7 +428,7 @@ func sendGitEvent(eventType, branch, repoPath string) error {
 	// Try to send to local server
 	resp, err := http.Post("http://localhost:4021/api/git/event", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return fmt.Errorf("failed to connect to VibeTunnel server (is it running?): %w", err)
+		return fmt.Errorf("failed to connect to TunnelForge server (is it running?): %w", err)
 	}
 	defer resp.Body.Close()
 

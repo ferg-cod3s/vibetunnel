@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "VibeTunnel",
+    name: "TunnelForge",
     platforms: [
         .macOS(.v14)
     ],
     products: [
         .library(
-            name: "VibeTunnel",
-            targets: ["VibeTunnel"]
+            name: "TunnelForge",
+            targets: ["TunnelForge"]
         )
     ],
     dependencies: [
@@ -20,26 +20,26 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "VibeTunnel",
+            name: "TunnelForge",
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Sparkle", package: "Sparkle")
             ],
-            path: "VibeTunnel",
+            path: "TunnelForge",
             exclude: [
                 "Info.plist",
-                "VibeTunnel.entitlements",
+                "TunnelForge.entitlements",
                 "Shared.xcconfig",
                 "version.xcconfig",
                 "sparkle-public-ed-key.txt",
                 "Assets.xcassets",
-                "VibeTunnelApp.swift"
+                "TunnelForgeApp.swift"
             ]
         ),
         .testTarget(
-            name: "VibeTunnelTests",
-            dependencies: ["VibeTunnel"],
-            path: "VibeTunnelTests"
+            name: "TunnelForgeTests",
+            dependencies: ["TunnelForge"],
+            path: "TunnelForgeTests"
         )
     ]
 )

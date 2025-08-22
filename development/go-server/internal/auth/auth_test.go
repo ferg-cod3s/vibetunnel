@@ -616,7 +616,7 @@ func TestJWTAuth_TokenWithCustomClaims(t *testing.T) {
 	validatedClaims, err := auth.ValidateToken(token)
 	require.NoError(t, err)
 
-	assert.Equal(t, "vibetunnel-go-server", validatedClaims.Issuer)
+	assert.Equal(t, "tunnelforge-go-server", validatedClaims.Issuer)
 	assert.Equal(t, claims.UserID, validatedClaims.Subject)
 	assert.NotNil(t, validatedClaims.IssuedAt)
 	assert.NotNil(t, validatedClaims.ExpiresAt)

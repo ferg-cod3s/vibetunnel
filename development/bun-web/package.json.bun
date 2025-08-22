@@ -1,0 +1,15 @@
+{
+  "name": "vibetunnel-bun-web",
+  "version": "1.0.0",
+  "description": "VibeTunnel Web Interface powered by Bun - serves original frontend to Go backend",
+  "type": "module",
+  "main": "src/bun-server.ts",
+  "scripts": {
+    "dev": "GO_SERVER_URL=http://192.168.68.58:4022 PORT=3001 bun run --hot src/bun-server.ts",
+    "start": "bun run src/bun-server.ts",
+    "build:original": "pnpm run build"
+  },
+  "dependencies": {
+    "bun-types": "latest"
+  }
+}

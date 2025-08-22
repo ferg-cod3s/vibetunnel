@@ -15,15 +15,21 @@ import (
 	"github.com/creack/pty"
 	"github.com/google/uuid"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/security"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/security"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
+
+// SSEBroadcaster interface for broadcasting to SSE streams
+type SSEBroadcaster interface {
+	BroadcastToSSEStreams(sessionID string, data []byte)
+}
 
 // OptimizedPTYManager manages terminal PTY sessions with performance optimizations
 type OptimizedPTYManager struct {
-	sessions    map[string]*OptimizedPTYSession
-	mu          sync.RWMutex
-	envTemplate []string // Pre-computed environment template
+	sessions      map[string]*OptimizedPTYSession
+	mu            sync.RWMutex
+	envTemplate   []string // Pre-computed environment template
+	sseBroadcaster SSEBroadcaster // For broadcasting to SSE streams
 }
 
 // OptimizedPTYSession represents a single PTY session with lazy initialization
@@ -52,6 +58,9 @@ type OptimizedPTYSession struct {
 	initialized int32 // atomic flag for lazy init
 	initMu      sync.Mutex
 	initErr     error
+	
+	// Reference to manager for SSE broadcasting
+	manager *OptimizedPTYManager
 }
 
 // NewOptimizedPTYManager creates a new optimized PTY manager
@@ -62,9 +71,15 @@ func NewOptimizedPTYManager() *OptimizedPTYManager {
 	copy(envTemplate, baseEnv)
 
 	return &OptimizedPTYManager{
-		sessions:    make(map[string]*OptimizedPTYSession),
-		envTemplate: envTemplate,
+		sessions:      make(map[string]*OptimizedPTYSession),
+		envTemplate:   envTemplate,
+		sseBroadcaster: nil, // Will be set later
 	}
+}
+
+// SetSSEBroadcaster sets the SSE broadcaster for sending output to SSE streams
+func (m *OptimizedPTYManager) SetSSEBroadcaster(broadcaster SSEBroadcaster) {
+	m.sseBroadcaster = broadcaster
 }
 
 // CreateSession creates a new PTY session with lazy initialization
@@ -124,6 +139,7 @@ func (m *OptimizedPTYManager) CreateSession(req *types.SessionCreateRequest) (*t
 		clients:   make(map[string]*types.WSClient),
 		// PTY resources will be initialized lazily
 		initialized: 0,
+		manager:     m, // Set manager reference for SSE broadcasting
 	}
 
 	// Store session quickly with minimal locking
@@ -412,17 +428,23 @@ func (s *OptimizedPTYSession) broadcastOutput() {
 	}
 }
 
-// BroadcastOutput broadcasts output data to all connected clients
+// BroadcastOutput broadcasts output data to all connected clients and SSE streams
 func (s *OptimizedPTYSession) BroadcastOutput(data []byte) {
 	s.clientsMu.RLock()
 	defer s.clientsMu.RUnlock()
 
+	// Broadcast to WebSocket clients
 	for _, client := range s.clients {
 		select {
 		case client.Send <- data:
 		default:
 			log.Printf("Client %s send channel full, skipping output", client.ID[:8])
 		}
+	}
+	
+	// Broadcast to SSE streams via the manager
+	if s.manager != nil && s.manager.sseBroadcaster != nil {
+		s.manager.sseBroadcaster.BroadcastToSSEStreams(s.ID, data)
 	}
 }
 

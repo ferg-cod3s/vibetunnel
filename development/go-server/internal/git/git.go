@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 	"github.com/gorilla/mux"
 )
 

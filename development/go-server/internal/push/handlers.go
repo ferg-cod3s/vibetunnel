@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/middleware"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -311,8 +311,8 @@ func (h *PushHandler) handleTestNotification(w http.ResponseWriter, r *http.Requ
 
 	// Create test notification
 	payload := &NotificationPayload{
-		Title: "VibeTunnel Test Notification",
-		Body:  "This is a test notification from your VibeTunnel server.",
+		Title: "TunnelForge Test Notification",
+		Body:  "This is a test notification from your TunnelForge server.",
 		Icon:  "/icons/vibetunnel.png",
 		Tag:   "test-notification",
 		Data: map[string]interface{}{

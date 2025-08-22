@@ -22,10 +22,10 @@ MAC_DIR="$SCRIPT_DIR/.."
 WEB_DIR="$PROJECT_ROOT/web"
 PREBUILTS_DIR="$MAC_DIR/Resources/BunPrebuilts"
 
-# VibeTunnel only supports ARM64
+# TunnelForge only supports ARM64
 CURRENT_ARCH=$(uname -m)
 if [ "$CURRENT_ARCH" != "arm64" ]; then
-    echo -e "${RED}Error: VibeTunnel requires Apple Silicon (ARM64)${NC}"
+    echo -e "${RED}Error: TunnelForge requires Apple Silicon (ARM64)${NC}"
     exit 1
 fi
 ARCH_DIR="arm64"
@@ -112,4 +112,4 @@ case "${1:-build}" in
         ;;
 esac
 
-echo -e "\n${BLUE}Note:${NC} VibeTunnel requires Apple Silicon (M1/M2/M3) Macs."
+echo -e "\n${BLUE}Note:${NC} TunnelForge requires Apple Silicon (M1/M2/M3) Macs."

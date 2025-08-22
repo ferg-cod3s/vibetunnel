@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/server"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/server"
 )
 
 const (
@@ -32,7 +32,7 @@ func main() {
 
 	// Start server in goroutine
 	go func() {
-		log.Printf("VibeTunnel Go server starting on port %s", port)
+		log.Printf("TunnelForge Go server starting on port %s", port)
 		log.Printf("WebSocket endpoint: ws://localhost:%s/ws", port)
 		log.Printf("Health check: http://localhost:%s/health", port)
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,21 +17,23 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/middleware"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/middleware"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/auth"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/buffer"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/config"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/control"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/events"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/filesystem"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/git"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/logs"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/push"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/session"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/tmux"
-	"github.com/ferg-cod3s/vibetunnel/go-server/internal/websocket"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/auth"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/buffer"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/config"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/control"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/events"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/filesystem"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/git"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/logs"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/persistence"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/push"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/session"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/static"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/tmux"
+	"github.com/ferg-cod3s/tunnelforge/go-server/internal/websocket"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 type Config struct {
@@ -38,23 +41,24 @@ type Config struct {
 }
 
 type Server struct {
-	config           *config.Config
-	httpServer       *http.Server
-	sessionManager   *session.Manager
-	wsHandler        *websocket.Handler
-	bufferAggregator *buffer.BufferAggregator
-	jwtAuth          *auth.JWTAuth
-	passwordAuth     *auth.PasswordAuth
-	fileSystem       *filesystem.FileSystemService
-	gitService       *git.GitService
-	logService       *logs.LogService
-	controlService   *control.ControlService
-	tmuxService      *tmux.TmuxService
-	eventBroadcaster *events.EventBroadcaster
-	pushService      *push.PushService
-	pushHandler      *push.PushHandler
-	startTime        time.Time
-	mu               sync.RWMutex
+	config             *config.Config
+	httpServer         *http.Server
+	sessionManager     *session.Manager
+	wsHandler          *websocket.Handler
+	bufferAggregator   *buffer.BufferAggregator
+	jwtAuth            *auth.JWTAuth
+	passwordAuth       *auth.PasswordAuth
+	fileSystem         *filesystem.FileSystemService
+	gitService         *git.GitService
+	logService         *logs.LogService
+	controlService     *control.ControlService
+	tmuxService        *tmux.TmuxService
+	eventBroadcaster   *events.EventBroadcaster
+	pushService        *push.PushService
+	pushHandler        *push.PushHandler
+	persistenceService *persistence.Service
+	startTime          time.Time
+	mu                 sync.RWMutex
 }
 
 func New(cfg *Config) (*Server, error) {
@@ -64,8 +68,33 @@ func New(cfg *Config) (*Server, error) {
 		fullConfig.Port = cfg.Port
 	}
 
-	// Create session manager
-	sessionManager := session.NewManager()
+	// Initialize persistence service if enabled
+	var persistenceService *persistence.Service
+	var sessionManager *session.Manager
+
+	if fullConfig.EnablePersistence {
+		// Create file store for session persistence
+		fileStore, err := persistence.NewFileStore(fullConfig.PersistenceDir)
+		if err != nil {
+			log.Printf("Warning: Failed to initialize session persistence: %v", err)
+			sessionManager = session.NewManager()
+		} else {
+			// Create persistence service with auto-save
+			persistenceService = persistence.NewService(fileStore, true, fullConfig.PersistenceInterval)
+			persistenceService.Start()
+
+			// Create session manager with persistence
+			sessionManager = session.NewManagerWithPersistence(persistenceService)
+
+			// Restore persisted sessions on startup
+			if err := sessionManager.RestorePersistedSessions(); err != nil {
+				log.Printf("Warning: Failed to restore persisted sessions: %v", err)
+			}
+		}
+	} else {
+		// Create session manager without persistence
+		sessionManager = session.NewManager()
+	}
 
 	// Create WebSocket handler
 	wsHandler := websocket.NewHandler(sessionManager)
@@ -79,7 +108,7 @@ func New(cfg *Config) (*Server, error) {
 	fileSystemService := filesystem.NewFileSystemService(basePath)
 
 	// Initialize authentication services
-	jwtAuth := auth.NewJWTAuth("vibetunnel-jwt-secret-change-in-production")
+	jwtAuth := auth.NewJWTAuth("tunnelforge-jwt-secret-change-in-production")
 	passwordAuth := auth.NewPasswordAuth()
 
 	// Initialize event broadcaster
@@ -126,21 +155,22 @@ func New(cfg *Config) (*Server, error) {
 	}
 
 	s := &Server{
-		config:           fullConfig,
-		sessionManager:   sessionManager,
-		wsHandler:        wsHandler,
-		bufferAggregator: bufferAggregator,
-		fileSystem:       fileSystemService,
-		gitService:       gitService,
-		logService:       logService,
-		controlService:   controlService,
-		tmuxService:      tmuxService,
-		jwtAuth:          jwtAuth,
-		passwordAuth:     passwordAuth,
-		eventBroadcaster: eventBroadcaster,
-		pushService:      pushService,
-		pushHandler:      pushHandler,
-		startTime:        time.Now(),
+		config:             fullConfig,
+		sessionManager:     sessionManager,
+		wsHandler:          wsHandler,
+		bufferAggregator:   bufferAggregator,
+		fileSystem:         fileSystemService,
+		gitService:         gitService,
+		logService:         logService,
+		controlService:     controlService,
+		tmuxService:        tmuxService,
+		jwtAuth:            jwtAuth,
+		passwordAuth:       passwordAuth,
+		eventBroadcaster:   eventBroadcaster,
+		pushService:        pushService,
+		pushHandler:        pushHandler,
+		persistenceService: persistenceService,
+		startTime:          time.Now(),
 	}
 
 	// Set up event broadcasting hooks
@@ -183,9 +213,31 @@ func (s *Server) setupRoutes() {
 	auth.HandleFunc("/login", s.handleLogin).Methods("POST")
 	auth.HandleFunc("/password", s.handlePasswordAuth).Methods("POST")
 
-	// Create a simple auth middleware using our auth JWT
+	// Create authentication middleware that supports both JWT and local bypass
 	authMiddleware := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Check for local bypass header first (for Mac app compatibility)
+			if s.config.AllowLocalBypass {
+				localHeader := r.Header.Get("X-TunnelForge-Local")
+				if localHeader != "" {
+					// Check if the request is from localhost
+					clientIP := getClientIP(r)
+					if isLocalhost(clientIP) {
+						// Create a local user context for bypass authentication
+						userCtx := &middleware.UserContext{
+							UserID:   "local-user",
+							Username: "system",
+							Role:     "admin", // Local bypass gets admin privileges
+						}
+						ctx := context.WithValue(r.Context(), middleware.UserContextKey, userCtx)
+						r = r.WithContext(ctx)
+						next.ServeHTTP(w, r)
+						return
+					}
+				}
+			}
+
+			// Fall back to standard JWT authentication
 			authHeader := r.Header.Get("Authorization")
 			if authHeader == "" {
 				s.writeJSONError(w, "missing authorization header", http.StatusUnauthorized)
@@ -267,6 +319,31 @@ func (s *Server) setupRoutes() {
 	// Push notification routes
 	if s.pushHandler != nil {
 		s.pushHandler.RegisterRoutes(r)
+	}
+
+	// Static file serving (serve embedded frontend files)
+	staticHandler, err := static.GetStaticHandler()
+	if err != nil {
+		log.Printf("Warning: Could not set up static file serving: %v", err)
+	} else {
+		// Serve static files at root, but only if not an API route
+		r.PathPrefix("/").Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// If it's an API route, WebSocket, or health check, don't serve static files
+			if strings.HasPrefix(r.URL.Path, "/api/") || 
+			   strings.HasPrefix(r.URL.Path, "/ws") || 
+			   strings.HasPrefix(r.URL.Path, "/buffers") || 
+			   strings.HasPrefix(r.URL.Path, "/health") {
+				http.NotFound(w, r)
+				return
+			}
+			
+			// For root path, serve index.html
+			if r.URL.Path == "/" {
+				r.URL.Path = "/index.html"
+			}
+			
+			staticHandler.ServeHTTP(w, r)
+		}))
 	}
 
 	// CORS middleware
@@ -376,7 +453,7 @@ func (s *Server) Start() error {
 
 	// Broadcast server start event
 	startEvent := types.NewServerEvent(types.EventConnected).
-		WithMessage("VibeTunnel Go server started")
+		WithMessage("TunnelForge Go server started")
 	s.broadcastEvent(startEvent)
 
 	return s.httpServer.ListenAndServe()
@@ -385,7 +462,7 @@ func (s *Server) Start() error {
 func (s *Server) Shutdown(ctx context.Context) error {
 	// Broadcast server shutdown event
 	shutdownEvent := types.NewServerEvent(types.EventServerShutdown).
-		WithMessage("VibeTunnel Go server shutting down")
+		WithMessage("TunnelForge Go server shutting down")
 	s.broadcastEvent(shutdownEvent)
 
 	// Stop buffer aggregator
@@ -403,6 +480,11 @@ func (s *Server) Shutdown(ctx context.Context) error {
 
 	// Close all sessions
 	s.sessionManager.CloseAll()
+
+	// Stop persistence service
+	if s.persistenceService != nil {
+		s.persistenceService.Stop()
+	}
 
 	// Shutdown HTTP server
 	return s.httpServer.Shutdown(ctx)
@@ -443,7 +525,9 @@ func (s *Server) handleListSessions(w http.ResponseWriter, r *http.Request) {
 
 	// Return sessions array directly to match frontend expectations
 	if err := json.NewEncoder(w).Encode(responses); err != nil {
+		log.Printf("Failed to encode sessions response: %v", err)
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -496,6 +580,8 @@ func (s *Server) handleCreateSession(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Printf("Failed to encode session response: %v", err)
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -503,7 +589,9 @@ func (s *Server) handleCreateSession(w http.ResponseWriter, r *http.Request) {
 func (s *Server) writeJSONError(w http.ResponseWriter, message string, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(map[string]string{"error": message})
+	if err := json.NewEncoder(w).Encode(map[string]string{"error": message}); err != nil {
+		log.Printf("Failed to encode error response: %v", err)
+	}
 }
 
 func (s *Server) handleGetSession(w http.ResponseWriter, r *http.Request) {
@@ -539,6 +627,7 @@ func (s *Server) handleGetSession(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Printf("Failed to encode session response: %v", err)
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -591,6 +680,7 @@ func (s *Server) handleServerConfig(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(config); err != nil {
 		log.Printf("Failed to encode server config response: %v", err)
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -612,6 +702,7 @@ func (s *Server) handleServerStatus(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(status); err != nil {
 		log.Printf("Failed to encode server status response: %v", err)
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -642,6 +733,7 @@ func (s *Server) handleAuthConfig(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		log.Printf("Failed to encode auth config response: %v", err)
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -734,7 +826,10 @@ func (s *Server) handleSessionStream(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// Send SSE event
-			fmt.Fprintf(w, "data: %s\n\n", string(data))
+			if _, err := fmt.Fprintf(w, "data: %s\n\n", string(data)); err != nil {
+				log.Printf("Failed to write SSE data: %v", err)
+				return
+			}
 			flusher.Flush()
 
 		case <-r.Context().Done():
@@ -761,7 +856,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// For now, use a simple password check (should be configurable in production)
-	expectedPassword := "vibetunnel-dev-password" // Should come from config
+	expectedPassword := "tunnelforge-dev-password" // Should come from config
 	if loginReq.Password != expectedPassword {
 		s.writeJSONError(w, "Invalid credentials", http.StatusUnauthorized)
 		return
@@ -787,7 +882,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"token":   token,
 		"user": map[string]string{
@@ -795,7 +890,9 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 			"username": username,
 			"role":     "user",
 		},
-	})
+	}); err != nil {
+		log.Printf("Failed to encode login response: %v", err)
+	}
 }
 
 // handlePasswordAuth handles password authentication (alternative endpoint)
@@ -803,7 +900,7 @@ func (s *Server) handlePasswordAuth(w http.ResponseWriter, r *http.Request) {
 	// If auth is not required, just return success
 	if !s.config.AuthRequired {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		if err := json.NewEncoder(w).Encode(map[string]interface{}{
 			"success": true,
 			"message": "Authentication not required",
 			"token":   "guest-token",
@@ -812,7 +909,9 @@ func (s *Server) handlePasswordAuth(w http.ResponseWriter, r *http.Request) {
 				"username": "guest",
 				"role":     "admin",
 			},
-		})
+		}); err != nil {
+			log.Printf("Failed to encode password auth response: %v", err)
+		}
 		return
 	}
 
@@ -942,11 +1041,13 @@ func (s *Server) handleTestEvent(w http.ResponseWriter, r *http.Request) {
 
 	// Return success response
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"message": "Test event broadcasted",
 		"clients": s.eventBroadcaster.GetClientCount(),
-	})
+	}); err != nil {
+		log.Printf("Failed to encode test event response: %v", err)
+	}
 }
 
 // handleRepositoryDiscover handles repository discovery for frontend file browser
@@ -1043,6 +1144,7 @@ func (s *Server) handleRepositoryDiscover(w http.ResponseWriter, r *http.Request
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Printf("Failed to encode repository discovery response: %v", err)
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -1068,7 +1170,9 @@ func (s *Server) handleCleanupExited(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Failed to encode cleanup response: %v", err)
+	}
 }
 
 // handleResetSessionSize resets terminal size to default dimensions
@@ -1097,5 +1201,49 @@ func (s *Server) handleResetSessionSize(w http.ResponseWriter, r *http.Request) 
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Failed to encode reset size response: %v", err)
+	}
+}
+
+// getClientIP extracts the client IP from the request
+func getClientIP(r *http.Request) string {
+	// Try X-Forwarded-For header first (for proxies)
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		// Take the first IP in the chain
+		ips := strings.Split(xff, ",")
+		return strings.TrimSpace(ips[0])
+	}
+
+	// Try X-Real-IP header
+	if xri := r.Header.Get("X-Real-IP"); xri != "" {
+		return xri
+	}
+
+	// Fall back to RemoteAddr
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return r.RemoteAddr
+	}
+
+	return ip
+}
+
+// isLocalhost checks if the IP is a localhost address
+func isLocalhost(ip string) bool {
+	if ip == "" {
+		return false
+	}
+
+	// Parse the IP
+	parsedIP := net.ParseIP(ip)
+	if parsedIP == nil {
+		return false
+	}
+
+	// Check for localhost IPs
+	return parsedIP.IsLoopback() || 
+		   ip == "127.0.0.1" || 
+		   ip == "::1" || 
+		   ip == "localhost"
 }

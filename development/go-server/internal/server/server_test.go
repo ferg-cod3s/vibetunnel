@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 func TestServer_HealthCheck(t *testing.T) {
@@ -505,4 +505,56 @@ func TestServer_SessionStream(t *testing.T) {
 	// Clean up
 	err = server.sessionManager.Close(session.ID)
 	require.NoError(t, err)
+}
+
+// Test local bypass authentication
+func TestServer_LocalBypassAuth(t *testing.T) {
+	server, err := New(&Config{Port: "0"})
+	require.NoError(t, err)
+
+	// Test server's config should be set properly for this test
+	server.config.AuthRequired = true
+	server.config.AllowLocalBypass = true
+
+	t.Run("local bypass with X-TunnelForge-Local header succeeds from localhost", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/api/sessions", nil)
+		req.Header.Set("X-TunnelForge-Local", "true")
+		req.RemoteAddr = "127.0.0.1:12345"
+		w := httptest.NewRecorder()
+
+		server.setupRoutes()
+		server.httpServer.Handler.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusOK, w.Code)
+	})
+
+	t.Run("local bypass from non-localhost fails", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/api/sessions", nil)
+		req.Header.Set("X-TunnelForge-Local", "true")
+		req.RemoteAddr = "192.168.1.100:12345"
+		w := httptest.NewRecorder()
+
+		server.setupRoutes()
+		server.httpServer.Handler.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusUnauthorized, w.Code)
+	})
+
+	t.Run("local bypass disabled requires JWT authentication", func(t *testing.T) {
+		serverNoBypass, err := New(&Config{Port: "0"})
+		require.NoError(t, err)
+
+		serverNoBypass.config.AuthRequired = true
+		serverNoBypass.config.AllowLocalBypass = false
+
+		req := httptest.NewRequest("GET", "/api/sessions", nil)
+		req.Header.Set("X-TunnelForge-Local", "true")
+		req.RemoteAddr = "127.0.0.1:12345"
+		w := httptest.NewRecorder()
+
+		serverNoBypass.setupRoutes()
+		serverNoBypass.httpServer.Handler.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusUnauthorized, w.Code)
+	})
 }

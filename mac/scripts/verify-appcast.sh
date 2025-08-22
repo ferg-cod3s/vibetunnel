@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Appcast Verification Script for VibeTunnel
+# Appcast Verification Script for TunnelForge
 # Validates appcast XML files for common issues
 set -euo pipefail
 
@@ -13,7 +13,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo "🔍 VibeTunnel Appcast Verification"
+echo "🔍 TunnelForge Appcast Verification"
 echo "================================="
 echo ""
 

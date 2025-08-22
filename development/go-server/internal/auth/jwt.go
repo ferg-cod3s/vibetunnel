@@ -63,7 +63,7 @@ func (j *JWTAuth) GenerateToken(userClaims UserClaims, duration time.Duration) (
 			ExpiresAt: jwt.NewNumericDate(now.Add(duration)),
 			IssuedAt:  jwt.NewNumericDate(now),
 			NotBefore: jwt.NewNumericDate(now),
-			Issuer:    "vibetunnel-go-server",
+			Issuer:    "tunnelforge-go-server",
 			Subject:   userClaims.UserID,
 		},
 	}

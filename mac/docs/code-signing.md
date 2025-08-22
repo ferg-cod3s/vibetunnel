@@ -1,6 +1,6 @@
-# Code Signing Guide for VibeTunnel
+# Code Signing Guide for TunnelForge
 
-This comprehensive guide covers all aspects of code signing for VibeTunnel, from local development setup to release distribution.
+This comprehensive guide covers all aspects of code signing for TunnelForge, from local development setup to release distribution.
 
 ## Table of Contents
 
@@ -13,7 +13,7 @@ This comprehensive guide covers all aspects of code signing for VibeTunnel, from
 
 ### Initial Team Configuration
 
-VibeTunnel uses xcconfig files to manage developer team settings, allowing multiple developers to work without code signing conflicts.
+TunnelForge uses xcconfig files to manage developer team settings, allowing multiple developers to work without code signing conflicts.
 
 1. **Copy the template file to create your local configuration:**
    ```bash
@@ -35,13 +35,13 @@ VibeTunnel uses xcconfig files to manage developer team settings, allowing multi
 
 ### How xcconfig Works
 
-- `VibeTunnel/Shared.xcconfig` - Contains shared configuration and includes local settings
+- `TunnelForge/Shared.xcconfig` - Contains shared configuration and includes local settings
 - `../apple/Local.xcconfig` - Your personal settings (ignored by git)
 - `../apple/Local.xcconfig.template` - Template for new developers
 
 ### Avoiding Keychain Dialogs During Development
 
-VibeTunnel stores dashboard passwords in the keychain, which can trigger repeated authorization dialogs during development.
+TunnelForge stores dashboard passwords in the keychain, which can trigger repeated authorization dialogs during development.
 
 #### Debug Mode Behavior
 
@@ -121,10 +121,10 @@ APP_STORE_CONNECT_ISSUER_ID="12345678-1234-1234-1234-123456789012"
 #### Individual Scripts
 ```bash
 # Just code signing
-./scripts/codesign-app.sh build/Build/Products/Release/VibeTunnel.app
+./scripts/codesign-app.sh build/Build/Products/Release/TunnelForge.app
 
 # Just notarization (requires signed app)
-./scripts/notarize-app.sh build/Build/Products/Release/VibeTunnel.app
+./scripts/notarize-app.sh build/Build/Products/Release/TunnelForge.app
 ```
 
 ### Script Options
@@ -134,7 +134,7 @@ APP_STORE_CONNECT_ISSUER_ID="12345678-1234-1234-1234-123456789012"
 ./scripts/sign-and-notarize.sh --help
 
 # Sign and notarize with custom app path
-./scripts/sign-and-notarize.sh --app-path path/to/VibeTunnel.app --sign-and-notarize
+./scripts/sign-and-notarize.sh --app-path path/to/TunnelForge.app --sign-and-notarize
 
 # Skip stapling (for CI environments)
 ./scripts/sign-and-notarize.sh --sign-and-notarize --skip-staple
@@ -198,13 +198,13 @@ The CI workflow automatically uses these for notarization when building on the m
 
 ```bash
 # Verify code signature
-codesign --verify --verbose=2 VibeTunnel.app
+codesign --verify --verbose=2 TunnelForge.app
 
 # Test with Gatekeeper (should pass for notarized apps)
-spctl -a -t exec -vv VibeTunnel.app
+spctl -a -t exec -vv TunnelForge.app
 
 # Check if notarization ticket is stapled
-stapler validate VibeTunnel.app
+stapler validate TunnelForge.app
 ```
 
 ## Reference
@@ -219,9 +219,9 @@ stapler validate VibeTunnel.app
 
 ```
 build/
-├── Build/Products/Release/VibeTunnel.app  # Signed and notarized app
-├── VibeTunnel-notarized.zip               # Distributable archive
-└── VibeTunnel-1.0.0.dmg                   # DMG (if created)
+├── Build/Products/Release/TunnelForge.app  # Signed and notarized app
+├── TunnelForge-notarized.zip               # Distributable archive
+└── TunnelForge-1.0.0.dmg                   # DMG (if created)
 ```
 
 ### Security Notes

@@ -11,7 +11,8 @@ else
     PROJECT_DIR="${SRCROOT}"
 fi
 
-WEB_DIR="${PROJECT_DIR}/../web"
+# Use TunnelForge web assets instead of VibeTunnel
+WEB_DIR="${PROJECT_DIR}/../development/bun-web"
 HASH_FILE="${BUILT_PRODUCTS_DIR}/.web-content-hash"
 PREVIOUS_HASH_FILE="${BUILT_PRODUCTS_DIR}/.web-content-hash.previous"
 PUBLIC_DIR="${WEB_DIR}/public"
@@ -408,9 +409,9 @@ echo "Verifying vibetunnel executable..."
 echo "Full path: ${APP_RESOURCES}/vibetunnel"
 if "${APP_RESOURCES}/vibetunnel" version &>/dev/null; then
     VERSION_OUTPUT=$("${APP_RESOURCES}/vibetunnel" version 2>&1 | head -1)
-    echo "✓ VibeTunnel executable verified: $VERSION_OUTPUT"
+    echo "✓ TunnelForge executable verified: $VERSION_OUTPUT"
 else
-    echo "error: VibeTunnel executable failed verification (version command failed)"
+    echo "error: TunnelForge executable failed verification (version command failed)"
     echo "Full executable path: ${APP_RESOURCES}/vibetunnel"
     echo "Checking if file exists and is executable:"
     ls -la "${APP_RESOURCES}/vibetunnel" || echo "File not found!"

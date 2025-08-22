@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# VibeTunnel Changelog to HTML Converter
+# TunnelForge Changelog to HTML Converter
 # =============================================================================
 #
 # Converts specific version sections from CHANGELOG.md to HTML format for
@@ -118,8 +118,8 @@ if [ -z "$version_content" ]; then
     echo "Warning: No changelog section found for version $VERSION" >&2
     echo "Using default content..." >&2
     cat << EOF
-<h2>VibeTunnel $VERSION</h2>
-<p>Latest version of VibeTunnel with new features and improvements.</p>
+<h2>TunnelForge $VERSION</h2>
+<p>Latest version of TunnelForge with new features and improvements.</p>
 <p><a href="https://github.com/amantus-ai/vibetunnel/blob/main/CHANGELOG.md">View full changelog</a></p>
 EOF
     exit 0

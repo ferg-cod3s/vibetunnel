@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# App Verification Script for VibeTunnel
+# App Verification Script for TunnelForge
 # Comprehensive verification of built app, DMG, entitlements, and notarization
 set -euo pipefail
 
@@ -39,7 +39,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "🔍 VibeTunnel App Verification"
+echo "🔍 TunnelForge App Verification"
 echo "=============================="
 echo ""
 
@@ -47,10 +47,10 @@ echo ""
 if [[ "$TARGET" == *.dmg ]]; then
     echo "📀 Mounting DMG: $TARGET"
     TEMP_MOUNT=$(hdiutil attach "$TARGET" -quiet -nobrowse | grep -E '^\s*/Volumes/' | tail -1 | awk '{print $NF}')
-    APP_PATH="$TEMP_MOUNT/VibeTunnel.app"
+    APP_PATH="$TEMP_MOUNT/TunnelForge.app"
     
     if [[ ! -d "$APP_PATH" ]]; then
-        echo -e "${RED}❌ VibeTunnel.app not found in DMG${NC}"
+        echo -e "${RED}❌ TunnelForge.app not found in DMG${NC}"
         exit 1
     fi
 else

@@ -1,0 +1,33 @@
+{
+  "name": "tunnelforge-linux",
+  "version": "1.0.0",
+  "description": "TunnelForge Desktop App for Linux - Terminal sharing with web interface",
+  "author": "TunnelForge Team",
+  "license": "MIT",
+  "homepage": "https://tunnelforge.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ferg-cod3s/tunnelforge.git",
+    "directory": "linux"
+  },
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "build:debug": "tauri build --debug",
+    "build:appimage": "tauri build --target AppImage",
+    "build:deb": "tauri build --target deb", 
+    "build:rpm": "tauri build --target rpm",
+    "clean": "cargo clean && rm -rf dist node_modules",
+    "setup": "cargo install tauri-cli && npm install",
+    "check": "cargo check",
+    "clippy": "cargo clippy",
+    "fmt": "cargo fmt"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.5.0"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

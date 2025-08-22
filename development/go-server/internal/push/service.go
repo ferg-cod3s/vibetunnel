@@ -10,7 +10,7 @@ import (
 	"time"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
-	"github.com/ferg-cod3s/vibetunnel/go-server/pkg/types"
+	"github.com/ferg-cod3s/tunnelforge/go-server/pkg/types"
 )
 
 // NotificationPayload represents the data sent in a push notification
@@ -340,7 +340,7 @@ func (ps *PushService) isPermanentError(err error) bool {
 	return false
 }
 
-// ProcessServerEvent processes a VibeTunnel server event and sends appropriate notifications
+// ProcessServerEvent processes a TunnelForge server event and sends appropriate notifications
 func (ps *PushService) ProcessServerEvent(ctx context.Context, event *types.ServerEvent) error {
 	// Skip if we don't have active subscriptions
 	subscriptions, err := ps.subscriptionStore.GetActive()
@@ -441,8 +441,8 @@ func (ps *PushService) createNotificationFromEvent(event *types.ServerEvent) *No
 
 	case types.EventServerShutdown:
 		return &NotificationPayload{
-			Title:              "VibeTunnel Server Shutdown",
-			Body:               "The VibeTunnel server is shutting down",
+			Title:              "TunnelForge Server Shutdown",
+			Body:               "The TunnelForge server is shutting down",
 			Tag:                "server-shutdown",
 			Icon:               "/icons/warning.png",
 			RequireInteraction: true,

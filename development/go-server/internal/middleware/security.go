@@ -55,10 +55,12 @@ func (rl *RateLimiter) Middleware(next http.Handler) http.Handler {
 		if !rl.allow(ip) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusTooManyRequests)
-			json.NewEncoder(w).Encode(map[string]interface{}{
+			if err := json.NewEncoder(w).Encode(map[string]interface{}{
 				"error":   "rate limit exceeded",
 				"success": false,
-			})
+			}); err != nil {
+				log.Printf("Failed to encode rate limit response: %v", err)
+			}
 			return
 		}
 
@@ -321,10 +323,12 @@ func (c *CSRF) Middleware(next http.Handler) http.Handler {
 		if !c.ValidateToken(token) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
-			json.NewEncoder(w).Encode(map[string]interface{}{
+			if err := json.NewEncoder(w).Encode(map[string]interface{}{
 				"error":   "invalid CSRF token",
 				"success": false,
-			})
+			}); err != nil {
+				log.Printf("Failed to encode CSRF error response: %v", err)
+			}
 			return
 		}
 
@@ -373,10 +377,12 @@ func (ip *IPWhitelist) Middleware(next http.Handler) http.Handler {
 		if !ip.isAllowed(clientIP) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
-			json.NewEncoder(w).Encode(map[string]interface{}{
+			if err := json.NewEncoder(w).Encode(map[string]interface{}{
 				"error":   "IP address not allowed",
 				"success": false,
-			})
+			}); err != nil {
+				log.Printf("Failed to encode IP whitelist error response: %v", err)
+			}
 			return
 		}
 
@@ -460,7 +466,11 @@ func Compression() func(http.Handler) http.Handler {
 
 			// Create gzip writer
 			gz := gzip.NewWriter(w)
-			defer gz.Close()
+			defer func() {
+				if err := gz.Close(); err != nil {
+					log.Printf("Failed to close gzip writer: %v", err)
+				}
+			}()
 
 			// Wrap response writer
 			gzw := &gzipResponseWriter{ResponseWriter: w, Writer: gz}

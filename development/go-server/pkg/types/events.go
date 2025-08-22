@@ -32,7 +32,7 @@ const (
 )
 
 // ServerEvent represents an event that can be broadcast via Server-Sent Events
-// This matches the original VibeTunnel TypeScript interface for compatibility
+// This matches the original TunnelForge TypeScript interface for compatibility
 type ServerEvent struct {
 	Type        ServerEventType `json:"type"`
 	SessionID   *string         `json:"sessionId,omitempty"`
