@@ -1,9 +1,9 @@
-# VibeTunnel Go Server Makefile
+# TunnelForge Go Server Makefile
 
 .PHONY: build test clean install dev help
 
 # Build configuration
-BINARY_NAME=vibetunnel
+BINARY_NAME=tunnelforge
 BINARY_PATH=bin/$(BINARY_NAME)
 CLI_ENTRY=cmd/vibetunnel/main.go
 SERVER_ENTRY=cmd/server/main.go
@@ -24,17 +24,17 @@ all: build
 
 # Build the CLI binary
 build:
-	@echo "Building VibeTunnel CLI..."
+	@echo "Building TunnelForge CLI..."
 	@mkdir -p bin
 	$(GOBUILD) $(BUILD_FLAGS) -o $(BINARY_PATH) $(CLI_ENTRY)
 	@echo "Built $(BINARY_PATH)"
 
 # Build the server-only binary (for development)
 build-server:
-	@echo "Building VibeTunnel Server..."
+	@echo "Building TunnelForge Server..."
 	@mkdir -p bin
-	$(GOBUILD) $(BUILD_FLAGS) -o bin/vibetunnel-server $(SERVER_ENTRY)
-	@echo "Built bin/vibetunnel-server"
+	$(GOBUILD) $(BUILD_FLAGS) -o bin/tunnelforge-server $(SERVER_ENTRY)
+	@echo "Built bin/tunnelforge-server"
 
 # Run tests
 test:
@@ -65,7 +65,7 @@ deps:
 install: build
 	@echo "Installing $(BINARY_NAME) to /usr/local/bin..."
 	sudo cp $(BINARY_PATH) /usr/local/bin/$(BINARY_NAME)
-	@echo "Installed successfully. You can now use 'vibetunnel' from anywhere."
+	@echo "Installed successfully. You can now use 'tunnelforge' from anywhere."
 
 # Development server (hot reload with air if available)
 dev:
@@ -119,7 +119,7 @@ release: clean
 
 # Show help
 help:
-	@echo "VibeTunnel Go Server - Available Make Targets:"
+	@echo "TunnelForge Go Server - Available Make Targets:"
 	@echo ""
 	@echo "  build          - Build the CLI binary"
 	@echo "  build-server   - Build server-only binary"  

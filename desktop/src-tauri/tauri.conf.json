@@ -1,8 +1,8 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "build": {
-    "beforeDevCommand": "cd ../web && bun run start:bun",
-    "beforeBuildCommand": "cd ../web && bun run build:bun",
+    "beforeDevCommand": "echo 'Server should already be running on port 3001'",
+    "beforeBuildCommand": "cd ../web && bun build src/client/app-entry.ts --outfile=public/bundle/client-bundle.js --format=esm --minify && bunx postcss src/client/styles.css -o public/bundle/styles.css",
     "devUrl": "http://localhost:3001",
     "frontendDist": "../web/public"
   },
@@ -37,7 +37,6 @@
   "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "dev.tunnelforge.desktop",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png", 
@@ -52,45 +51,8 @@
       "copyright": "Copyright © 2024 TunnelForge Team",
       "category": "DeveloperTool",
       "shortDescription": "Terminal sharing made simple",
-      "longDescription": "TunnelForge allows you to share terminal sessions through any web browser with a beautiful, fast desktop interface.",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": "",
-        "tsp": false,
-        "wix": {
-          "language": ["en-US"],
-          "template": "main.wxs",
-          "fragmentPaths": [],
-          "componentGroupRefs": [],
-          "componentRefs": [],
-          "featureGroupRefs": [],
-          "featureRefs": [],
-          "mergeRefs": [],
-          "skipWebviewInstall": false,
-          "license": "LICENSE.rtf",
-          "enableElevatedUpdateTask": true,
-          "bannerPath": "banner.bmp",
-          "dialogImagePath": "dialog.bmp"
-        },
-        "nsis": {
-          "license": "LICENSE.txt", 
-          "headerImage": "header.bmp",
-          "sidebarImage": "sidebar.bmp",
-          "installerIcon": "installer.ico",
-          "installMode": "perMachine",
-          "languages": ["English"],
-          "displayLanguageSelector": false
-        }
-      },
-      "linux": {
-        "deb": {
-          "depends": ["libwebkit2gtk-4.0-37", "libgtk-3-0", "libayatana-appindicator3-1"],
-          "files": {}
-        }
-      }
-    }
-  },
+      "longDescription": "TunnelForge allows you to share terminal sessions through any web browser with a beautiful, fast desktop interface."
+    },
   "app": {
     "security": {
       "csp": null

@@ -7,9 +7,15 @@ use std::process::{Child, Command};
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
+use std::path::{Path, PathBuf};
+use std::fs;
 
-use tauri::{AppHandle, Manager, State, WebviewWindow};
+use tauri::{AppHandle, Manager, State, WebviewWindow, SystemTray, SystemTrayMenu, SystemTrayMenuItem, SystemTrayEvent};
 use serde::{Deserialize, Serialize};
+
+// Platform-specific imports
+#[cfg(target_os = "macos")]
+use std::os::unix::fs::PermissionsExt;
 
 // Application state
 struct AppState {
@@ -69,6 +75,80 @@ async fn get_server_url(state: State<'_, AppState>) -> Result<String, String> {
 async fn show_notification(title: String, message: String) -> Result<(), String> {
     // Use Tauri v2 notification plugin
     Ok(())
+}
+
+#[tauri::command]
+async fn check_cli_installation() -> Result<bool, String> {
+    // Check if tunnelforge CLI is installed
+    let paths = vec![
+        "/usr/local/bin/tunnelforge",
+        "/opt/homebrew/bin/tunnelforge",
+    ];
+    
+    for path in paths {
+        if Path::new(path).exists() {
+            return Ok(true);
+        }
+    }
+    
+    Ok(false)
+}
+
+#[tauri::command]
+async fn install_cli_tool() -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    {
+        // Get the app bundle path
+        let bundle_path = std::env::current_exe()
+            .map_err(|e| format!("Failed to get current executable path: {}", e))?
+            .parent()
+            .and_then(|p| p.parent())
+            .and_then(|p| p.parent())
+            .ok_or("Failed to determine app bundle path")?;
+            
+        let cli_script_path = bundle_path.join("Resources/tunnelforge-cli");
+        
+        if !cli_script_path.exists() {
+            return Err("CLI script not found in app bundle".to_string());
+        }
+        
+        // Install to /usr/local/bin with sudo
+        let install_path = "/usr/local/bin/tunnelforge";
+        
+        // Create the install command
+        let status = Command::new("osascript")
+            .arg("-e")
+            .arg(format!(
+                "do shell script \"cp '{}' '{}' && chmod +x '{}'\" with administrator privileges",
+                cli_script_path.display(),
+                install_path,
+                install_path
+            ))
+            .status()
+            .map_err(|e| format!("Failed to execute install command: {}", e))?;
+            
+        if status.success() {
+            Ok(())
+        } else {
+            Err("CLI installation failed or was cancelled by user".to_string())
+        }
+    }
+    
+    #[cfg(not(target_os = "macos"))]
+    {
+        Err("CLI installation is only supported on macOS for now".to_string())
+    }
+}
+
+#[tauri::command]
+async fn get_app_version() -> Result<String, String> {
+    Ok(env!("CARGO_PKG_VERSION").to_string())
+}
+
+#[tauri::command]
+async fn open_external_url(url: String) -> Result<(), String> {
+    tauri_plugin_opener::open_url(&url, None::<&str>)
+        .map_err(|e| format!("Failed to open URL: {}", e))
 }
 
 // Internal server management
@@ -168,7 +248,11 @@ pub fn run() {
             get_server_status,
             restart_server,
             get_server_url,
-            show_notification
+            show_notification,
+            check_cli_installation,
+            install_cli_tool,
+            get_app_version,
+            open_external_url
         ])
         .setup(|app| {
             let app_handle = app.handle().clone();
