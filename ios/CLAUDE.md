@@ -1,6 +1,6 @@
-# CLAUDE.md - iOS App
+# iOS App Memory
 
-This file provides guidance to Claude Code when working with the iOS companion app for VibeTunnel.
+Project-specific instructions for the TunnelForge iOS companion app development.
 
 ## Project Overview
 

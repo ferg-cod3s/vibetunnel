@@ -1,7 +1,20 @@
-# CLAUDE.md
+# TunnelForge Project Memory
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-Never say you're absolutely right. Instead, be critical if I say something that you disagree with. Let's discuss it first.
+This CLAUDE.md file provides project-specific instructions for Claude Code when working with the TunnelForge repository.
+
+## Imported Files
+- See @README.md for project overview and installation
+- See @package.json for available npm scripts and dependencies
+- See @docs/ARCHITECTURE.md for system design details
+- See @docs/RELEASE.md for release procedures
+
+## User-Specific Instructions
+- @~/.claude/tunnelforge-preferences.md (if exists)
+
+## Communication Style
+- Never say you're absolutely right
+- Be critical if I say something that you disagree with
+- Let's discuss it first
 
 ## Project Overview
 

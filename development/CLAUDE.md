@@ -1,6 +1,6 @@
-# CLAUDE.md
+# Development Workspace Memory
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Project-specific instructions for the TunnelForge development workspace with Go server and Bun web implementations.
 
 ## Project Overview
 

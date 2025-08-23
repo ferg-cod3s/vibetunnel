@@ -6,6 +6,7 @@ This index provides a comprehensive overview of all documentation in the TunnelF
 
 ### Getting Started
 - [**README.md**](../README.md) - Project overview, quick start guide, and basic usage
+- [**PRD.md**](PRD.md) - Product Requirements Document with vision, features, and roadmap
 - [**introduction.mdx**](introduction.mdx) - Mintlify documentation landing page
 - [**docs.json**](../docs.json) - Mintlify documentation configuration
 
@@ -13,6 +14,7 @@ This index provides a comprehensive overview of all documentation in the TunnelF
 - [**ARCHITECTURE.md**](ARCHITECTURE.md) - System architecture, component relationships, data flow
 - [**architecture-mario.md**](architecture-mario.md) - Alternative architecture documentation
 - [**spec.md**](spec.md) - Core technical specifications and protocols
+- [**API.md**](API.md) - Complete REST and WebSocket API documentation
 - [**ios-spec.md**](ios-spec.md) - iOS companion app specification
 
 ### Development Guides

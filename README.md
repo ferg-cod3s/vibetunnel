@@ -12,7 +12,9 @@
   <a href="https://github.com/johnferguson/tunnelforge/releases/latest"><img src="https://img.shields.io/badge/Download-macOS-blue" alt="Download"></a>
   <a href="https://www.npmjs.com/package/tunnelforge"><img src="https://img.shields.io/npm/v/tunnelforge.svg" alt="npm version"></a>
   <a href="https://formulae.brew.sh/cask/tunnelforge"><img src="https://img.shields.io/homebrew/cask/v/tunnelforge" alt="Homebrew"></a>
-  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-20+-339933?logo=node.js" alt="Node.js 20+"></a>
+  <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go" alt="Go 1.21+"></a>
+  <a href="https://bun.sh"><img src="https://img.shields.io/badge/Bun-1.0+-F472B6?logo=bun" alt="Bun 1.0+"></a>
+  <a href="https://tauri.app"><img src="https://img.shields.io/badge/Tauri-v2-FFC131?logo=tauri" alt="Tauri v2"></a>
   <a href="https://discord.gg/3Ub3EUwrcR"><img src="https://img.shields.io/discord/1394471066990280875?label=Discord&logo=discord" alt="Discord"></a>
   <a href="https://twitter.com/tunnelforge"><img src="https://img.shields.io/twitter/follow/tunnelforge?style=social" alt="Twitter"></a>
 </p>
@@ -60,17 +62,25 @@ Ever wanted to check on your AI agents while you're away? Need to monitor that l
 
 ## Installation Options
 
-### macOS App (Recommended for Mac users)
-The native macOS app provides the best experience with menu bar integration and automatic updates.
+### Desktop App (Cross-Platform)
+The Tauri-based desktop app provides native performance across all platforms:
+- **macOS**: Menu bar integration, native notifications
+- **Linux**: System tray support, lightweight (~10-15MB)
+- **Windows**: Native Windows integration (coming soon)
 
-### npm Package (Linux & Headless Systems)
-For Linux servers, Docker containers, or headless macOS systems, install via npm:
+[Download the latest release](https://github.com/johnferguson/tunnelforge/releases/latest) for your platform.
+
+### Legacy macOS App (Deprecated)
+The Swift-based Mac app is being phased out in favor of the unified Tauri desktop app. Existing users should migrate to the new desktop app for better performance and smaller bundle size.
+
+### npm Package (Servers & CI/CD)
+For Linux servers, Docker containers, or headless systems, install via npm:
 
 ```bash
 npm install -g tunnelforge
 ```
 
-This gives you the full TunnelForge server with web UI, just without the macOS menu bar app. See the [npm Package section](#npm-package) for detailed usage.
+This provides the full TunnelForge server with web UI for terminal environments. See the [npm Package section](#npm-package) for detailed usage.
 
 ## Quick Start
 
@@ -172,13 +182,41 @@ Visit [http://localhost:4020](http://localhost:4020) to see all your terminal se
 
 ## Architecture
 
-TunnelForge consists of three main components:
+TunnelForge uses a modern, performance-focused architecture:
 
-1. **macOS Menu Bar App** - Native Swift application that manages the server lifecycle
-2. **Node.js Server** - High-performance TypeScript server handling terminal sessions
-3. **Web Frontend** - Modern web interface using Lit components and xterm.js
+### Core Components
 
-The server runs as a standalone Node.js executable with embedded modules, providing excellent performance and minimal resource usage.
+1. **Desktop App (Tauri v2)** - Cross-platform desktop application
+   - Built with Rust and Tauri v2 for native performance
+   - ~10-15MB bundle size (vs 100MB+ with Electron)
+   - Supports Mac, Linux, and Windows from single codebase
+   - System tray integration and native notifications
+
+2. **Go Server** - High-performance backend server
+   - Written in Go for excellent concurrency and low memory usage
+   - WebSocket-based real-time communication
+   - Built-in session persistence and event broadcasting
+   - Native terminal emulation via PTY
+
+3. **Bun Runtime** - JavaScript/TypeScript execution
+   - Uses Bun for superior startup time and performance
+   - Native TypeScript support without transpilation overhead
+   - Smaller binaries and faster package installation
+   - Compatible with existing Node.js ecosystem
+
+4. **Web Frontend** - Modern responsive interface
+   - Lit components for lightweight, fast UI
+   - xterm.js for terminal rendering
+   - Real-time session updates via WebSocket
+   - Progressive Web App capabilities
+
+### Architecture Benefits
+
+- **Performance**: Go server + Bun runtime = blazing fast execution
+- **Size**: Tauri desktop app is 85% smaller than Electron alternatives
+- **Cross-platform**: Single codebase for Mac, Linux, and Windows
+- **Modern**: Latest tech stack with Tauri v2, Go 1.21+, and Bun 1.0+
+- **Maintainable**: Clear separation of concerns with well-defined interfaces
 
 ## Remote Access Options
 
@@ -652,9 +690,27 @@ npm publish
 ## Building from Source
 
 ### Prerequisites
-- macOS 14.0+ (Sonoma) on Apple Silicon (M1+)
-- Xcode 16.0+
-- Node.js 20+ (minimum supported version)
+
+#### All Platforms
+- Go 1.21+
+- Bun 1.0+
+- Rust 1.70+ (for Tauri)
+- Git
+
+#### Platform-Specific
+**macOS:**
+- macOS 14.0+ (Sonoma) recommended
+- Xcode Command Line Tools
+
+**Linux:**
+- Build essentials (`build-essential` on Ubuntu/Debian)
+- libwebkit2gtk-4.1-dev
+- libgtk-3-dev
+- libayatana-appindicator3-dev
+
+**Windows:**
+- Visual Studio 2022 with C++ build tools
+- WebView2 (comes with Windows 11, separate install for Windows 10)
 
 ### Build Steps
 
@@ -663,54 +719,86 @@ npm publish
 git clone https://github.com/johnferguson/tunnelforge.git
 cd tunnelforge
 
-# Set up code signing (required for macOS/iOS development)
-# Create Local.xcconfig files with your Apple Developer Team ID
-# Note: These files must be in the same directory as Shared.xcconfig
-cat > mac/TunnelForge/Local.xcconfig << EOF
-// Local Development Configuration
-// DO NOT commit this file to version control
-DEVELOPMENT_TEAM = YOUR_TEAM_ID
-CODE_SIGN_STYLE = Automatic
-EOF
+# Install Bun (if not already installed)
+curl -fsSL https://bun.sh/install | bash
 
-cat > ios/TunnelForge/Local.xcconfig << EOF
-// Local Development Configuration  
-// DO NOT commit this file to version control
-DEVELOPMENT_TEAM = YOUR_TEAM_ID
-CODE_SIGN_STYLE = Automatic
-EOF
+# Install Rust and Tauri CLI (if not already installed)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo install tauri-cli --version "^2.0.0"
 
-# Build the web server
-cd web
-pnpm install
-pnpm run build
+# Build the Go backend server
+cd server
+go build -o ../dist/tunnelforge-server ./cmd/server
 
-# Optional: Build with custom Node.js for smaller binary (46% size reduction)
-# export TUNNELFORGE_USE_CUSTOM_NODE=YES
-# node build-custom-node.js  # Build optimized Node.js (one-time, ~20 min)
-# pnpm run build              # Will use custom Node.js automatically
+# Build the web assets with Bun
+cd ../web
+bun install
+bun run build
 
-# Build the macOS app
-cd ../mac
-./scripts/build.sh --configuration Release
+# Build the Tauri desktop app (all platforms)
+cd ../desktop
+bun install
+bun tauri build
+
+# Output locations:
+# macOS: desktop/target/release/bundle/macos/TunnelForge.app
+# Linux: desktop/target/release/bundle/deb/*.deb
+#        desktop/target/release/bundle/appimage/*.AppImage
+# Windows: desktop/target/release/bundle/msi/*.msi
+#          desktop/target/release/bundle/nsis/*.exe
 ```
 
-### Custom Node.js Builds
-
-TunnelForge supports building with a custom Node.js for a 46% smaller executable (61MB vs 107MB):
+### Platform-Specific Builds
 
 ```bash
-# Build custom Node.js (one-time, ~20 minutes)
-node build-custom-node.js
+# Build for specific platform only
+bun tauri build --target x86_64-apple-darwin      # macOS Intel
+bun tauri build --target aarch64-apple-darwin     # macOS Apple Silicon
+bun tauri build --target x86_64-pc-windows-msvc   # Windows x64
+bun tauri build --target x86_64-unknown-linux-gnu # Linux x64
 
-# Use environment variable for all builds
-export TUNNELFORGE_USE_CUSTOM_NODE=YES
-
-# Or use in Xcode Build Settings
-# Add User-Defined Setting: TUNNELFORGE_USE_CUSTOM_NODE = YES
+# Development build (faster, with debug symbols)
+bun tauri dev
 ```
 
-See [Custom Node Build Flags](docs/custom-node-build-flags.md) for detailed optimization information.
+### Optimized Production Builds
+
+```bash
+# Build with maximum optimizations
+cd server
+CGO_ENABLED=0 go build -ldflags="-s -w" -trimpath -o ../dist/tunnelforge-server ./cmd/server
+
+# Build Tauri with release optimizations
+cd ../desktop
+bun tauri build --release
+```
+
+### CI/CD Pipeline
+
+Our GitHub Actions workflow automatically builds for all platforms:
+
+```yaml
+# .github/workflows/release.yml
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+```
+
+See [Build System Documentation](docs/build-system.md) for detailed CI/CD configuration.
 
 ## Development
 

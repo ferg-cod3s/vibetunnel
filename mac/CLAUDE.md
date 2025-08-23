@@ -1,4 +1,6 @@
-# CLAUDE.md for macOS Development
+# macOS App Memory
+
+Project-specific instructions for TunnelForge macOS application development.
 
 ## SwiftUI Development Guidelines
 

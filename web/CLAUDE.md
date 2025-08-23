@@ -1,4 +1,6 @@
-# Claude Development Notes
+# Web Frontend Memory
+
+Project-specific instructions for the TunnelForge web frontend development.
 
 ## Build Process
 - **Never run build commands**
