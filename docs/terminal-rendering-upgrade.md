@@ -215,26 +215,26 @@ console.log(`Render Time: ${stats.avgRenderTime}ms`);
 
 ```bash
 # Run performance benchmarks
-npm run test:performance
+bun run test:performance
 
 # Measure FPS with different renderers
-npm run benchmark:renderers
+bun run benchmark:renderers
 
 # Stress test with large outputs
-npm run test:stress
+bun run test:stress
 ```
 
 ### Visual Tests
 
 ```bash
 # Test ANSI color support
-npm run test:colors
+bun run test:colors
 
 # Test Unicode rendering
-npm run test:unicode
+bun run test:unicode
 
 # Test emoji support
-npm run test:emoji
+bun run test:emoji
 ```
 
 ## Future Enhancements
