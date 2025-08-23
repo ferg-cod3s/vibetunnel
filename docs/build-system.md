@@ -1,57 +1,84 @@
-<!-- Generated: 2025-06-21 16:24:00 UTC -->
-# Build System
+<!-- Generated: 2025-08-23 -->
+# Modern Build System (TunnelForge, formerly VibeTunnel)
 
-VibeTunnel uses platform-specific build systems for each component: Xcode for macOS and iOS applications, pnpm for the web frontend, and Bun for creating standalone executables. The build system supports both development and release builds with comprehensive automation scripts for code signing, notarization, and distribution.
+TunnelForge uses modern build systems for each component: Go for the high-performance server backend, Bun for the web interface, and Tauri v2 for cross-platform desktop applications. The build system supports both development and release builds with automated packaging for multiple platforms.
 
-The main build orchestration happens through shell scripts in `mac/scripts/` that coordinate building native applications, bundling the web frontend, and packaging everything together. Release builds include code signing, notarization, DMG creation, and automated GitHub releases with Sparkle update support.
+The architecture consists of independent components that can be built separately: a Go server backend providing terminal APIs, a pure Bun web interface for browser access, and Tauri v2 desktop applications for native system integration. Release builds create installers for macOS, Windows, and Linux.
 
-## Build Workflows
+## Modern Build Workflows
 
-### macOS Application Build
+### Go Server Backend Build (development/go-server)
 
-**Development Build** - Quick build without code signing:
+**Development Mode** - Run with hot reload:
 ```bash
-cd mac
-./scripts/build.sh --configuration Debug
+cd development/go-server
+go mod tidy
+go run cmd/server/main.go
+# Or with air for hot reload:
+air
 ```
 
-**Release Build** - Full build with code signing:
+**Production Build** - Optimized binary:
 ```bash
-cd mac
-./scripts/build.sh --configuration Release --sign
+cd development/go-server
+go build -ldflags="-s -w" -o tunnelforge-server cmd/server/main.go
 ```
 
-**Key Script**: `mac/scripts/build.sh` (lines 39-222)
-- Builds Bun executable from web frontend
-- Compiles macOS app using xcodebuild
-- Handles code signing if requested
-- Verifies version consistency with `mac/VibeTunnel/version.xcconfig`
-
-### Web Frontend Build
-
-**Development Mode** - Watch mode with hot reload:
+**Cross-Platform Builds**:
 ```bash
-cd web
-pnpm run dev
+# macOS (Intel)
+GOOS=darwin GOARCH=amd64 go build -o tunnelforge-server-darwin-amd64 cmd/server/main.go
+
+# macOS (Apple Silicon)  
+GOOS=darwin GOARCH=arm64 go build -o tunnelforge-server-darwin-arm64 cmd/server/main.go
+
+# Windows
+GOOS=windows GOARCH=amd64 go build -o tunnelforge-server-windows-amd64.exe cmd/server/main.go
+
+# Linux
+GOOS=linux GOARCH=amd64 go build -o tunnelforge-server-linux-amd64 cmd/server/main.go
 ```
 
-**Production Build** - Optimized bundles:
+### Bun Web Interface Build (development/bun-web)
+
+**Development Mode** - Hot reload web server:
 ```bash
-cd web
-pnpm run build
+cd development/bun-web
+bun install
+bun run dev
 ```
 
-**Bun Executable** - Standalone binary with native modules:
+**Production Build** - Optimized static assets:
 ```bash
-cd web
-node build-native.js
+cd development/bun-web
+bun run build
+bun run start
 ```
 
-**Key Files**:
-- `web/package.json` - Build scripts and dependencies (lines 6-34)
-- `web/build-native.js` - Bun compilation and native module bundling (lines 83-135)
+### Tauri v2 Desktop Applications
 
-### iOS Application Build
+**Development Build** - Hot reload desktop app:
+```bash
+# Prerequisites: Install Rust and Tauri CLI
+cargo install tauri-cli
+
+# Development mode
+cargo tauri dev
+```
+
+**Release Build** - Platform-specific installers:
+```bash
+# Build for current platform
+cargo tauri build
+
+# Cross-platform builds
+cargo tauri build --target x86_64-pc-windows-msvc    # Windows
+cargo tauri build --target x86_64-apple-darwin       # macOS Intel
+cargo tauri build --target aarch64-apple-darwin      # macOS Apple Silicon  
+cargo tauri build --target x86_64-unknown-linux-gnu  # Linux
+```
+
+### Legacy iOS Application Build
 
 **Generate Xcode Project** - From project.yml:
 ```bash
@@ -63,31 +90,72 @@ xcodegen generate
 
 **Key File**: `ios/project.yml` - XcodeGen configuration (lines 1-92)
 
-### Release Workflow
+### Modern Release Workflow
 
-**Complete Release** - Build, sign, notarize, and publish:
+**Complete Release Workflow**:
+
+1. **Go Server Release**:
 ```bash
-cd mac
-./scripts/release.sh stable           # Stable release
-./scripts/release.sh beta 1          # Beta release
+cd server
+# Run tests
+go test ./...
+# Build for all platforms  
+make build-all
 ```
 
-**Key Script**: `mac/scripts/release.sh` (lines 1-100+)
-- Validates environment and dependencies
-- Builds with appropriate flags
-- Signs and notarizes app
-- Creates DMG
-- Publishes GitHub release
-- Updates Sparkle appcast
+2. **Bun Web Interface Release**:
+```bash
+cd web
+# Build production assets
+bun run build
+# Test production build
+bun run start
+```
+
+3. **Tauri Desktop Apps Release**:
+```bash
+# Build installers for all platforms
+cargo tauri build --target x86_64-pc-windows-msvc
+cargo tauri build --target x86_64-apple-darwin  
+cargo tauri build --target aarch64-apple-darwin
+cargo tauri build --target x86_64-unknown-linux-gnu
+```
+
+**Automated CI/CD**:
+- GitHub Actions can build all components
+- Cross-platform builds via GitHub's hosted runners
+- Automated testing for Go server and web interface
 
 ## Platform Setup
 
-### macOS Requirements
+### Tauri v2 Desktop Requirements
+
+**System Requirements**:
+- Rust 1.70+ with cargo
+- Bun runtime (for web frontend assets and server)
+- Platform-specific build tools
+
+**macOS Requirements**:
+- Xcode command line tools: `xcode-select --install`
+- macOS 10.15+ for development, 11.0+ for Apple Silicon
+- Valid Developer ID certificate for distribution
+
+**Windows Requirements**:
+- Microsoft Visual Studio C++ Build Tools
+- Windows 10+ (version 1903+)
+- Code signing certificate for distribution
+
+**Linux Requirements**:
+- GCC or Clang compiler
+- GTK 3.0+ development libraries: `sudo apt install libgtk-3-dev`
+- WebKit2GTK development libraries: `sudo apt install libwebkit2gtk-4.0-dev`
+- App packaging tools: `sudo apt install libappindicator3-dev`
+
+### Legacy macOS Requirements
 
 **Development Tools**:
 - Xcode 16.0+ with command line tools
-- Node.js 20+ and pnpm
-- Bun runtime (installed via npm)
+- Bun runtime (replaces Node.js entirely)
 - xcbeautify (optional, for cleaner output)
 
 **Release Requirements**:
@@ -103,8 +171,8 @@ cd mac
 ### Web Frontend Requirements
 
 **Tools**:
-- Node.js 20+ with npm
-- Bun runtime for standalone builds
+- Bun runtime (replaces Node.js entirely)
+- Bun package manager (replaces npm)
 
 **Native Modules**:
 - `@homebridge/node-pty-prebuilt-multiarch` - Terminal emulation
@@ -174,5 +242,5 @@ cd mac
 **Clean Build**:
 ```bash
 cd mac && ./scripts/clean.sh
-cd ../web && npm run clean
+cd ../development/bun-web && bun run clean
 ```

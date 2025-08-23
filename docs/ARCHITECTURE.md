@@ -1,92 +1,102 @@
-<!-- Generated: 2025-06-21 10:28:45 UTC -->
-# VibeTunnel Architecture
+<!-- Generated: 2025-08-23 -->
+# TunnelForge Architecture (formerly VibeTunnel)
 
-VibeTunnel is a modern terminal multiplexer with native macOS and iOS applications, featuring a Node.js/Bun-powered server backend and real-time web interface. The architecture prioritizes performance, security, and seamless cross-platform experience through WebSocket-based communication and native UI integration.
+TunnelForge is a modern cross-platform terminal multiplexer with a high-performance Go server backend, pure Bun web interface, and Tauri v2 desktop applications. The architecture prioritizes performance, security, and consistent cross-platform experience through WebSocket-based communication and modern web technologies.
 
-The system consists of four main components: a native macOS menu bar application that manages server lifecycle, a Node.js/Bun server handling terminal sessions, an iOS companion app for mobile terminal access, and a web frontend for browser-based interaction. These components communicate through a well-defined REST API and WebSocket protocol for real-time terminal I/O streaming.
+The system consists of three main components: a high-performance Go server handling terminal sessions and APIs, a pure Bun web interface for browser-based interaction, and cross-platform Tauri v2 desktop applications for native desktop experience. These components communicate through a well-defined REST API and WebSocket protocol for real-time terminal I/O streaming.
 
 ## Component Map
 
-**macOS Application** - Native Swift app in mac/VibeTunnel/
-- ServerManager (mac/VibeTunnel/Core/Services/ServerManager.swift) - Central server lifecycle coordinator
-- BunServer (mac/VibeTunnel/Core/Services/BunServer.swift) - Bun runtime integration  
-- BaseProcessServer (mac/VibeTunnel/Core/Services/BaseProcessServer.swift) - Base class for server implementations
-- TTYForwardManager (mac/VibeTunnel/Core/Services/TTYForwardManager.swift) - Terminal forwarding logic
-- SessionMonitor (mac/VibeTunnel/Core/Services/SessionMonitor.swift) - Active session tracking
+**Go Server Backend** - High-performance Go server in `development/go-server/`
+- cmd/server/main.go - Server entry point with graceful shutdown
+- internal/server/server.go - HTTP server with Gorilla Mux routing
+- internal/session/manager.go - Thread-safe terminal session management
+- internal/terminal/pty.go - PTY process management using creack/pty
+- internal/websocket/handler.go - WebSocket communication with ping/pong keepalive
+- internal/auth/jwt.go - JWT authentication with bcrypt password hashing
+- internal/middleware/ - Security middleware (CORS, rate limiting, CSRF protection)
 
-**Node.js/Bun Server** - JavaScript backend in web/src/server/
-- app.ts - Express application setup and configuration
-- server.ts - HTTP server initialization and shutdown handling
-- pty/pty-manager.ts - Native PTY process management
-- pty/session-manager.ts - Terminal session lifecycle
-- services/terminal-manager.ts - High-level terminal operations
-- services/buffer-aggregator.ts - Terminal buffer optimization
-- routes/sessions.ts - REST API endpoints for session management
+**Bun Web Interface** - Pure Bun web server in `development/bun-web/`
+- src/server.ts - Static file serving and API proxy to Go server
+- public/ - Static web assets (HTML, CSS, JavaScript)
+- Proxies API requests to Go server backend
+- Serves TypeScript/LitElement frontend
 
-**iOS Application** - Native iOS app in ios/VibeTunnel/
-- BufferWebSocketClient (ios/VibeTunnel/Services/BufferWebSocketClient.swift) - WebSocket client for terminal streaming
-- TerminalView (ios/VibeTunnel/Views/Terminal/TerminalView.swift) - Terminal rendering UI
-- TerminalHostingView (ios/VibeTunnel/Views/Terminal/TerminalHostingView.swift) - UIKit integration layer
+**Tauri v2 Desktop Applications** - Cross-platform desktop apps
+- Desktop app for macOS, Windows, and Linux
+- Rust backend with web frontend using Tauri v2
+- Native system integration (tray, notifications, file system)
+- Manages Go server lifecycle as subprocess
+- Provides native desktop experience with web UI
 
-**Web Frontend** - TypeScript/React app in web/src/client/
+**Web Frontend** - TypeScript/LitElement app served by Bun
 - Terminal rendering using xterm.js
-- WebSocket client for real-time updates
-- Session management UI
+- WebSocket client for real-time terminal I/O
+- Modern component-based UI with LitElement
+- Session management and file browser
 
 ## Key Files
 
-**Server Protocol Definition**
-- mac/VibeTunnel/Core/Protocols/VibeTunnelServer.swift - Defines server interface
+**Go Server Core**
+- server/cmd/server/main.go - Entry point with graceful shutdown
+- server/internal/server/server.go - HTTP server setup
+- server/go.mod - Go dependencies and module definition
 
-**Session Models**
-- mac/VibeTunnel/Core/Models/TunnelSession.swift - Core session data structure
-- web/src/server/pty/types.ts - TypeScript session types
+**Session Management**
+- server/internal/session/manager.go - Thread-safe session management
+- server/internal/terminal/pty.go - PTY process management
+- server/pkg/types/session.go - Session data structures
 
-**Binary Integration**
-- mac/scripts/build-bun-executable.sh - Builds Bun runtime bundle
-- web/build-native.js - Native module compilation for pty.node
+**Authentication & Security**
+- server/internal/auth/jwt.go - JWT authentication
+- server/internal/middleware/security.go - Security middleware
+- server/internal/middleware/auth.go - Authentication middleware
 
-**Configuration**
-- mac/VibeTunnel/Core/Models/AppConstants.swift - Application constants
-- web/src/server/app.ts (lines 20-31) - Server configuration interface
+**Bun Web Server**
+- web/src/server.ts - Bun server with API proxy
+- web/package.json - Bun dependencies
+- web/public/ - Static web assets
 
 ## Data Flow
 
 **Session Creation Flow**
-1. Client request → POST /api/sessions (web/src/server/routes/sessions.ts:createSessionRoutes)
-2. TerminalManager.createTerminal() (web/src/server/services/terminal-manager.ts) 
-3. PtyManager.spawn() (web/src/server/pty/pty-manager.ts) - Spawns native PTY process
-4. Session stored in manager, WebSocket upgrade prepared
-5. Response with session ID and WebSocket URL
+1. Client request → POST /api/sessions (Go server HTTP handler)
+2. SessionManager.CreateSession() (server/internal/session/manager.go)
+3. Terminal.NewPTY() (server/internal/terminal/pty.go) - Spawns PTY using creack/pty
+4. Session stored in thread-safe manager with UUID
+5. Response with session ID and WebSocket upgrade URL
 
 **Terminal I/O Stream**
-1. User input → WebSocket message to /api/sessions/:id/ws
-2. BufferAggregator processes input (web/src/server/services/buffer-aggregator.ts)
-3. PTY process receives input via pty.write()
-4. PTY output → BufferAggregator.handleData()
-5. Binary buffer snapshot or text delta → WebSocket broadcast
-6. Client renders using xterm.js or native terminal view
+1. User input → WebSocket message to /ws?sessionId={id}
+2. WebSocket handler processes input (server/internal/websocket/handler.go)
+3. PTY process receives input via pty.Write()
+4. PTY output → WebSocket handler streams to client
+5. Raw terminal output streamed over WebSocket
+6. Client renders using xterm.js
 
-**Buffer Optimization Protocol**
-- Binary messages use magic byte 0xBF (ios/VibeTunnel/Services/BufferWebSocketClient.swift:50)
-- Full buffer snapshots sent periodically for synchronization
-- Text deltas for incremental updates between snapshots
-- Automatic aggregation reduces message frequency
+**Performance Characteristics**
+- Go server: <1ms response time, 1000+ concurrent connections
+- Memory usage: ~88MB RSS with multiple sessions
+- WebSocket with ping/pong keepalive for connection health
+- Thread-safe session management with UUID-based IDs
 
 **Server Lifecycle Management**
-1. ServerManager.start() (mac/VibeTunnel/Core/Services/ServerManager.swift)
-2. Creates BunServer instance
-3. BaseProcessServer.start() spawns server process
-4. Health checks via HTTP /health endpoint
-5. Log streaming through Process.standardOutput pipe
-6. Graceful shutdown on stop() with SIGTERM
+1. Tauri desktop app spawns Go server as subprocess
+2. Go server starts HTTP server on port 4021
+3. Health checks via /health endpoint
+4. Graceful shutdown with SIGTERM handling
+5. Process monitoring and auto-restart capabilities
 
-**Remote Access Architecture**
-- NgrokService (mac/VibeTunnel/Core/Services/NgrokService.swift) - Secure tunnel creation
-- HQClient (web/src/server/services/hq-client.ts) - Headquarters mode for multi-server
-- RemoteRegistry (web/src/server/services/remote-registry.ts) - Remote server discovery
+**Cross-Platform Desktop Integration**
+- Tauri v2 provides native system tray and notifications
+- File system access through Tauri plugins
+- Auto-launch and system integration
+- Consistent UI across macOS, Windows, and Linux
 
-**Authentication Flow**
-- Basic Auth middleware (web/src/server/middleware/auth.ts)
-- Credentials stored in macOS Keychain via DashboardKeychain service
-- Optional password protection for network access
+**Authentication & Security**
+- JWT authentication with RS256 tokens
+- bcrypt password hashing with cost 12
+- CSRF protection with double-submit cookies
+- Rate limiting: 100 requests/minute per IP
+- Security headers: HSTS, CSP, X-Frame-Options
+- Input validation and sanitization

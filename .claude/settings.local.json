@@ -11,11 +11,13 @@
       "Bash(make:*)",
       "Bash(./bin/vibetunnel:*)",
       "Bash(./vibetunnel:*)",
+      "Bash(tf:*)",
       "Bash(development/go-server/vibetunnel follow:*)",
       "Bash(development/go-server/vibetunnel unfollow:*)",
       "Bash(development/go-server/vibetunnel git-event --type branch-switch --branch feature/test --repo /home/f3rg/Documents/git/vibetunnel)",
       "Bash(development/go-server/vibetunnel git-event --type=branch-switch --branch=feature/test --repo=/home/f3rg/Documents/git/vibetunnel)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(go mod:*)"
     ],
     "deny": []
   },

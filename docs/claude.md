@@ -1,5 +1,7 @@
 # Claude CLI Usage Guide
 
+Note on branding: This project is now TunnelForge. Where examples use `vt` (legacy VibeTunnel CLI), prefer `tf` when available. If `tf` is not installed on your system yet, `vt` remains a working alias.
+
 The Claude CLI is a powerful command-line interface for interacting with Claude. This guide covers basic usage, advanced features, and important considerations when using Claude as an agent.
 
 ## Installation
