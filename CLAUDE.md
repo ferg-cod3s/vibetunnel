@@ -18,20 +18,20 @@ This CLAUDE.md file provides project-specific instructions for Claude Code when 
 
 ## Project Overview
 
-TunnelForge (formerly TunnelForge) is a macOS application that allows users to access their terminal sessions through any web browser. It consists of:
-- Native macOS app (Swift/SwiftUI) in `mac/`
-- iOS companion app in `ios/`
-- Web frontend (TypeScript/LitElement) and Go server with Bun frontend for terminal session management in `development/`
-
-## Task Management and Planning
-
-**IMPORTANT**: Always check and maintain the `TODO.md` file in the project root for task tracking and project planning. This file serves as the centralized task list and should be updated regularly:
-- Check `TODO.md` before starting any major work to understand current priorities
-- Update task status and add new tasks as work progresses
-- Reference TODO.md items in commits and pull requests
-- Use TODO.md alongside the TodoWrite tool for comprehensive task tracking
+VibeTunnel is a modern cross-platform terminal multiplexer that allows users to access terminal sessions through web browsers and native desktop applications. It consists of:
+- **Go Server Backend** (development/go-server/) - High-performance terminal session management
+- **Bun Web Interface** (development/bun-web/) - Pure Bun server for web assets and API proxy  
+- **Tauri v2 Desktop Apps** - Cross-platform desktop applications for macOS, Windows, and Linux
+- **Legacy iOS app** (ios/) - Mobile companion app (to be updated)
 
 ## Critical Development Rules
+
+### Branding and CLI naming (authoritative)
+- Project name: TunnelForge (formerly VibeTunnel). Use "TunnelForge" in new text. Do not mass-rename code without an explicit request; older names may still exist in code/tests.
+- CLI: Prefer `tf` for examples and references. `vt` remains a legacy alias; use it only where the codebase/scripts still require it.
+- Logs: Use `./scripts/vtlog.sh` for now. If a `tflog.sh` alias exists in the future, prefer that. Avoid long-running follow mode in this environment.
+- Terminal titles: Prefer `tf title "…"`. If `tf` is not available on the machine, fall back to `vt title "…"`.
+
 
 ### Release Process
 When the user says "release" or asks to create a release, ALWAYS read and follow `docs/RELEASE.md` for the complete release process.
@@ -65,8 +65,8 @@ When the user says "release" or asks to create a release, ALWAYS read and follow
      - Every web change requires: clean → build → run (rebuilds embedded server)
      - Simply restarting serves STALE, CACHED version
    - **Development Mode** (recommended for web development):
-     - Enable "Use Development Server" in TunnelForge Settings → Debug
-     - Mac app runs `pnpm run dev` instead of embedded server
+     - Enable "Use Development Server" in VibeTunnel Settings → Debug
+     - Mac app runs `bun run dev` instead of embedded server
      - Provides hot reload - web changes automatically rebuild without Mac app rebuild
      - Restart TunnelForge server (not full rebuild) to pick up web changes
 6. **Never kill all sessions**
@@ -134,14 +134,72 @@ pnpm run test:coverage
 pnpm run test:e2e
 ```
 
-## macOS Development Commands
+## Modern Development Commands
+
+### Go Server Development (development/go-server/)
+
+```bash
+# Install dependencies
+go mod tidy
+
+# Run server (port 4021)
+go run cmd/server/main.go
+
+# Run with live reload (install air: go install github.com/cosmtrek/air@latest)  
+air
+
+# Run tests
+go test ./...
+
+# Run tests with coverage
+go test -cover ./...
+
+# Build binary
+go build -o vibetunnel-server cmd/server/main.go
+```
+
+### Bun Web Server Development (development/bun-web/)
+
+```bash
+# Install dependencies
+bun install
+
+# Run development server with hot reload
+bun run dev
+
+# Build for production  
+bun run build
+
+# Start production server
+bun run start
+```
+
+### Tauri v2 Desktop App Development
+
+```bash
+# Prerequisites: Rust, Node.js, platform-specific dependencies
+cargo install tauri-cli
+
+# Development (with hot reload)
+cargo tauri dev
+
+# Build for production (creates installers)
+cargo tauri build
+
+# Build for specific platforms
+cargo tauri build --target x86_64-pc-windows-msvc  # Windows
+cargo tauri build --target x86_64-apple-darwin     # macOS Intel  
+cargo tauri build --target aarch64-apple-darwin    # macOS Apple Silicon
+```
+
+### Legacy macOS Development Commands
 
 In the `mac/` directory:
 
 ```bash
-# Build commands
+# Build commands (legacy Swift app)
 ./scripts/build.sh                    # Build release
-./scripts/build.sh --configuration Debug  # Build debug
+./scripts/build.sh --configuration Debug  # Build debug  
 ./scripts/build.sh --sign            # Build with code signing
 
 # Other scripts
@@ -150,22 +208,38 @@ In the `mac/` directory:
 ./scripts/create-dmg.sh             # Create installer
 ```
 
-## Architecture Overview
+## Modern Architecture Overview
 
-### Terminal Sharing Protocol
-1. **Session Creation**: `POST /api/sessions` spawns new terminal
-2. **Input**: `POST /api/sessions/:id/input` sends keyboard/mouse input
-3. **Output**:
-   - SSE stream at `/api/sessions/:id/stream` (text)
-   - WebSocket at `/buffers` (binary, efficient rendering)
-4. **Resize**: `POST /api/sessions/:id/resize` (missing in some implementations)
+### High-Performance Go Server Backend
+- **Location**: `development/go-server/`
+- **Performance**: <1ms response time, 1000+ concurrent connections  
+- **Technology**: Go with Gorilla Mux, WebSocket, creack/pty
+- **Security**: JWT auth, bcrypt, CSRF protection, rate limiting
+- **Port**: 4021 (production-ready)
 
-### Key Entry Points
-- **Mac App**: `mac/TunnelForge/TunnelForgeApp.swift`
-- **Web Frontend**: `web/src/client/app.ts`
-- **Server**: `web/src/server/server.ts`
-- **Process spawning and forwarding tool**: `web/src/server/fwd.ts`
-- **Server Management**: `mac/TunnelForge/Core/Services/ServerManager.swift`
+### Bun Web Interface  
+- **Location**: `development/bun-web/`
+- **Purpose**: Static file serving and API proxy to Go server
+- **Technology**: Pure Bun runtime with TypeScript
+- **Port**: 3000 (configurable via PORT env var)
+
+### Tauri v2 Cross-Platform Desktop Apps
+- **Technology**: Rust backend + web frontend
+- **Platforms**: macOS, Windows, Linux  
+- **Features**: Native system tray, notifications, file system access
+- **Architecture**: Spawns Go server as subprocess, manages lifecycle
+
+### Terminal Communication Protocol
+1. **Session Creation**: `POST /api/sessions` → Go server creates PTY
+2. **WebSocket I/O**: `/ws?sessionId={id}` for bidirectional terminal streaming
+3. **Session Management**: `GET /api/sessions`, `DELETE /api/sessions/{id}`
+4. **Health Checks**: `GET /health` endpoint
+
+### Key Entry Points  
+- **Go Server**: `development/go-server/cmd/server/main.go`
+- **Bun Web Server**: `development/bun-web/src/server.ts`
+- **Session Management**: `development/go-server/internal/session/manager.go`
+- **WebSocket Handler**: `development/go-server/internal/websocket/handler.go`
 
 ## Testing
 

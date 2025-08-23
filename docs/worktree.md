@@ -1,4 +1,4 @@
-# Git Worktree Management in TunnelForge
+# Git Worktree Management in TunnelForge (formerly VibeTunnel)
 
 TunnelForge provides comprehensive Git worktree support, allowing you to work on multiple branches simultaneously without the overhead of cloning repositories multiple times. This guide covers everything you need to know about using worktrees effectively in TunnelForge.
 
@@ -153,12 +153,12 @@ git config tunnelforge.followWorktree
 # Returns the path to the followed worktree when active
 ```
 
-### Using Follow Mode with vt
+### Using Follow Mode with tf (vt legacy alias)
 
 From a worktree:
 ```bash
 # Enable follow mode for this worktree
-vt follow
+tf follow
 # Output: Enabling follow mode for worktree: ~/project-feature
 #         Main repository (~/project) will track this worktree
 ```
@@ -166,16 +166,16 @@ vt follow
 From main repository:
 ```bash
 # Follow current branch's worktree (if it exists)
-vt follow
+tf follow
 
 # Follow a specific branch's worktree
-vt follow feature/new-feature
+tf follow feature/new-feature
 
 # Follow a worktree by path
-vt follow ~/project-feature
+tf follow ~/project-feature
 
 # Disable follow mode
-vt unfollow
+tf unfollow
 ```
 
 The `vt follow` command is smart:
@@ -389,11 +389,11 @@ Use worktrees for CI/CD workflows:
 
 ## Command Reference
 
-### vt Commands
-- `vt follow` - Enable follow mode for current branch
-- `vt follow <branch>` - Switch to branch and enable follow mode
-- `vt unfollow` - Disable follow mode
-- `vt git event` - Used internally by Git hooks
+### tf Commands (vt remains as legacy alias)
+- `tf follow` - Enable follow mode for current branch
+- `tf follow <branch>` - Switch to branch and enable follow mode
+- `tf unfollow` - Disable follow mode
+- `tf git event` - Used internally by Git hooks
 
 ### Git Commands
 - `git worktree add <path> <branch>` - Create a new worktree

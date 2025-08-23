@@ -1,4 +1,4 @@
-# TunnelForge Technical Specification
+# TunnelForge Technical Specification (formerly VibeTunnel)
 
 ## Table of Contents
 
@@ -28,47 +28,48 @@
 
 ### Project Overview
 
-TunnelForge is a macOS application that provides browser-based access to Mac terminals, designed to make terminal access as simple as opening a web page. The project specifically targets developers and engineers who need to monitor AI agents (like Claude Code) remotely.
+TunnelForge is a modern cross-platform terminal multiplexer that provides browser-based and native desktop access to terminal sessions. The project targets developers and engineers who need high-performance terminal sharing and remote monitoring capabilities, with special support for AI agents like Claude Code.
 
 ### Key Features
 
-- **Zero-Configuration Terminal Access**: Launch terminals with a simple `vt` command
-- **Browser-Based Interface**: Access terminals from any modern web browser
-- **Real-Time Streaming**: Live terminal updates via WebSocket with binary buffer optimization
+- **High-Performance Go Server**: <1ms response time, 1000+ concurrent connections
+- **Cross-Platform Desktop Apps**: Native applications for macOS, Windows, and Linux via Tauri v2
+- **Pure Bun Web Interface**: Fast web server with API proxy capabilities  
+- **Zero-Configuration Access**: Launch terminals with simple commands
+- **Real-Time Streaming**: WebSocket-based terminal I/O with optimal performance
+- **Enterprise Security**: JWT authentication, bcrypt hashing, CSRF protection, rate limiting
 - **Session Recording**: Full asciinema format recording support
-- **Security Options**: Password protection, localhost-only mode, Tailscale/ngrok integration
-- **High-Performance Server**: Node.js server with Bun runtime for optimal JavaScript performance
-- **Auto-Updates**: Sparkle framework integration for seamless updates
-- **AI Agent Integration**: Special support for Claude Code with shortcuts
-- **iOS Companion App**: Mobile terminal access from iPhone/iPad
+- **Modern Web Frontend**: TypeScript/LitElement components with xterm.js rendering
 
 ### Technical Stack
 
-- **Native macOS App**: Swift 6.0, SwiftUI, macOS 14.0+
-- **iOS App**: Swift 6.0, SwiftUI, iOS 17.0+
-- **Server**: Node.js/TypeScript with Bun runtime
-- **Web Frontend**: TypeScript, Lit Web Components, Tailwind CSS
+- **Go Server Backend**: Go 1.23+ with Gorilla Mux, WebSocket, creack/pty
+- **Bun Web Interface**: Pure Bun runtime with TypeScript
+- **Tauri v2 Desktop Apps**: Rust backend + web frontend for cross-platform native apps
+- **Web Frontend**: TypeScript, LitElement, xterm.js, Tailwind CSS
+- **Legacy iOS App**: Swift 6.0, SwiftUI, iOS 17.0+ (to be updated)
 - **Terminal Emulation**: xterm.js with custom buffer optimization
 - **Build System**: Xcode, Swift Package Manager, npm/Bun
 - **Distribution**: Signed/notarized DMG with Sparkle updates
 
 ## System Architecture
 
-### High-Level Architecture
+### Modern High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      macOS Application                       │
+│                Tauri v2 Desktop Applications                 │
+│               (macOS, Windows, Linux)                       │
 │  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │ Menu Bar UI │  │ Server       │  │ Session          │  │
-│  │ (SwiftUI)   │──│ Manager      │──│ Monitor          │  │
+│  │ System Tray │  │ Process      │  │ Native System    │  │
+│  │ UI (Web)    │──│ Manager      │──│ Integration      │  │
 │  └─────────────┘  └──────────────┘  └──────────────────┘  │
 │                           │                                  │
 │  ┌─────────────────────────────────────────────────────┐  │
-│  │              Node.js/Bun Server Process               │  │
+│  │             Go Server Subprocess                     │  │
 │  │  ┌──────────────────────────────────────────────┐   │  │
-│  │  │ Standalone Bun executable with embedded      │   │  │
-│  │  │ TypeScript server and native PTY modules     │   │  │
+│  │  │ High-performance Go binary with PTY mgmt     │   │  │
+│  │  │ JWT auth, WebSocket, creack/pty (Port 4021)  │   │  │
 │  │  └──────────────────────────────────────────────┘   │  │
 │  └─────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
@@ -78,33 +79,41 @@ TunnelForge is a macOS application that provides browser-based access to Mac ter
                         └──────┬──────┘
                                │
 ┌──────────────────────────────┴──────────────────────────────┐
-│                    Client Applications                       │
+│                    Client Access Methods                     │
 ├─────────────────────────────────────────────────────────────┤
-│     Web Browser                    iOS App                  │
+│  Bun Web Interface              Legacy iOS App             │
 │  ┌──────────────┐              ┌──────────────┐           │
-│  │ Dashboard    │              │ Native Swift │           │
-│  │ (Lit/TS)    │              │ Terminal UI  │           │
+│  │ Static Files │              │ WebSocket    │           │
+│  │ API Proxy    │              │ Client       │           │
+│  │ (Port 3000)  │              │ (iOS 17.0+)  │           │
 │  └──────────────┘              └──────────────┘           │
+├─────────────────────────────────────────────────────────────┤
+│                    Web Browsers                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │ TypeScript/LitElement Frontend + xterm.js           │  │
+│  │ Modern component architecture, responsive design    │  │
+│  └──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Component Interaction Flow
+### Modern Component Interaction Flow
 
-1. **Terminal Launch**: User executes `vt` command
-2. **Server Check**: ServerManager ensures Bun server is running
-3. **Session Creation**: HTTP POST to create new terminal session
-4. **PTY Allocation**: Server allocates pseudo-terminal via node-pty
-5. **WebSocket Upgrade**: Client establishes WebSocket connection
-6. **Binary Buffer Protocol**: Optimized terminal data streaming
-7. **Recording**: Session data recorded in asciinema format
-8. **Session Cleanup**: Resources freed on terminal exit
+1. **Desktop App Launch**: Tauri v2 app starts Go server subprocess
+2. **Terminal Access**: User opens web interface or uses desktop app
+3. **Authentication**: JWT-based authentication with bcrypt password hashing
+4. **Session Creation**: HTTP POST to Go server creates new terminal session
+5. **PTY Allocation**: Go server allocates pseudo-terminal via creack/pty
+6. **WebSocket Connection**: Client establishes WebSocket for real-time I/O
+7. **Terminal Streaming**: Bidirectional terminal I/O over WebSocket
+8. **Recording**: Session data recorded in asciinema format
+9. **Session Cleanup**: Resources freed on terminal exit
 
 ### Design Principles
 
-- **Single Server Implementation**: One Node.js/Bun server handles everything
+- **Single Server Implementation**: Go server backend with Bun web interface handles everything
 - **Protocol-Oriented Swift**: Clean interfaces between macOS components
 - **Binary Optimization**: Custom buffer protocol for efficient terminal streaming
-- **Thread Safety**: Swift actors and Node.js event loop for concurrent safety
+- **Thread Safety**: Go goroutines and Bun runtime for concurrent safety
 - **Minimal Dependencies**: Only essential third-party libraries
 - **User Privacy**: No telemetry or user tracking
 
@@ -230,41 +239,42 @@ func clearAuthCache() async
 
 ## Server Implementation
 
-### Node.js/Bun Server
+### Go Server Backend
 
-**Location**: `web/src/server/` directory
+**Location**: `server/` directory
 
 **Architecture**:
-The server is built as a standalone Bun executable that embeds:
-- TypeScript server code compiled to JavaScript
-- Native node-pty module for PTY support
-- Express.js for HTTP handling
-- ws library for WebSocket support
-- All dependencies bundled into single binary
+The server is built as a standalone Go binary that provides:
+- High-performance Go server with Gorilla Mux routing
+- Native PTY support using creack/pty
+- WebSocket communication with Gorilla WebSocket
+- JWT authentication with bcrypt password hashing
+- Security middleware (CORS, rate limiting, CSRF protection)
+- Single compiled binary with no dependencies
 
 **Key Components**:
-- `server.ts` - HTTP server initialization and lifecycle
-- `app.ts` - Express application setup and middleware
-- `fwd.ts` - Main entry point for terminal forwarding
-- `pty/pty-manager.ts` - Native PTY process management
-- `pty/session-manager.ts` - Terminal session lifecycle
-- `services/terminal-manager.ts` - High-level terminal operations
-- `services/buffer-aggregator.ts` - Binary buffer optimization
-- `routes/sessions.ts` - REST API endpoints
+- `cmd/server/main.go` - HTTP server entry point with graceful shutdown
+- `internal/server/server.go` - HTTP server setup with Gorilla Mux
+- `internal/session/manager.go` - Thread-safe session management
+- `internal/terminal/pty.go` - PTY process management using creack/pty
+- `internal/websocket/handler.go` - WebSocket communication
+- `internal/auth/jwt.go` - JWT authentication and password handling
+- `internal/middleware/` - Security middleware and authentication
 
 **Server Features**:
-- High-performance Bun runtime (3x faster than Node.js)
-- Zero-copy buffer operations
-- Native PTY handling with proper signal forwarding
-- Asciinema recording for all sessions
-- Binary buffer protocol for efficient streaming
-- Graceful shutdown handling
+- High-performance Go runtime with goroutines
+- Low-latency terminal I/O (<1ms response time)
+- Native PTY handling with proper signal forwarding using creack/pty
+- Thread-safe session management with UUID-based IDs
+- WebSocket communication with ping/pong keepalive
+- Graceful shutdown with SIGTERM handling
+- Comprehensive security middleware
 
 **Build Process**:
 ```bash
 # Build standalone executable
-cd web && node build-native.js
-# Creates web/native/tunnelforge (60MB Bun executable)
+cd server && go build -o vibetunnel-server cmd/server/main.go
+# Creates ~15MB Go binary with no dependencies
 ```
 
 ## Web Frontend
@@ -460,10 +470,10 @@ export interface Session {
 
 ## CLI Integration
 
-### vt Command
+### tf Command (vt remains as legacy alias)
 
 **Installation**:
-The `vt` command is installed as a wrapper script that automatically prepends 'fwd' to commands when using the Bun server.
+The `tf` command is preferred; `vt` remains a legacy alias. The wrapper script automatically prepends 'fwd' to commands when using the Bun server.
 
 **Script Location**: `/usr/local/bin/vt`
 ```bash
@@ -710,8 +720,7 @@ cleanupOnStartup: Bool = true
 **Requirements**:
 - Xcode 16.0+
 - macOS 14.0+ SDK
-- Node.js 20.0+
-- Bun runtime
+- Go 1.23+ and Bun runtime
 
 **Build Process**:
 ```bash
@@ -785,18 +794,21 @@ mac/TunnelForgeTests/
 - `.concurrency` - Async operations
 - `.security` - Security features
 
-### Node.js Tests
+### Go Server Tests
 
-**Framework**: Vitest
+**Framework**: Go testing package
 
 **Test Structure**:
 ```
-web/src/test/
-├── e2e/
-│   ├── hq-mode.e2e.test.ts
-│   └── server-smoke.e2e.test.ts
-├── setup.ts
-└── test-utils.ts
+server/
+├── internal/
+│   ├── auth/auth_test.go
+│   ├── session/manager_test.go
+│   ├── terminal/pty_test.go
+│   └── websocket/handler_test.go
+└── test/
+    ├── integration_test.go
+    └── security_test.go
 ```
 
 **Coverage Requirements**:
@@ -947,7 +959,7 @@ Sessions are ephemeral and exist only in server memory. Recordings are stored te
 
 ## Conclusion
 
-TunnelForge achieves its goal of simple, secure terminal access through a carefully architected system combining native macOS development with modern web technologies. The single Node.js/Bun server implementation provides excellent performance while maintaining simplicity.
+VibeTunnel achieves its goal of simple, secure terminal access through a carefully architected system combining cross-platform desktop applications with modern server technologies. The high-performance Go server backend with Bun web interface provides excellent performance while maintaining simplicity.
 
 The binary buffer protocol ensures efficient terminal streaming, while the clean architectural boundaries enable independent evolution of components. With careful attention to macOS platform conventions and user expectations, TunnelForge delivers a professional-grade solution for terminal access needs.
 This specification serves as the authoritative reference for understanding, maintaining, and extending the TunnelForge project.
