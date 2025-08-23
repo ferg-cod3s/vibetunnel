@@ -68,7 +68,7 @@ This checklist ensures a smooth and error-free npm release process for TunnelFor
 - [ ] Verify version: `tunnelforge --version`
 - [ ] Start server: `tunnelforge`
 - [ ] Access web UI: http://localhost:4020
-- [ ] Test vt command: `vt echo "test"`
+- [ ] Test vt command: `tf echo "test"`
 - [ ] Uninstall: `npm uninstall -g tunnelforge`
 
 ### 9. Docker Test (Linux Compatibility)

@@ -66,7 +66,7 @@ This index provides a comprehensive overview of all documentation in the TunnelF
 - [**web/docs/playwright-testing.md**](../web/docs/playwright-testing.md) - Playwright E2E testing
 - [**web/docs/socket-protocol.md**](../web/docs/socket-protocol.md) - WebSocket protocol documentation
 - [**web/docs/terminal-titles.md**](../web/docs/terminal-titles.md) - Terminal title management
-- [**web/docs/VT_INSTALLATION.md**](../web/docs/VT_INSTALLATION.md) - VT command installation
+- [**web/docs/TF_INSTALLATION.md**](../web/docs/TF_INSTALLATION.md) - VT command installation
 - [**web/docs/npm.md**](../web/docs/npm.md) - NPM package documentation
 
 ### Apple Shared (`apple/`)

@@ -93,7 +93,7 @@ Follow mode uses Git hooks and git config for state management:
    - `post-commit`: Detects new commits
    - `post-merge`: Detects merge operations
    
-3. **Event Processing**: Hooks execute `vt git event` command
+3. **Event Processing**: Hooks execute `tf git event` command
 4. **Synchronization Logic**:
    - Worktree events → Main repo syncs (branch, commits, checkouts)
    - Main repo commits → Worktree syncs (commits only)
@@ -198,16 +198,16 @@ The hook implementation uses the `vt` command:
 # This hook notifies TunnelForge when Git events occur
 
 # Check if vt command is available
-if command -v vt >/dev/null 2>&1; then
+if command -v tf >/dev/null 2>&1; then
   # Run in background to avoid blocking Git operations
-  vt git event &
+  tf git event &
 fi
 
 # Always exit successfully
 exit 0
 ```
 
-The `vt git event` command:
+The `tf git event` command:
 - Sends the repository path to the server via `POST /api/git/event`
 - Server determines what changed by examining current git state
 - Triggers branch synchronization if follow mode is enabled

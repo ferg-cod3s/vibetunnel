@@ -22,14 +22,14 @@ When follow mode is enabled, TunnelForge installs two Git hooks:
 
 These hooks execute a simple command:
 ```bash
-vt git event
+tf git event
 ```
 
 ### Event Flow
 
 1. **Git Operation**: User performs a commit or checkout
 2. **Hook Trigger**: Git executes the TunnelForge hook
-3. **Event Notification**: `vt git event` sends repository path to TunnelForge server
+3. **Event Notification**: `tf git event` sends repository path to TunnelForge server
 4. **Server Processing**: The `/api/git/event` endpoint:
    - Updates session titles (e.g., `Terminal [checkout: feature-branch]`)
    - Checks follow mode configuration
@@ -52,9 +52,9 @@ When follow mode is enabled for a branch:
 # This hook notifies TunnelForge when Git events occur
 
 # Check if vt command is available
-if command -v vt >/dev/null 2>&1; then
+if command -v tf >/dev/null 2>&1; then
   # Run in background to avoid blocking Git operations
-  vt git event &
+  tf git event &
 fi
 
 # Always exit successfully

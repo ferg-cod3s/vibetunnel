@@ -391,7 +391,7 @@ describe('BufferAggregator', () => {
 
 ### TunnelForge CLI Wrapper (vt)
 
-The `vt` command is a bash wrapper script that allows users to run commands through TunnelForge's terminal forwarding. It's installed at `/usr/local/bin/vt` when the Mac app is built.
+The `tf` command is a bash wrapper script that allows users to run commands through TunnelForge's terminal forwarding. It's installed at `/usr/local/bin/vt` when the Mac app is built.
 
 **Source location**: `mac/TunnelForge/vt`
 
@@ -401,7 +401,7 @@ The `vt` command is a bash wrapper script that allows users to run commands thro
 vt ls -la
 
 # Run an aliased command (e.g., if 'claude' is an alias)
-vt claude --version
+tf claude --version
 
 # Launch interactive shell
 vt --shell

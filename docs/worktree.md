@@ -153,7 +153,7 @@ git config tunnelforge.followWorktree
 # Returns the path to the followed worktree when active
 ```
 
-### Using Follow Mode with tf (vt legacy alias)
+### Using Follow Mode with tf 
 
 From a worktree:
 ```bash
@@ -178,7 +178,7 @@ tf follow ~/project-feature
 tf unfollow
 ```
 
-The `vt follow` command is smart:
+The `tf follow` command is smart:
 - From worktree: Always follows the current worktree
 - From main repo without args: Follows current branch's worktree if it exists
 - From main repo with args: Can specify branch name or worktree path
@@ -244,11 +244,11 @@ git worktree add ../myproject-feature feature/awesome
 
 # From the worktree, enable follow mode
 cd ../myproject-feature
-vt follow  # Main repo will now track this worktree
+tf follow  # Main repo will now track this worktree
 
 # Or from the main repo
 cd ../myproject
-vt follow ../myproject-feature  # Same effect
+tf follow ../myproject-feature  # Same effect
 ```
 
 ### Feature Development
@@ -261,11 +261,11 @@ vt follow ../myproject-feature  # Same effect
    ```bash
    # From the worktree
    cd ../project-feature
-   vt follow
+   tf follow
    
    # Or from main repo
    cd ../project
-   vt follow feature/new-ui
+   tf follow feature/new-ui
    ```
 3. Agent develops in worktree while you stay in main repo
 4. Your IDE and servers automatically see updates
@@ -278,14 +278,14 @@ vt follow ../myproject-feature  # Same effect
 git worktree add ../project-agent feature/ai-feature
 
 # Enable follow mode from main repo
-vt follow ../project-agent
+tf follow ../project-agent
 
 # Agent works in worktree, your main repo stays in sync
 # Switch branches in worktree? Main repo follows
 # Commit in worktree? Main repo updates
 
 # When done
-vt unfollow
+tf unfollow
 ```
 
 ### Bug Fixes
@@ -296,7 +296,7 @@ vt unfollow
    ```
 2. Switch to it with follow mode
    ```bash
-   vt follow hotfix/critical-bug
+   tf follow hotfix/critical-bug
    ```
 3. Fix the bug and test
 4. Cherry-pick to other branches if needed
@@ -306,8 +306,8 @@ vt unfollow
 
 1. Keep main repo on stable branch with IDE/servers running
 2. Create worktrees for different features
-3. Use `vt follow ~/project-feature1` to track first feature
-4. Switch to `vt follow ~/project-feature2` for second feature
+3. Use `tf follow ~/project-feature1` to track first feature
+4. Switch to `tf follow ~/project-feature2` for second feature
 5. Main repo instantly syncs without restarting anything
 
 ## Troubleshooting
@@ -350,7 +350,7 @@ vt unfollow
 **Solution**:
 - Ensure you enabled follow mode: `git config tunnelforge.followWorktree`
 - Check hooks are installed in both repos: `ls -la .git/hooks/post-*`
-- Verify worktree path is correct: `vt status`
+- Verify worktree path is correct: `tf status`
 - Check for uncommitted changes in main repo blocking sync
 - If you switched branches in main repo, follow mode auto-disabled
 
@@ -389,7 +389,7 @@ Use worktrees for CI/CD workflows:
 
 ## Command Reference
 
-### tf Commands (vt remains as legacy alias)
+### tf Commands 
 - `tf follow` - Enable follow mode for current branch
 - `tf follow <branch>` - Switch to branch and enable follow mode
 - `tf unfollow` - Disable follow mode
