@@ -1,0 +1,28 @@
+{
+  "name": "tunnelforge-terminal",
+  "version": "1.0.0",
+  "description": "High-performance GPU-accelerated terminal for TunnelForge",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "xterm": "^5.3.0",
+    "@xterm/addon-webgl": "^0.16.0",
+    "@xterm/addon-canvas": "^0.5.0",
+    "@xterm/addon-fit": "^0.8.0",
+    "@xterm/addon-search": "^0.13.0",
+    "@xterm/addon-web-links": "^0.9.0",
+    "@xterm/addon-unicode11": "^0.6.0",
+    "@xterm/addon-serialize": "^0.11.0",
+    "comlink": "^4.4.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
