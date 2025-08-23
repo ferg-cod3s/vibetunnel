@@ -1,20 +1,20 @@
-# VibeTunnel Release Documentation
+# TunnelForge Release Documentation
 
-This guide provides comprehensive documentation for creating and publishing releases for VibeTunnel, a macOS menu bar application using Sparkle 2.x for automatic updates.
+This guide provides comprehensive documentation for creating and publishing releases for TunnelForge, a macOS menu bar application using Sparkle 2.x for automatic updates.
 
 ## 🚀 Quick Release Commands
 
 ### Standard Release Flow
 ```bash
 # 1. Update versions
-vim VibeTunnel/version.xcconfig  # Set MARKETING_VERSION and increment CURRENT_PROJECT_VERSION
+vim TunnelForge/version.xcconfig  # Set MARKETING_VERSION and increment CURRENT_PROJECT_VERSION
 vim ../web/package.json          # Match version with MARKETING_VERSION
 
 # 2. Update changelog
 vim CHANGELOG.md                 # Add entry for new version
 
 # 3. Run release
-export SPARKLE_ACCOUNT="VibeTunnel"
+export SPARKLE_ACCOUNT="TunnelForge"
 ./scripts/release.sh beta 5      # For beta.5
 ./scripts/release.sh stable      # For stable release
 
@@ -30,18 +30,18 @@ export SPARKLE_ACCOUNT="VibeTunnel"
 #### After Notarization Success
 ```bash
 # 1. Create DMG (if missing)
-./scripts/create-dmg.sh build/Build/Products/Release/VibeTunnel.app
+./scripts/create-dmg.sh build/Build/Products/Release/TunnelForge.app
 
 # 2. Create GitHub release
 gh release create "v1.0.0-beta.5" \
-  --title "VibeTunnel 1.0.0-beta.5" \
+  --title "TunnelForge 1.0.0-beta.5" \
   --prerelease \
   --notes-file RELEASE_NOTES.md \
-  build/VibeTunnel-*.dmg \
-  build/VibeTunnel-*.zip
+  build/TunnelForge-*.dmg \
+  build/TunnelForge-*.zip
 
 # 3. Get Sparkle signature (ALWAYS use -f flag!)
-sign_update -f private/sparkle_private_key build/VibeTunnel-*.dmg --account VibeTunnel
+sign_update -f private/sparkle_private_key build/TunnelForge-*.dmg --account TunnelForge
 
 # 4. Update appcast manually (add to appcast-prerelease.xml)
 # 5. Commit and push
@@ -52,7 +52,7 @@ git push
 
 ## 🎯 Release Process Overview
 
-VibeTunnel uses an automated release process that handles all the complexity of:
+TunnelForge uses an automated release process that handles all the complexity of:
 - Building universal binaries containing both arm64 (Apple Silicon) and x86_64 (Intel)
 - Code signing and notarization with Apple
 - Creating DMG and ZIP files
@@ -64,7 +64,7 @@ VibeTunnel uses an automated release process that handles all the complexity of:
 ### Critical Version Rules
 
 1. **Version Configuration Source of Truth**
-   - ALL version information is stored in `VibeTunnel/version.xcconfig`
+   - ALL version information is stored in `TunnelForge/version.xcconfig`
    - The Xcode project must reference these values using `$(MARKETING_VERSION)` and `$(CURRENT_PROJECT_VERSION)`
    - NEVER hardcode versions in the Xcode project
 
@@ -153,7 +153,7 @@ Before running ANY release commands, verify these items:
 ### Version Verification
 - [ ] **⚠️ CRITICAL: Version in version.xcconfig is EXACTLY what you want to release**
   ```bash
-  grep MARKETING_VERSION VibeTunnel/version.xcconfig
+  grep MARKETING_VERSION TunnelForge/version.xcconfig
   # For beta.2 should show: MARKETING_VERSION = 1.0.0-beta.2
   # NOT: MARKETING_VERSION = 1.0.0
   ```
@@ -161,7 +161,7 @@ Before running ANY release commands, verify these items:
   
 - [ ] **Build number is incremented**
   ```bash
-  grep CURRENT_PROJECT_VERSION VibeTunnel/version.xcconfig
+  grep CURRENT_PROJECT_VERSION TunnelForge/version.xcconfig
   # Must be higher than the last release
   ```
   
@@ -182,7 +182,7 @@ Before running ANY release commands, verify these items:
 ### Environment Variables
 - [ ] Set required environment variables:
   ```bash
-  export SPARKLE_ACCOUNT="VibeTunnel"
+  export SPARKLE_ACCOUNT="TunnelForge"
   export APP_STORE_CONNECT_KEY_ID="YOUR_KEY_ID"
   export APP_STORE_CONNECT_ISSUER_ID="YOUR_ISSUER_ID"
   export APP_STORE_CONNECT_API_KEY_P8="-----BEGIN PRIVATE KEY-----
@@ -195,7 +195,7 @@ Before running ANY release commands, verify these items:
   ```bash
   ./scripts/clean.sh
   rm -rf build DerivedData
-  rm -rf ~/Library/Developer/Xcode/DerivedData/VibeTunnel-*
+  rm -rf ~/Library/Developer/Xcode/DerivedData/TunnelForge-*
   ```
 
 ### File Verification
@@ -204,17 +204,17 @@ Before running ANY release commands, verify these items:
 - [ ] No stuck DMG volumes in /Volumes/
   ```bash
   # Check for stuck volumes
-  ls /Volumes/VibeTunnel*
+  ls /Volumes/TunnelForge*
   # Unmount if needed
-  for volume in /Volumes/VibeTunnel*; do
+  for volume in /Volumes/TunnelForge*; do
       hdiutil detach "$volume" -force
   done
   ```
 - [ ] **Check for unexpected files in the app bundle**
   ```bash
   # Check for node_modules or other development files
-  find build/Build/Products/Release/VibeTunnel.app -name "node_modules" -type d
-  find build/Build/Products/Release/VibeTunnel.app -name "*.jar" -type f
+  find build/Build/Products/Release/TunnelForge.app -name "node_modules" -type d
+  find build/Build/Products/Release/TunnelForge.app -name "*.jar" -type f
   # Should return empty - no development files in release build
   ```
 
@@ -237,7 +237,7 @@ These scripts validate your environment is ready for release.
 2. The release script will NOT add additional suffixes - it uses the version as-is
 3. Always verify the version before proceeding:
    ```bash
-   grep MARKETING_VERSION VibeTunnel/version.xcconfig
+   grep MARKETING_VERSION TunnelForge/version.xcconfig
    # Should show: MARKETING_VERSION = 1.0.0-beta.2
    ```
 
@@ -245,12 +245,12 @@ These scripts validate your environment is ready for release.
 it will create `1.0.0-beta.2-beta.2` which is wrong!
 
 ### Step 3: Create/Update CHANGELOG.md
-Before creating any release, ensure the CHANGELOG.md file exists in the project root (`/vibetunnel/CHANGELOG.md`) and contains a proper section for the version being released:
+Before creating any release, ensure the CHANGELOG.md file exists in the project root (`/tunnelforge/CHANGELOG.md`) and contains a proper section for the version being released:
 
 ```markdown
 # Changelog
 
-All notable changes to VibeTunnel will be documented in this file.
+All notable changes to TunnelForge will be documented in this file.
 
 ## [1.0.0-beta.2] - 2025-06-19
 
@@ -262,7 +262,7 @@ All notable changes to VibeTunnel will be documented in this file.
 **CRITICAL**: The release process uses the CHANGELOG.md file in the project root as the single source of truth for release notes. The changelog must be updated with the new version section BEFORE running the release script.
 
 **Key Points**:
-- **Location**: CHANGELOG.md must be at `/vibetunnel/CHANGELOG.md` (project root, NOT in `mac/`)
+- **Location**: CHANGELOG.md must be at `/tunnelforge/CHANGELOG.md` (project root, NOT in `mac/`)
 - **No RELEASE_NOTES.md files**: The release process does NOT use RELEASE_NOTES.md files
 - **Per-Version Extraction**: The release script automatically extracts ONLY the changelog section for the specific version being released
 - **GitHub Release**: Uses the extracted markdown content directly (via `generate-release-notes.sh`)
@@ -306,7 +306,7 @@ screen -S release
 - Version consistency verification
 - Notarization credential validation
 
-**IMPORTANT**: The release script does NOT automatically increment build numbers. You must manually update the build number in VibeTunnel.xcodeproj before running the script, or it will fail the pre-flight check.
+**IMPORTANT**: The release script does NOT automatically increment build numbers. You must manually update the build number in TunnelForge.xcodeproj before running the script, or it will fail the pre-flight check.
 
 The script will:
 1. Validate build number is unique and incrementing
@@ -326,7 +326,7 @@ The script will:
 - **Monitor app size**: Verify the DMG size is reasonable (expected: ~42-44 MB)
   ```bash
   # Check DMG size
-  ls -lh build/VibeTunnel-*.dmg
+  ls -lh build/TunnelForge-*.dmg
   # Compare with previous releases
   gh release list --limit 5 | grep -E "beta|stable"
   # Download and check sizes
@@ -341,7 +341,7 @@ The script will:
   ```bash
   # Download and verify the DMG signature
   curl -L -o test.dmg <github-dmg-url>
-  sign_update -f private/sparkle_private_key test.dmg --account VibeTunnel
+  sign_update -f private/sparkle_private_key test.dmg --account TunnelForge
   # Compare with appcast sparkle:edSignature
   ```
 - Test updating from a previous version
@@ -353,7 +353,7 @@ The script will:
   - Run `./scripts/validate-sparkle-signature.sh` to verify all signatures
 - Verify Stats.store is serving the updated appcast (1-minute cache):
   ```bash
-  curl -H "User-Agent: VibeTunnel/X.X.X Sparkle/2.7.1" \
+  curl -H "User-Agent: TunnelForge/X.X.X Sparkle/2.7.1" \
        https://stats.store/api/v1/appcast/appcast-prerelease.xml | \
        grep sparkle:edSignature
   ```
@@ -373,14 +373,14 @@ If the automated script fails, here's the manual process:
 ### 1. Update Version Numbers
 Edit version configuration files:
 
-**macOS App** (`VibeTunnel/version.xcconfig`):
+**macOS App** (`TunnelForge/version.xcconfig`):
 - Update MARKETING_VERSION
 - Update CURRENT_PROJECT_VERSION (build number)
 
 **Web Frontend** (`../web/package.json`):
 - Update "version" field to match MARKETING_VERSION
 
-**Note**: The Xcode project file is named `VibeTunnel-Mac.xcodeproj`
+**Note**: The Xcode project file is named `TunnelForge-Mac.xcodeproj`
 
 ### 2. Clean and Build Universal Binary
 ```bash
@@ -390,30 +390,30 @@ rm -rf build DerivedData
 
 ### 3. Sign and Notarize
 ```bash
-./scripts/sign-and-notarize.sh build/Build/Products/Release/VibeTunnel.app
+./scripts/sign-and-notarize.sh build/Build/Products/Release/TunnelForge.app
 ```
 
 ### 4. Create DMG and ZIP
 ```bash
-./scripts/create-dmg.sh build/Build/Products/Release/VibeTunnel.app
-./scripts/create-zip.sh build/Build/Products/Release/VibeTunnel.app
+./scripts/create-dmg.sh build/Build/Products/Release/TunnelForge.app
+./scripts/create-zip.sh build/Build/Products/Release/TunnelForge.app
 ```
 
 ### 5. Sign DMG for Sparkle
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 # CRITICAL: Always use -f flag with private key file!
-sign_update -f private/sparkle_private_key build/VibeTunnel-X.X.X.dmg
+sign_update -f private/sparkle_private_key build/TunnelForge-X.X.X.dmg
 ```
 
 ### 6. Create GitHub Release
 ```bash
 gh release create "v1.0.0-beta.1" \
-  --title "VibeTunnel 1.0.0-beta.1" \
+  --title "TunnelForge 1.0.0-beta.1" \
   --notes "Beta release 1" \
   --prerelease \
-  build/VibeTunnel-*.dmg \
-  build/VibeTunnel-*.zip
+  build/TunnelForge-*.dmg \
+  build/TunnelForge-*.zip
 ```
 
 ### 7. Update Appcast
@@ -428,23 +428,23 @@ git push
 
 ```bash
 # Check release artifacts
-ls -la build/VibeTunnel-*.dmg
-ls -la build/VibeTunnel-*.zip
+ls -la build/TunnelForge-*.dmg
+ls -la build/TunnelForge-*.zip
 
 # Check GitHub release
 gh release view v1.0.0-beta.5
 
 # Verify Sparkle signature (ALWAYS use -f flag!)
 curl -L -o test.dmg [github-dmg-url]
-sign_update -f private/sparkle_private_key test.dmg --account VibeTunnel
+sign_update -f private/sparkle_private_key test.dmg --account TunnelForge
 
 # Check appcast
 grep "1.0.0-beta.5" ../appcast-prerelease.xml
 
 # Verify app in DMG
 hdiutil attach test.dmg
-spctl -a -vv /Volumes/VibeTunnel/VibeTunnel.app
-hdiutil detach /Volumes/VibeTunnel
+spctl -a -vv /Volumes/TunnelForge/TunnelForge.app
+hdiutil detach /Volumes/TunnelForge
 ```
 
 ## ⚠️ Critical Requirements
@@ -485,7 +485,7 @@ YOUR_PRIVATE_KEY_CONTENT
 
 **ALWAYS use the file-based private key for signing!**
 
-VibeTunnel uses EdDSA signatures for Sparkle updates. The correct private key is stored at:
+TunnelForge uses EdDSA signatures for Sparkle updates. The correct private key is stored at:
 - `private/sparkle_ed_private_key` (clean key file - REQUIRED for sign_update)
 - `private/sparkle_private_key` (commented version for documentation)
 
@@ -498,10 +498,10 @@ VibeTunnel uses EdDSA signatures for Sparkle updates. The correct private key is
 **ALWAYS use the `-f` flag when signing:**
 ```bash
 # ✅ CORRECT - Uses file-based key
-sign_update -f private/sparkle_ed_private_key build/VibeTunnel-*.dmg
+sign_update -f private/sparkle_ed_private_key build/TunnelForge-*.dmg
 
 # ❌ WRONG - May use keychain key
-sign_update build/VibeTunnel-*.dmg
+sign_update build/TunnelForge-*.dmg
 ```
 
 The public key in Info.plist is: `AGCY8w5vHirVfGGDGc8Szc5iuOqupZSh9pMj/Qs67XI=`
@@ -513,9 +513,9 @@ The public key in Info.plist is: `AGCY8w5vHirVfGGDGc8Szc5iuOqupZSh9pMj/Qs67XI=`
 
 ### Sparkle Requirements for Non-Sandboxed Apps
 
-VibeTunnel is not sandboxed, which simplifies Sparkle configuration:
+TunnelForge is not sandboxed, which simplifies Sparkle configuration:
 
-#### 1. Entitlements (VibeTunnel.entitlements)
+#### 1. Entitlements (TunnelForge.entitlements)
 ```xml
 <!-- App is NOT sandboxed -->
 <key>com.apple.security.app-sandbox</key>
@@ -543,12 +543,12 @@ The notarization script handles all signing correctly:
 The `notarize-app.sh` script should sign the app:
 ```bash
 # Sign the app WITHOUT --deep flag
-codesign --force --sign "Developer ID Application" --entitlements VibeTunnel.entitlements --options runtime VibeTunnel.app
+codesign --force --sign "Developer ID Application" --entitlements TunnelForge.entitlements --options runtime TunnelForge.app
 ```
 
 ### Architecture Support
 
-VibeTunnel uses universal binaries that include both architectures:
+TunnelForge uses universal binaries that include both architectures:
 - **Apple Silicon (arm64)**: Optimized for M1+ Macs
 - **Intel (x86_64)**: For Intel-based Macs
 
@@ -560,7 +560,7 @@ The build system creates a single universal binary that works on all Mac archite
 
 ## 📋 Update Channels
 
-VibeTunnel supports two update channels:
+TunnelForge supports two update channels:
 
 1. **Stable Channel** (`appcast.xml`)
    - Production releases only
@@ -600,7 +600,7 @@ VibeTunnel supports two update channels:
 **Cause**: Xcode project is not properly configured to use version.xcconfig values.
 
 **Solution**: 
-1. Open VibeTunnel.xcodeproj in Xcode
+1. Open TunnelForge.xcodeproj in Xcode
 2. Select the project, then the target
 3. In Build Settings, ensure:
    - MARKETING_VERSION = `$(MARKETING_VERSION)`
@@ -628,19 +628,19 @@ VibeTunnel supports two update channels:
 **Solution**:
 ```bash
 # 1. Check app bundle contents
-find build/Build/Products/Release/VibeTunnel.app -name "node_modules" -type d
-find build/Build/Products/Release/VibeTunnel.app -name "*.jar" -type f
-find build/Build/Products/Release/VibeTunnel.app -type f -size +1M -ls
+find build/Build/Products/Release/TunnelForge.app -name "node_modules" -type d
+find build/Build/Products/Release/TunnelForge.app -name "*.jar" -type f
+find build/Build/Products/Release/TunnelForge.app -type f -size +1M -ls
 
 # 2. Compare with previous release
 # Extract previous DMG
-hdiutil attach VibeTunnel-previous.dmg
-du -sh /Volumes/VibeTunnel/VibeTunnel.app/Contents/*
-hdiutil detach /Volumes/VibeTunnel
+hdiutil attach TunnelForge-previous.dmg
+du -sh /Volumes/TunnelForge/TunnelForge.app/Contents/*
+hdiutil detach /Volumes/TunnelForge
 
 # 3. Clean and rebuild
 ./scripts/clean.sh
-rm -rf ~/Library/Developer/Xcode/DerivedData/VibeTunnel-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/TunnelForge-*
 ./scripts/build.sh --configuration Release
 ```
 
@@ -660,7 +660,7 @@ rm -rf ~/Library/Developer/Xcode/DerivedData/VibeTunnel-*
 1. Update package.json to match version.xcconfig:
    ```bash
    # Check current versions
-   grep MARKETING_VERSION VibeTunnel/version.xcconfig
+   grep MARKETING_VERSION TunnelForge/version.xcconfig
    grep "version" ../web/package.json
    
    # Update web version to match
@@ -702,18 +702,18 @@ git stash pop          # Restore changes
 
 **Symptoms**:
 - `hdiutil: create failed - Resource temporarily unavailable`
-- Multiple VibeTunnel volumes visible in Finder
+- Multiple TunnelForge volumes visible in Finder
 - DMG creation fails repeatedly
 
 **Solution**:
 ```bash
-# Manually unmount all VibeTunnel volumes
-for volume in /Volumes/VibeTunnel*; do
+# Manually unmount all TunnelForge volumes
+for volume in /Volumes/TunnelForge*; do
     hdiutil detach "$volume" -force
 done
 
 # Kill any stuck DMG processes
-pkill -f "VibeTunnel.*\.dmg"
+pkill -f "TunnelForge.*\.dmg"
 ```
 
 **Prevention**: Scripts now clean up volumes automatically before DMG creation.
@@ -726,7 +726,7 @@ pkill -f "VibeTunnel.*\.dmg"
    ```bash
    grep -E '<sparkle:version>[0-9]+</sparkle:version>' ../appcast*.xml
    ```
-2. Update `mac/VibeTunnel/version.xcconfig`:
+2. Update `mac/TunnelForge/version.xcconfig`:
    ```
    CURRENT_PROJECT_VERSION = <new_unique_number>
    ```
@@ -772,7 +772,7 @@ xcrun notarytool log <submission-id> --key-id ...
 
 **Workaround**: 
 - Manually add entry to appcast-prerelease.xml
-- Use signature from: `sign_update [dmg] --account VibeTunnel`
+- Use signature from: `sign_update [dmg] --account TunnelForge`
 - Follow existing entry format (see template below)
 
 ## 🔧 Troubleshooting Common Issues
@@ -788,23 +788,23 @@ If automated release fails after notarization:
 
 1. **Create DMG** (if missing):
    ```bash
-   ./scripts/create-dmg.sh build/Build/Products/Release/VibeTunnel.app
+   ./scripts/create-dmg.sh build/Build/Products/Release/TunnelForge.app
    ```
 
 2. **Create GitHub Release**:
    ```bash
    gh release create "v$VERSION" \
-     --title "VibeTunnel $VERSION" \
+     --title "TunnelForge $VERSION" \
      --notes-file RELEASE_NOTES.md \
      --prerelease \
-     build/VibeTunnel-*.dmg \
-     build/VibeTunnel-*.zip
+     build/TunnelForge-*.dmg \
+     build/TunnelForge-*.zip
    ```
 
 3. **Sign DMG for Sparkle**:
    ```bash
-   export SPARKLE_ACCOUNT="VibeTunnel"
-   sign_update build/VibeTunnel-$VERSION.dmg --account VibeTunnel
+   export SPARKLE_ACCOUNT="TunnelForge"
+   sign_update build/TunnelForge-$VERSION.dmg --account TunnelForge
    ```
 
 4. **Update Appcast Manually**:
@@ -814,7 +814,7 @@ If automated release fails after notarization:
 ### "Update is improperly signed" Error
 **Problem**: Users see "The update is improperly signed and could not be validated."
 
-**Cause**: The DMG was signed with the wrong Sparkle key (default instead of VibeTunnel account).
+**Cause**: The DMG was signed with the wrong Sparkle key (default instead of TunnelForge account).
 
 **Quick Fix**:
 ```bash
@@ -822,34 +822,34 @@ If automated release fails after notarization:
 curl -L -o fix.dmg <github-dmg-url>
 
 # 2. Generate correct signature
-sign_update fix.dmg --account VibeTunnel
+sign_update fix.dmg --account TunnelForge
 
 # 3. Update appcast-prerelease.xml with the new sparkle:edSignature
 # 4. Commit and push
 ```
 
-**Prevention**: The updated scripts now always use `--account VibeTunnel`.
+**Prevention**: The updated scripts now always use `--account TunnelForge`.
 
 ### Debug Sparkle Updates
 ```bash
-# Monitor VibeTunnel logs
-log stream --predicate 'process == "VibeTunnel"' --level debug
+# Monitor TunnelForge logs
+log stream --predicate 'process == "TunnelForge"' --level debug
 
 # Check XPC errors
-log stream --predicate 'process == "VibeTunnel"' | grep -i -E "(sparkle|xpc|installer)"
+log stream --predicate 'process == "TunnelForge"' | grep -i -E "(sparkle|xpc|installer)"
 
 # Verify XPC services
-codesign -dvv "VibeTunnel.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc"
+codesign -dvv "TunnelForge.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc"
 ```
 
 ### Verify Signing and Notarization
 ```bash
 # Check app signature
-./scripts/verify-app.sh build/VibeTunnel-1.0.0.dmg
+./scripts/verify-app.sh build/TunnelForge-1.0.0.dmg
 
 # Verify XPC bundle IDs (should be org.sparkle-project.*)
 /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" \
-  "VibeTunnel.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/Info.plist"
+  "TunnelForge.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/Info.plist"
 ```
 
 ### Appcast Issues
@@ -865,17 +865,17 @@ grep '<sparkle:version>' appcast-prerelease.xml
 
 ```xml
 <item>
-    <title>VibeTunnel VERSION</title>
-    <link>https://github.com/amantus-ai/vibetunnel/releases/download/vVERSION/VibeTunnel-VERSION.dmg</link>
+    <title>TunnelForge VERSION</title>
+    <link>https://github.com/amantus-ai/tunnelforge/releases/download/vVERSION/TunnelForge-VERSION.dmg</link>
     <sparkle:version>BUILD_NUMBER</sparkle:version>
     <sparkle:shortVersionString>VERSION</sparkle:shortVersionString>
     <description><![CDATA[
-        <h2>VibeTunnel VERSION</h2>
+        <h2>TunnelForge VERSION</h2>
         <p><strong>Pre-release version</strong></p>
         <!-- Copy from CHANGELOG.md -->
     ]]></description>
     <pubDate>DATE</pubDate>
-    <enclosure url="https://github.com/amantus-ai/vibetunnel/releases/download/vVERSION/VibeTunnel-VERSION.dmg" 
+    <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/vVERSION/TunnelForge-VERSION.dmg" 
                sparkle:version="BUILD_NUMBER" 
                sparkle:shortVersionString="VERSION" 
                length="SIZE_IN_BYTES" 
@@ -899,7 +899,7 @@ grep '<sparkle:version>' appcast-prerelease.xml
 ### Wrong Sparkle Signature
 ```bash
 # 1. Get correct signature
-sign_update [dmg-url] --account VibeTunnel
+sign_update [dmg-url] --account TunnelForge
 
 # 2. Update appcast-prerelease.xml with correct signature
 # 3. Commit and push immediately
@@ -909,7 +909,7 @@ sign_update [dmg-url] --account VibeTunnel
 ```bash
 # Users won't see update until appcast is fixed
 # Add entry manually following template above
-# Test with: curl https://raw.githubusercontent.com/amantus-ai/vibetunnel/main/appcast-prerelease.xml
+# Test with: curl https://raw.githubusercontent.com/amantus-ai/tunnelforge/main/appcast-prerelease.xml
 ```
 
 ### Build Number Conflict
@@ -925,12 +925,12 @@ sign_update [dmg-url] --account VibeTunnel
 **Important**: Files are not always where scripts expect them to be.
 
 **Key Locations**:
-- **Appcast files**: Located in project root (`/vibetunnel/`), NOT in `mac/`
+- **Appcast files**: Located in project root (`/tunnelforge/`), NOT in `mac/`
   - `appcast.xml`
   - `appcast-prerelease.xml`
 - **CHANGELOG.md**: Can be in either:
   - `mac/CHANGELOG.md` (preferred by release script)
-  - Project root `/vibetunnel/CHANGELOG.md` (common location)
+  - Project root `/tunnelforge/CHANGELOG.md` (common location)
 - **Sparkle private key**: Usually in `mac/private/sparkle_private_key`
 
 ## 📚 Helper Scripts
@@ -952,7 +952,7 @@ Reliably locates CHANGELOG.md from any directory:
 ```bash
 # Find the changelog file
 ./scripts/find-changelog.sh
-# Output: /path/to/vibetunnel/CHANGELOG.md
+# Output: /path/to/tunnelforge/CHANGELOG.md
 ```
 
 #### `fix-release-changelogs.sh`
@@ -976,21 +976,21 @@ Updates existing GitHub releases to use per-version changelogs:
 find . -name sign_update -type f
 
 # Test signing with specific account
-./path/to/sign_update file.dmg -f private/sparkle_private_key -p --account VibeTunnel
+./path/to/sign_update file.dmg -f private/sparkle_private_key -p --account TunnelForge
 ```
 
 ### Verify Appcast URLs
 ```bash
 # Check that appcast files are accessible
-curl -I https://raw.githubusercontent.com/amantus-ai/vibetunnel/main/appcast.xml
-curl -I https://raw.githubusercontent.com/amantus-ai/vibetunnel/main/appcast-prerelease.xml
+curl -I https://raw.githubusercontent.com/amantus-ai/tunnelforge/main/appcast.xml
+curl -I https://raw.githubusercontent.com/amantus-ai/tunnelforge/main/appcast-prerelease.xml
 ```
 
 ### Manual Appcast Generation
 ```bash
 # If automatic generation fails
 cd mac
-export SPARKLE_ACCOUNT="VibeTunnel"
+export SPARKLE_ACCOUNT="TunnelForge"
 ./scripts/generate-appcast.sh
 ```
 
@@ -1004,10 +1004,10 @@ echo "Checking release status for v$VERSION..."
 
 # Check local artifacts
 echo -n "✓ Local DMG: "
-[ -f "build/VibeTunnel-$VERSION.dmg" ] && echo "EXISTS" || echo "MISSING"
+[ -f "build/TunnelForge-$VERSION.dmg" ] && echo "EXISTS" || echo "MISSING"
 
 echo -n "✓ Local ZIP: "
-[ -f "build/VibeTunnel-$VERSION.zip" ] && echo "EXISTS" || echo "MISSING"
+[ -f "build/TunnelForge-$VERSION.zip" ] && echo "EXISTS" || echo "MISSING"
 
 # Check GitHub
 echo -n "✓ GitHub Release: "
@@ -1162,7 +1162,7 @@ Where possible, run independent operations in parallel:
 
 ## Summary
 
-The VibeTunnel release process is complex but well-automated. The main challenges are:
+The TunnelForge release process is complex but well-automated. The main challenges are:
 - Command timeouts during long operations (especially notarization)
 - Lack of resumability after failures
 - Missing progress indicators

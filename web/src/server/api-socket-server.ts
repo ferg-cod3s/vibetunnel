@@ -1,5 +1,5 @@
 /**
- * API Socket Server for VibeTunnel control operations
+ * API Socket Server for TunnelForge control operations
  * Provides a Unix socket interface for CLI commands (vt) to communicate with the server
  */
 
@@ -61,7 +61,7 @@ export class ApiSocketServer {
 
   constructor() {
     // Use control directory from environment or default
-    const controlDir = process.env.VIBETUNNEL_CONTROL_DIR || path.join(os.homedir(), '.vibetunnel');
+    const controlDir = process.env.TUNNELFORGE_CONTROL_DIR || path.join(os.homedir(), '.tunnelforge');
     const socketDir = controlDir;
 
     // Ensure directory exists
@@ -206,7 +206,7 @@ export class ApiSocketServer {
 
         // Check for new worktree-based follow mode
         try {
-          const { stdout } = await execGit(['config', 'vibetunnel.followWorktree'], {
+          const { stdout } = await execGit(['config', 'tunnelforge.followWorktree'], {
             cwd: mainRepoPath,
           });
           const followWorktree = stdout.trim();
@@ -371,7 +371,7 @@ export class ApiSocketServer {
         }
 
         // Set the follow mode config with worktree path
-        await execGit(['config', '--local', 'vibetunnel.followWorktree', followPath], {
+        await execGit(['config', '--local', 'tunnelforge.followWorktree', followPath], {
           cwd: absoluteMainRepo,
         });
 
@@ -411,14 +411,14 @@ export class ApiSocketServer {
         socket.write(MessageBuilder.gitFollowResponse(response));
       } else {
         // Disable follow mode
-        await execGit(['config', '--local', '--unset', 'vibetunnel.followWorktree'], {
+        await execGit(['config', '--local', '--unset', 'tunnelforge.followWorktree'], {
           cwd: absoluteMainRepo,
         });
 
         // Get the worktree path that was being followed
         let followedWorktree: string | undefined;
         try {
-          const { stdout } = await execGit(['config', 'vibetunnel.followWorktree'], {
+          const { stdout } = await execGit(['config', 'tunnelforge.followWorktree'], {
             cwd: absoluteMainRepo,
           });
           followedWorktree = stdout.trim();

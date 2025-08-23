@@ -807,7 +807,7 @@ export class SessionList extends LitElement {
                               Haven't installed the CLI yet?
                             </div>
                             <div class="text-sm text-text-muted space-y-1">
-                              <div>→ Click the VibeTunnel menu bar icon</div>
+                              <div>→ Click the TunnelForge menu bar icon</div>
                               <div>→ Go to Settings → Advanced → Install CLI Tools</div>
                             </div>
                           </div>

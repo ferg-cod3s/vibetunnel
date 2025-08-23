@@ -1078,8 +1078,13 @@ export function createSessionRoutes(config: SessionRoutesConfig): Router {
 
     // Clean up on disconnect - listen to all possible events
     req.on('close', cleanup);
-    req.on('error', (err) => {
-      logger.error(`SSE client error for session ${sessionId}:`, err);
+    req.on('error', (err: NodeJS.ErrnoException) => {
+      // ECONNRESET is normal when clients disconnect abruptly (browser closes, tests end, etc.)
+      if (err.code === 'ECONNRESET' || err.code === 'EPIPE') {
+        logger.debug(`SSE client disconnected for session ${sessionId}: ${err.code}`);
+      } else {
+        logger.error(`SSE client error for session ${sessionId}:`, err);
+      }
       cleanup();
     });
     res.on('close', cleanup);

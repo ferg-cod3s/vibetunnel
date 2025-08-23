@@ -13,12 +13,16 @@ export class NotificationStatus extends LitElement {
   }
 
   @state() private isSSEConnected = false;
+  @state() private notificationPermission: NotificationPermission = 'default';
 
   private connectionStateUnsubscribe?: () => void;
 
   connectedCallback() {
     super.connectedCallback();
-    this.initializeComponent();
+    // Small delay to ensure DOM is ready and any test mocks are applied
+    setTimeout(() => {
+      this.initializeComponent();
+    }, 10);
   }
 
   disconnectedCallback() {
@@ -33,6 +37,14 @@ export class NotificationStatus extends LitElement {
     this.isSSEConnected = notificationEventService.getConnectionStatus();
     logger.debug('Initial SSE connection status:', this.isSSEConnected);
 
+    // Get initial notification permission state
+    this.notificationPermission =
+      typeof Notification !== 'undefined' ? Notification.permission : 'default';
+    logger.debug('Initial notification permission:', this.notificationPermission);
+
+    // Force a re-render to apply the permission state
+    this.requestUpdate();
+
     // Listen for connection state changes
     this.connectionStateUnsubscribe = notificationEventService.onConnectionStateChange(
       (connected) => {
@@ -40,6 +52,22 @@ export class NotificationStatus extends LitElement {
         this.isSSEConnected = connected;
       }
     );
+
+    // Listen for notification permission changes
+    if (typeof navigator !== 'undefined' && navigator.permissions) {
+      navigator.permissions
+        .query({ name: 'notifications' as PermissionName })
+        .then((permission) => {
+          permission.addEventListener('change', () => {
+            this.notificationPermission =
+              typeof Notification !== 'undefined' ? Notification.permission : 'default';
+            logger.debug('Notification permission changed:', this.notificationPermission);
+          });
+        })
+        .catch(() => {
+          // Ignore permission query errors
+        });
+    }
   }
 
   private handleClick(): void {
@@ -47,6 +75,21 @@ export class NotificationStatus extends LitElement {
   }
 
   private getStatusConfig() {
+    // Check browser notification permission first
+    if (this.notificationPermission === 'denied') {
+      return {
+        color: 'text-red-400',
+        tooltip: 'Settings (Notifications denied)',
+      };
+    }
+
+    if (this.notificationPermission === 'default') {
+      return {
+        color: 'text-gray-400',
+        tooltip: 'Settings (Notifications disabled)',
+      };
+    }
+
     // Green when SSE is connected (Mac app notifications are working)
     if (this.isSSEConnected) {
       return {
@@ -55,7 +98,7 @@ export class NotificationStatus extends LitElement {
       };
     }
 
-    // Default color when SSE is not connected
+    // Default color when SSE is not connected but notifications are allowed
     return {
       color: 'text-muted',
       tooltip: 'Settings (Notifications disconnected)',

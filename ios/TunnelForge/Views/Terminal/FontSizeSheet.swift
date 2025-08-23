@@ -20,7 +20,7 @@ struct FontSizeSheet: View {
                         .font(.caption)
                         .foregroundColor(Theme.Colors.terminalForeground.opacity(0.7))
 
-                    Text("VibeTunnel:~ $ echo 'Hello, World!'")
+                    Text("TunnelForge:~ $ echo 'Hello, World!'")
                         .font(Theme.Typography.terminal(size: fontSize))
                         .foregroundColor(Theme.Colors.terminalForeground)
                         .padding()

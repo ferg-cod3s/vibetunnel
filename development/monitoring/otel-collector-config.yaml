@@ -29,7 +29,7 @@ processors:
         value: "development"
         action: upsert
       - key: service.namespace
-        value: "vibetunnel"
+        value: "tunnelforge"
         action: upsert
 
 exporters:
@@ -47,7 +47,7 @@ exporters:
   # Prometheus exporter for metrics
   prometheus:
     endpoint: "0.0.0.0:8889"
-    namespace: "vibetunnel"
+    namespace: "tunnelforge"
     const_labels:
       environment: "development"
   

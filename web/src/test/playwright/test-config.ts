@@ -3,12 +3,18 @@
  */
 
 export const testConfig = {
-  // Port for the test server - separate from development server (3000)
-  port: 4022,
+  // Port for the test server - use environment variable or default
+  get port() {
+    if (process.env.TUNNELFORGE_URL) {
+      const url = new URL(process.env.TUNNELFORGE_URL);
+      return Number.parseInt(url.port) || 3000;
+    }
+    return 4022; // fallback for standalone tests
+  },
 
-  // Base URL constructed from port
+  // Base URL from environment variable or constructed from port
   get baseURL() {
-    return `http://localhost:${this.port}`;
+    return process.env.TUNNELFORGE_URL || `http://localhost:${this.port}`;
   },
 
   // Timeouts - Optimized for faster test execution

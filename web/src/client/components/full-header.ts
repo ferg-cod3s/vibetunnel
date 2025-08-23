@@ -29,7 +29,7 @@ export class FullHeader extends HeaderBase {
             <terminal-icon size="24"></terminal-icon>
             <div class="flex items-baseline gap-2">
               <h1 class="text-xl font-bold text-primary font-mono group-hover:underline">
-                VibeTunnel
+                TunnelForge
               </h1>
               <p class="text-text-muted text-xs font-mono">
                 (${runningSessions.length})

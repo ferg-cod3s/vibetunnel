@@ -37,11 +37,11 @@ struct TerminalTheme: Identifiable, Equatable {
 // MARK: - Predefined Themes
 
 extension TerminalTheme {
-    /// VibeTunnel's default dark theme
+    /// TunnelForge's default dark theme
     static let vibeTunnel = TerminalTheme(
-        id: "vibetunnel",
-        name: "VibeTunnel",
-        description: "Default VibeTunnel theme with blue accents",
+        id: "tunnelforge",
+        name: "TunnelForge",
+        description: "Default TunnelForge theme with blue accents",
         background: Theme.Colors.terminalBackground,
         foreground: Theme.Colors.terminalForeground,
         selection: Theme.Colors.terminalSelection,

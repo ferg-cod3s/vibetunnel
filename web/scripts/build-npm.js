@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Clean npm build script for VibeTunnel
+ * Clean npm build script for TunnelForge
  * Uses a separate dist-npm directory with its own package.json
  * Builds for all platforms by default with complete prebuild support
  * 
@@ -81,7 +81,7 @@ if (currentOnly) {
   }
 }
 
-console.log('🚀 Building VibeTunnel for npm distribution (clean approach)...\n');
+console.log('🚀 Building TunnelForge for npm distribution (clean approach)...\n');
 
 if (currentOnly) {
   console.log(`📦 Legacy mode: Building for ${process.platform}/${process.arch} only\n`);
@@ -490,9 +490,9 @@ function validatePackageHybrid() {
   
   // Check critical files in dist-npm
   const criticalFiles = [
-    'lib/vibetunnel-cli',
+    'lib/tunnelforge-cli',
     'lib/cli.js',
-    'bin/vibetunnel',
+    'bin/tunnelforge',
     'bin/vt',
     'scripts/postinstall.js',
     'public/index.html',
@@ -610,7 +610,7 @@ async function main() {
   
   const filesToCopy = [
     // Compiled CLI
-    { src: 'dist/vibetunnel-cli', dest: 'lib/cli.js' },
+    { src: 'dist/tunnelforge-cli', dest: 'lib/cli.js' },
     { src: 'dist/tsconfig.server.tsbuildinfo', dest: 'lib/tsconfig.server.tsbuildinfo' },
     
     // Bin scripts
@@ -709,7 +709,7 @@ async function main() {
       
       // Bin scripts
       bin: {
-        vibetunnel: './bin/vibetunnel',
+        tunnelforge: './bin/tunnelforge',
         vt: './bin/vt'
       },
       
@@ -749,30 +749,30 @@ async function main() {
   // Step 6: Fix the CLI structure and bin scripts
   console.log('\n6️⃣ Fixing CLI structure and bin scripts...\n');
   
-  // The dist/vibetunnel-cli was copied to lib/cli.js
+  // The dist/tunnelforge-cli was copied to lib/cli.js
   // We need to rename it and create a wrapper
   const cliPath = path.join(DIST_DIR, 'lib', 'cli.js');
-  const cliBundlePath = path.join(DIST_DIR, 'lib', 'vibetunnel-cli');
+  const cliBundlePath = path.join(DIST_DIR, 'lib', 'tunnelforge-cli');
   
   // Rename the bundle
   fs.renameSync(cliPath, cliBundlePath);
   
   // Create a simple wrapper that requires the bundle
   const cliWrapperContent = `#!/usr/bin/env node
-require('./vibetunnel-cli');
+require('./tunnelforge-cli');
 `;
   
   fs.writeFileSync(cliPath, cliWrapperContent, { mode: 0o755 });
   
   // Fix bin scripts to point to correct path
-  const binVibetunnelPath = path.join(DIST_DIR, 'bin', 'vibetunnel');
+  const binVibetunnelPath = path.join(DIST_DIR, 'bin', 'tunnelforge');
   const binVibetunnelContent = `#!/usr/bin/env node
 
 // Start the CLI - it handles all command routing including 'fwd'
 const { spawn } = require('child_process');
 const path = require('path');
 
-const cliPath = path.join(__dirname, '..', 'lib', 'vibetunnel-cli');
+const cliPath = path.join(__dirname, '..', 'lib', 'tunnelforge-cli');
 const args = process.argv.slice(2);
 
 const child = spawn('node', [cliPath, ...args], {
@@ -795,7 +795,7 @@ child.on('exit', (code, signal) => {
 });
 `;
   fs.writeFileSync(binVibetunnelPath, binVibetunnelContent, { mode: 0o755 });
-  console.log('  ✓ Fixed bin/vibetunnel path');
+  console.log('  ✓ Fixed bin/tunnelforge path');
   
   // vt script doesn't need fixing - it dynamically finds the binary
   
@@ -858,7 +858,7 @@ child.on('exit', (code, signal) => {
   
   console.log('\n🎉 Hybrid npm build completed successfully!');
   console.log('\nNext steps:');
-  console.log('  - Test locally: npm pack && npm install -g vibetunnel-*.tgz');
+  console.log('  - Test locally: npm pack && npm install -g tunnelforge-*.tgz');
   console.log('  - Test Linux compatibility: Check authenticate-pam and fallback compilation');
   console.log('  - Publish: npm publish');
 }

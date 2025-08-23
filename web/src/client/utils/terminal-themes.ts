@@ -17,7 +17,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: 'dark',
     name: 'Dark',
-    description: 'VibeTunnel default dark',
+    description: 'TunnelForge default dark',
     colors: {
       background: '#1e1e1e',
       foreground: '#d4d4d4',

@@ -1,5 +1,5 @@
 /**
- * VibeTunnel Interactive Binary Terminal Component
+ * TunnelForge Interactive Binary Terminal Component
  *
  * Extends the read-only terminal buffer component to support interactive text input
  * using the efficient binary WebSocket protocol. Maintains the same UI appearance

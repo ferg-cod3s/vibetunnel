@@ -12,7 +12,7 @@ export class ThemeToggleIcon extends LitElement {
   @property({ type: String })
   theme: Theme = 'system';
 
-  private readonly STORAGE_KEY = 'vibetunnel-theme';
+  private readonly STORAGE_KEY = 'tunnelforge-theme';
   private mediaQuery?: MediaQueryList;
 
   // Disable shadow DOM to use Tailwind
@@ -62,7 +62,7 @@ export class ThemeToggleIcon extends LitElement {
     // Update meta theme-color for mobile browsers
     const metaTheme = document.querySelector('meta[name="theme-color"]');
     if (metaTheme) {
-      metaTheme.setAttribute('content', effectiveTheme === 'dark' ? '#0a0a0a' : '#fafafa');
+      metaTheme.setAttribute('content', effectiveTheme === 'dark' ? '#1A1A1A' : '#fafafa');
     }
   }
 

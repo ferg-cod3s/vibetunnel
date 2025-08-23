@@ -48,13 +48,13 @@ SHOW_HELP=false
 # Function to show usage
 show_usage() {
     cat << EOF
-vtlog - VibeTunnel Logging Utility
+vtlog - TunnelForge Logging Utility
 
 USAGE:
     vtlog [OPTIONS]
 
 DESCRIPTION:
-    View VibeTunnel logs with full details (bypasses Apple's privacy redaction).
+    View TunnelForge logs with full details (bypasses Apple's privacy redaction).
     Requires sudo access configured for /usr/bin/log command.
 
 IMPORTANT NOTE:
@@ -70,7 +70,7 @@ IMPORTANT NOTE:
     3. Check device logs in Xcode (Window > Devices and Simulators)
 
 LOG ARCHITECTURE:
-    The iOS app is a client that connects to the VibeTunnel Mac server.
+    The iOS app is a client that connects to the TunnelForge Mac server.
     This tool will capture logs from the iOS app when it's updated to use os_log.
     
     To see server logs, use vtlog on the Mac hosting the server.
@@ -144,7 +144,7 @@ EOF
 
 # Function to list categories
 list_categories() {
-    echo -e "${BLUE}Fetching VibeTunnel log categories from the last hour...${NC}\n"
+    echo -e "${BLUE}Fetching TunnelForge log categories from the last hour...${NC}\n"
     
     # Get unique categories from recent logs
     log show --predicate "subsystem == \"$SUBSYSTEM\"" --last 1h 2>/dev/null | \
@@ -252,7 +252,7 @@ if [[ "$STREAM_MODE" == true ]]; then
     # Streaming mode
     CMD="sudo log stream --predicate '$PREDICATE' --level $LOG_LEVEL --info"
     
-    echo -e "${GREEN}Streaming VibeTunnel logs continuously...${NC}"
+    echo -e "${GREEN}Streaming TunnelForge logs continuously...${NC}"
     echo -e "${YELLOW}Press Ctrl+C to stop${NC}\n"
 else
     # Show mode

@@ -1,14 +1,14 @@
-# VibeTunnel Web Architecture Specification
+# TunnelForge Web Architecture Specification
 
-This document provides a comprehensive map of the VibeTunnel web application architecture, including server components, client structure, API specifications, and protocol details. Updated: 2025-07-01
+This document provides a comprehensive map of the TunnelForge web application architecture, including server components, client structure, API specifications, and protocol details. Updated: 2025-07-01
 
 ## Key Files Quick Reference
 
 ### Server Core
-- **Entry Point**: `src/server/server.ts:912` - `startVibeTunnelServer()`
+- **Entry Point**: `src/server/server.ts:912` - `startTunnelForgeServer()`
 - **App Creation**: `src/server/server.ts:330` - `createApp()`
 - **Configuration**: `src/server/server.ts:57` - `Config` interface
-- **CLI Entry**: `src/server/cli.ts:51-56` - `vibetunnel fwd` command
+- **CLI Entry**: `src/server/cli.ts:51-56` - `tunnelforge fwd` command
 
 ### Authentication
 - **Service**: `src/server/services/auth-service.ts:144-271` - SSH key verification
@@ -27,7 +27,7 @@ This document provides a comprehensive map of the VibeTunnel web application arc
 
 ### Client Core
 - **Entry Point**: `src/client/app-entry.ts:1-28` - App initialization
-- **Main Component**: `src/client/app.ts:44-1355` - `<vibetunnel-app>`
+- **Main Component**: `src/client/app.ts:44-1355` - `<tunnelforge-app>`
 - **Terminal**: `src/client/components/terminal.ts:23-1567` - xterm.js wrapper
 
 ## Server Architecture
@@ -76,7 +76,7 @@ The server provides a comprehensive API for terminal session management with sup
 **Session Lifecycle**:
 1. **Creation** (`src/server/routes/sessions.ts:134`):
    - Spawns PTY process using node-pty
-   - Creates session directory in `~/.vibetunnel/control/`
+   - Creates session directory in `~/.tunnelforge/control/`
    - Saves metadata to `session.json`
 
 2. **Tracking**:
@@ -90,7 +90,7 @@ The server provides a comprehensive API for terminal session management with sup
 
 **Control Directory Structure**:
 ```
-~/.vibetunnel/control/
+~/.tunnelforge/control/
 ├── [sessionId]/
 │   ├── session.json    # Session metadata
 │   ├── stdout          # Terminal output
@@ -104,7 +104,7 @@ The server provides a comprehensive API for terminal session management with sup
 ### Component Hierarchy
 
 ```
-<vibetunnel-app>                  # Main app orchestrator
+<tunnelforge-app>                  # Main app orchestrator
 ├── <auth-login>                  # Login form
 ├── <session-list>                # Session listing
 │   └── <session-card>           # Individual session
@@ -239,7 +239,7 @@ Uses asciinema cast v2 format:
 
 ## fwd.ts Application
 
-The `fwd.ts` tool (`src/server/fwd.ts`) wraps any command in a VibeTunnel session:
+The `fwd.ts` tool (`src/server/fwd.ts`) wraps any command in a TunnelForge session:
 
 **Usage**: `pnpm exec tsx src/fwd.ts [options] <command> [args...]`
 
@@ -318,7 +318,7 @@ Message Types:
 - Web Crypto API integration
 
 ### Native Terminal Spawning (macOS)
-- Unix socket at `/tmp/vibetunnel-terminal.sock`
+- Unix socket at `/tmp/tunnelforge-terminal.sock`
 - Requests native Terminal.app windows
 - Falls back to web terminal
 
@@ -358,7 +358,7 @@ Git follow mode creates an intelligent synchronization between a main repository
 - **CLI Integration** (`web/bin/vt`): Smart command handling with path/branch detection
 
 **Configuration**:
-- Single config option: `vibetunnel.followWorktree` stores the worktree path being followed
+- Single config option: `tunnelforge.followWorktree` stores the worktree path being followed
 - Config is stored in the main repository's `.git/config`
 - Follow mode is active when this config contains a valid worktree path
 

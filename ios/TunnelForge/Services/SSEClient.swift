@@ -4,7 +4,7 @@ private let logger = Logger(category: "SSEClient")
 
 /// Server-Sent Events (SSE) client for real-time terminal output streaming.
 ///
-/// SSEClient handles the text-based streaming protocol used by the VibeTunnel server
+/// SSEClient handles the text-based streaming protocol used by the TunnelForge server
 /// to send terminal output in real-time. It parses the event stream format and
 /// provides decoded events to a delegate.
 final class SSEClient: NSObject, @unchecked Sendable {

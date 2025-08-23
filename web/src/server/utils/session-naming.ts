@@ -5,7 +5,7 @@ import * as path from 'path';
  * Abbreviate a file path to make it more readable
  * Examples:
  *   /Users/john/Projects/myproject -> ~/Projects/myproject
- *   /Users/john/Development/vibetunnel/web -> ~/Dev/vibetunnel/web
+ *   /Users/john/Development/tunnelforge/web -> ~/Dev/tunnelforge/web
  *   /very/long/path/to/some/directory -> …/some/directory
  */
 export function abbreviatePath(fullPath: string): string {
@@ -38,7 +38,7 @@ export function abbreviatePath(fullPath: string): string {
  * Generate a human-readable session name
  * Format: commandName (abbreviatedPath)
  * Examples:
- *   claude (~/Dev/vibetunnel/web)
+ *   claude (~/Dev/tunnelforge/web)
  *   bash (~/Projects/myapp)
  *   python3 (~)
  */

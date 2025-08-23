@@ -1,5 +1,5 @@
 #!/bin/bash
-# Complete MCP restore for vibetunnel project
+# Complete MCP restore for tunnelforge project
 # This script restores all MCP servers with proper configuration
 
 echo "Restoring all MCP servers..."

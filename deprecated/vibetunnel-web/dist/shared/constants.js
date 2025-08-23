@@ -1,0 +1,11 @@
+"use strict";
+/**
+ * Shared constants used across both client and server
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULT_SERVER_PORT = exports.DEFAULT_REPOSITORY_BASE_PATH = void 0;
+// Default paths
+exports.DEFAULT_REPOSITORY_BASE_PATH = '~/Documents';
+// Server configuration
+exports.DEFAULT_SERVER_PORT = 4020;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uc3RhbnRzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL3NoYXJlZC9jb25zdGFudHMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBOztHQUVHOzs7QUFFSCxnQkFBZ0I7QUFDSCxRQUFBLDRCQUE0QixHQUFHLGFBQWEsQ0FBQztBQUUxRCx1QkFBdUI7QUFDVixRQUFBLG1CQUFtQixHQUFHLElBQUksQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogU2hhcmVkIGNvbnN0YW50cyB1c2VkIGFjcm9zcyBib3RoIGNsaWVudCBhbmQgc2VydmVyXG4gKi9cblxuLy8gRGVmYXVsdCBwYXRoc1xuZXhwb3J0IGNvbnN0IERFRkFVTFRfUkVQT1NJVE9SWV9CQVNFX1BBVEggPSAnfi9Eb2N1bWVudHMnO1xuXG4vLyBTZXJ2ZXIgY29uZmlndXJhdGlvblxuZXhwb3J0IGNvbnN0IERFRkFVTFRfU0VSVkVSX1BPUlQgPSA0MDIwO1xuIl19

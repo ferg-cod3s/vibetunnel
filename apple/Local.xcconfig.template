@@ -11,4 +11,4 @@ DEVELOPMENT_TEAM = YOUR_TEAM_ID_HERE
 CODE_SIGN_STYLE = Automatic
 
 // Optional: Override bundle identifier for local development
-// PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.VibeTunnel
+// PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TunnelForge

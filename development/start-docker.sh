@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# VibeTunnel Docker-based Startup Script
+# TunnelForge Docker-based Startup Script
 # Uses Docker Compose for consistent, production-like environment
 
 set -euo pipefail
@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 COMPOSE_FILE="docker-compose.yml"
-PROJECT_NAME="vibetunnel"
+PROJECT_NAME="tunnelforge"
 LOG_DIR="./logs"
 
 # Parse command line arguments
@@ -26,7 +26,7 @@ DETACHED="false"
 
 show_help() {
     cat << EOF
-${BLUE}VibeTunnel Docker Startup Script${NC}
+${BLUE}TunnelForge Docker Startup Script${NC}
 
 ${YELLOW}Usage:${NC}
   $0 [options]
@@ -47,12 +47,12 @@ ${YELLOW}Examples:${NC}
   $0                       Start with development profile
   $0 -p production -m      Start production with monitoring
   $0 -b                    Rebuild and start
-  $0 --logs vibetunnel-go-server  Show Go server logs
+  $0 --logs tunnelforge-go-server  Show Go server logs
   $0 --stop                Stop all services
 
 ${YELLOW}Services:${NC}
-  • vibetunnel-go-server   Go backend server (port 4021)
-  • vibetunnel-bun-web     Bun web frontend (port 3000)
+  • tunnelforge-go-server   Go backend server (port 4021)
+  • tunnelforge-bun-web     Bun web frontend (port 3000)
   • otel-collector         OpenTelemetry collector (port 4317/4318)
   • jaeger                 Jaeger tracing UI (port 16686)
   • prometheus             Prometheus metrics (port 9090)
@@ -97,7 +97,7 @@ create_env_file() {
     log "${BLUE}📝 Creating environment configuration...${NC}"
     
     cat > .env << EOF
-# VibeTunnel Docker Environment Configuration
+# TunnelForge Docker Environment Configuration
 # Generated: $(date)
 
 # Build configuration
@@ -110,7 +110,7 @@ GO_SERVER_PORT=4021
 BUN_WEB_PORT=3000
 
 # Service URLs
-GO_SERVER_URL=http://vibetunnel-go-server:4021
+GO_SERVER_URL=http://tunnelforge-go-server:4021
 
 # Security configuration
 ENABLE_AUTH=false
@@ -155,10 +155,10 @@ build_services() {
 }
 
 start_services() {
-    log "${BLUE}🚀 Starting VibeTunnel services...${NC}"
+    log "${BLUE}🚀 Starting TunnelForge services...${NC}"
     
     # Prepare services list
-    local services="vibetunnel-go-server vibetunnel-bun-web"
+    local services="tunnelforge-go-server tunnelforge-bun-web"
     
     if [[ "$MONITORING_ENABLED" == "true" ]]; then
         services="$services otel-collector jaeger prometheus"
@@ -184,7 +184,7 @@ start_services() {
 }
 
 show_status() {
-    log "\n${PURPLE}📊 VibeTunnel Docker Status:${NC}"
+    log "\n${PURPLE}📊 TunnelForge Docker Status:${NC}"
     log "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     
     # Show container status
@@ -192,7 +192,7 @@ show_status() {
     
     echo
     log "${BLUE}🌐 Service URLs:${NC}"
-    log "   • VibeTunnel Web Frontend: ${GREEN}http://localhost:3000${NC}"
+    log "   • TunnelForge Web Frontend: ${GREEN}http://localhost:3000${NC}"
     log "   • Go Backend API: ${GREEN}http://localhost:4021${NC}"
     log "   • Health Check: ${GREEN}http://localhost:4021/health${NC}"
     
@@ -231,7 +231,7 @@ show_logs() {
 }
 
 stop_services() {
-    log "${YELLOW}🛑 Stopping VibeTunnel services...${NC}"
+    log "${YELLOW}🛑 Stopping TunnelForge services...${NC}"
     
     if ! $COMPOSE_CMD down --remove-orphans; then
         log "${RED}❌ Failed to stop services cleanly${NC}"
@@ -343,7 +343,7 @@ done
 
 # Main execution
 main() {
-    log "${PURPLE}🎯 Starting VibeTunnel with Docker${NC}"
+    log "${PURPLE}🎯 Starting TunnelForge with Docker${NC}"
     log "${BLUE}Profile: $PROFILE${NC}"
     log "${BLUE}Monitoring: $MONITORING_ENABLED${NC}"
     log "${BLUE}═══════════════════════════════════════════════${NC}"
@@ -355,7 +355,7 @@ main() {
     create_env_file
     
     # Build if requested or if images don't exist
-    if [[ "$BUILD_FRESH" == "true" ]] || ! docker images | grep -q "vibetunnel"; then
+    if [[ "$BUILD_FRESH" == "true" ]] || ! docker images | grep -q "tunnelforge"; then
         build_services
     fi
     
@@ -366,7 +366,7 @@ main() {
     if [[ "$DETACHED" != "true" ]]; then
         show_status
         
-        log "\n${YELLOW}🎮 VibeTunnel is running. Press Ctrl+C to stop all services.${NC}"
+        log "\n${YELLOW}🎮 TunnelForge is running. Press Ctrl+C to stop all services.${NC}"
         log "${BLUE}💡 Use '$0 --logs SERVICE' to view specific service logs${NC}\n"
         
         # Wait for interrupt

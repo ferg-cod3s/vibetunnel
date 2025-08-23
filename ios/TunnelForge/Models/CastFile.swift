@@ -161,7 +161,7 @@ class CastRecorder {
             width: width,
             height: height,
             timestamp: startTime,
-            title: "VibeTunnel Recording - \(sessionId)",
+            title: "TunnelForge Recording - \(sessionId)",
             env: ["TERM": "xterm-256color", "SHELL": "/bin/zsh"],
             theme: nil
         )

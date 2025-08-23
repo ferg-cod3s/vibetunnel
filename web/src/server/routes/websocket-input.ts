@@ -1,5 +1,5 @@
 /**
- * WebSocket Input Handler for VibeTunnel
+ * WebSocket Input Handler for TunnelForge
  *
  * Handles WebSocket connections for low-latency input transmission.
  * Optimized for speed:

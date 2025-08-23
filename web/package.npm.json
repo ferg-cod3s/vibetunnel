@@ -1,10 +1,10 @@
 {
-  "name": "vibetunnel",
+  "name": "tunnelforge",
   "version": "1.0.0-beta.16",
   "description": "Terminal sharing server with web interface - supports macOS, Linux, and headless environments",
   "main": "lib/cli.js",
   "bin": {
-    "vibetunnel": "./bin/vibetunnel"
+    "tunnelforge": "./bin/tunnelforge"
   },
   "files": [
     "lib/",
@@ -24,12 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/amantus-ai/vibetunnel.git",
+    "url": "https://github.com/amantus-ai/tunnelforge.git",
     "directory": "web"
   },
-  "homepage": "https://vibetunnel.sh",
+  "homepage": "https://tunnelforge.sh",
   "bugs": {
-    "url": "https://github.com/amantus-ai/vibetunnel/issues"
+    "url": "https://github.com/amantus-ai/tunnelforge/issues"
   },
   "scripts": {
     "postinstall": "node scripts/postinstall.js"

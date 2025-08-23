@@ -94,6 +94,6 @@
 --exclude Carthage
 --exclude Pods
 --exclude DerivedData
---exclude VibeTunnelTests
---exclude VibeTunnelUITests
+--exclude TunnelForgeTests
+--exclude TunnelForgeUITests
 --exclude SourcePackages

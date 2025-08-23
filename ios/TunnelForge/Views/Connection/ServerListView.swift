@@ -179,7 +179,7 @@ struct ServerListView: View {
             }
 
             VStack(spacing: Theme.Spacing.small) {
-                Text("VibeTunnel")
+                Text("TunnelForge")
                     .font(.system(size: 42, weight: .bold, design: .rounded))
                     .foregroundColor(Theme.Colors.terminalForeground)
 
@@ -247,7 +247,7 @@ struct ServerListView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(Theme.Colors.terminalForeground)
 
-                Text("Add your first server to get started with VibeTunnel")
+                Text("Add your first server to get started with TunnelForge")
                     .font(.body)
                     .foregroundColor(Theme.Colors.secondaryText)
                     .multilineTextAlignment(.center)

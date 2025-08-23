@@ -15,7 +15,7 @@ vi.unmock('node-pty');
 describe('vt title Command Integration', () => {
   let testControlDir: string;
   let vtScriptPath: string;
-  let vibetunnelPath: string;
+  let tunnelforgePath: string;
 
   beforeEach(async () => {
     // Create test control directory with shorter path
@@ -23,9 +23,9 @@ describe('vt title Command Integration', () => {
     testControlDir = path.join(os.tmpdir(), `vt-${shortId}`);
     await fs.mkdir(testControlDir, { recursive: true });
 
-    // Get path to vt script and vibetunnel binary
+    // Get path to vt script and tunnelforge binary
     vtScriptPath = getVtScriptPath();
-    vibetunnelPath = getVibetunnelBinaryPath();
+    tunnelforgePath = getVibetunnelBinaryPath();
   });
 
   afterEach(async () => {
@@ -38,9 +38,9 @@ describe('vt title Command Integration', () => {
   });
 
   it('should show error when vt title is used outside a session', async () => {
-    // Test using vibetunnel directly with --update-title flag (which vt script would call)
+    // Test using tunnelforge directly with --update-title flag (which vt script would call)
     try {
-      await execAsync(`${vibetunnelPath} fwd --update-title "Test Title"`);
+      await execAsync(`${tunnelforgePath} fwd --update-title "Test Title"`);
       // Should not reach here
       expect.fail('Command should have failed');
     } catch (error) {
@@ -73,26 +73,26 @@ describe('vt title Command Integration', () => {
     const sessionJsonPath = path.join(sessionDir, 'session.json');
     await fs.writeFile(sessionJsonPath, JSON.stringify(initialSessionInfo, null, 2));
 
-    // Set up environment as if we're inside a VibeTunnel session
+    // Set up environment as if we're inside a TunnelForge session
     const env = {
       ...process.env,
-      VIBETUNNEL_SESSION_ID: sessionId,
+      TUNNELFORGE_SESSION_ID: sessionId,
       HOME: os.homedir(),
     };
 
     // Override HOME to use our test directory
     const mockHome = path.join(testControlDir, 'home');
-    await fs.mkdir(path.join(mockHome, '.vibetunnel', 'control'), { recursive: true });
+    await fs.mkdir(path.join(mockHome, '.tunnelforge', 'control'), { recursive: true });
 
     // Create symlink from mock home to our test session
-    const mockControlDir = path.join(mockHome, '.vibetunnel', 'control');
+    const mockControlDir = path.join(mockHome, '.tunnelforge', 'control');
     await fs.symlink(sessionDir, path.join(mockControlDir, sessionId));
 
     env.HOME = mockHome;
 
-    // Run vibetunnel directly with --update-title flag (what vt script would call)
+    // Run tunnelforge directly with --update-title flag (what vt script would call)
     const { stderr } = await execAsync(
-      `${vibetunnelPath} fwd --update-title "Updated Title" --session-id "${sessionId}"`,
+      `${tunnelforgePath} fwd --update-title "Updated Title" --session-id "${sessionId}"`,
       { env }
     );
 
@@ -130,12 +130,12 @@ describe('vt title Command Integration', () => {
 
     // Set up environment
     const mockHome = path.join(testControlDir, 'home');
-    await fs.mkdir(path.join(mockHome, '.vibetunnel', 'control'), { recursive: true });
-    await fs.symlink(sessionDir, path.join(mockHome, '.vibetunnel', 'control', sessionId));
+    await fs.mkdir(path.join(mockHome, '.tunnelforge', 'control'), { recursive: true });
+    await fs.symlink(sessionDir, path.join(mockHome, '.tunnelforge', 'control', sessionId));
 
     const env = {
       ...process.env,
-      VIBETUNNEL_SESSION_ID: sessionId,
+      TUNNELFORGE_SESSION_ID: sessionId,
       HOME: mockHome,
     };
 
@@ -157,11 +157,11 @@ describe('vt title Command Integration', () => {
     ];
 
     for (const title of specialTitles) {
-      // Run vibetunnel directly
+      // Run tunnelforge directly
       // Use single quotes for shell safety and escape any single quotes in the title
       const escapedTitle = title.replace(/'/g, "'\"'\"'");
       const { stderr } = await execAsync(
-        `${vibetunnelPath} fwd --update-title '${escapedTitle}' --session-id "${sessionId}"`,
+        `${tunnelforgePath} fwd --update-title '${escapedTitle}' --session-id "${sessionId}"`,
         { env }
       );
 
@@ -180,13 +180,13 @@ describe('vt title Command Integration', () => {
     // Set up environment without creating session.json
     const env = {
       ...process.env,
-      VIBETUNNEL_SESSION_ID: sessionId,
+      TUNNELFORGE_SESSION_ID: sessionId,
       HOME: testControlDir, // Use test dir as home
     };
 
-    // Run vibetunnel directly
+    // Run tunnelforge directly
     try {
-      await execAsync(`${vibetunnelPath} fwd --update-title "Test" --session-id "${sessionId}"`, {
+      await execAsync(`${tunnelforgePath} fwd --update-title "Test" --session-id "${sessionId}"`, {
         env,
       });
       expect.fail('Should have failed');
@@ -219,19 +219,19 @@ describe('vt title Command Integration', () => {
 
     // Set up environment
     const mockHome = path.join(testControlDir, 'home');
-    await fs.mkdir(path.join(mockHome, '.vibetunnel', 'control'), { recursive: true });
-    await fs.symlink(sessionDir, path.join(mockHome, '.vibetunnel', 'control', sessionId));
+    await fs.mkdir(path.join(mockHome, '.tunnelforge', 'control'), { recursive: true });
+    await fs.symlink(sessionDir, path.join(mockHome, '.tunnelforge', 'control', sessionId));
 
     const env = {
       ...process.env,
-      VIBETUNNEL_SESSION_ID: sessionId,
+      TUNNELFORGE_SESSION_ID: sessionId,
       HOME: mockHome,
       PATH: '/usr/bin:/bin', // Minimal PATH that likely excludes jq
     };
 
-    // Run vibetunnel directly (fwd doesn't use jq/sed, it updates directly)
+    // Run tunnelforge directly (fwd doesn't use jq/sed, it updates directly)
     const { stderr } = await execAsync(
-      `${vibetunnelPath} fwd --update-title "Sed Fallback Test" --session-id "${sessionId}"`,
+      `${tunnelforgePath} fwd --update-title "Sed Fallback Test" --session-id "${sessionId}"`,
       { env }
     );
 
@@ -262,21 +262,21 @@ describe('vt title Command Integration', () => {
 
     // Set up environment
     const mockHome = path.join(testControlDir, 'home');
-    await fs.mkdir(path.join(mockHome, '.vibetunnel', 'control'), { recursive: true });
-    await fs.symlink(sessionDir, path.join(mockHome, '.vibetunnel', 'control', sessionId));
+    await fs.mkdir(path.join(mockHome, '.tunnelforge', 'control'), { recursive: true });
+    await fs.symlink(sessionDir, path.join(mockHome, '.tunnelforge', 'control', sessionId));
 
     const env = {
       ...process.env,
-      VIBETUNNEL_SESSION_ID: sessionId,
+      TUNNELFORGE_SESSION_ID: sessionId,
       HOME: mockHome,
     };
 
-    // Run multiple vibetunnel commands concurrently
+    // Run multiple tunnelforge commands concurrently
     const promises = [];
     for (let i = 0; i < 10; i++) {
       promises.push(
         execAsync(
-          `${vibetunnelPath} fwd --update-title "Concurrent Update ${i}" --session-id "${sessionId}"`,
+          `${tunnelforgePath} fwd --update-title "Concurrent Update ${i}" --session-id "${sessionId}"`,
           { env }
         )
       );
@@ -321,12 +321,12 @@ describe('vt title Command Integration', () => {
 
     // Set up environment
     const mockHome = path.join(testControlDir, 'home');
-    await fs.mkdir(path.join(mockHome, '.vibetunnel', 'control'), { recursive: true });
-    await fs.symlink(sessionDir, path.join(mockHome, '.vibetunnel', 'control', sessionId));
+    await fs.mkdir(path.join(mockHome, '.tunnelforge', 'control'), { recursive: true });
+    await fs.symlink(sessionDir, path.join(mockHome, '.tunnelforge', 'control', sessionId));
 
     const env = {
       ...process.env,
-      VIBETUNNEL_SESSION_ID: sessionId,
+      TUNNELFORGE_SESSION_ID: sessionId,
       HOME: mockHome,
     };
 

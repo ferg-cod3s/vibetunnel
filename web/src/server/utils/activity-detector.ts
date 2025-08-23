@@ -12,7 +12,7 @@ import { PromptDetector } from './prompt-patterns.js';
 const logger = createLogger('activity-detector');
 
 // Debug flag - set to true to enable verbose logging
-const CLAUDE_DEBUG = process.env.VIBETUNNEL_CLAUDE_DEBUG === 'true';
+const CLAUDE_DEBUG = process.env.TUNNELFORGE_CLAUDE_DEBUG === 'true';
 
 // Super debug logging wrapper
 function superDebug(message: string, ...args: unknown[]): void {

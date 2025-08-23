@@ -474,12 +474,12 @@ export class PushNotificationService {
             // Show notification if we have permission
             if (this.serviceWorkerRegistration && this.getPermission() === 'granted') {
               await this.serviceWorkerRegistration.showNotification(
-                notificationData.title || 'VibeTunnel Test',
+                notificationData.title || 'TunnelForge Test',
                 {
                   body: notificationData.body || 'Test notification received via SSE!',
                   icon: '/apple-touch-icon.png',
                   badge: '/favicon-32.png',
-                  tag: 'vibetunnel-test-sse',
+                  tag: 'tunnelforge-test-sse',
                   requireInteraction: false,
                 }
               );
@@ -520,7 +520,7 @@ export class PushNotificationService {
   }
 
   /**
-   * Clear all VibeTunnel notifications
+   * Clear all TunnelForge notifications
    */
   async clearAllNotifications(): Promise<void> {
     if (!this.serviceWorkerRegistration) {
@@ -531,7 +531,7 @@ export class PushNotificationService {
       const notifications = await this.serviceWorkerRegistration.getNotifications();
 
       for (const notification of notifications) {
-        if (notification.tag?.startsWith('vibetunnel-')) {
+        if (notification.tag?.startsWith('tunnelforge-')) {
           notification.close();
         }
       }
@@ -787,7 +787,7 @@ export class PushNotificationService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: message || 'Test notification from VibeTunnel',
+          message: message || 'Test notification from TunnelForge',
         }),
       });
 
@@ -840,11 +840,11 @@ export class PushNotificationService {
 
     try {
       // Show notification directly
-      await this.serviceWorkerRegistration.showNotification('VibeTunnel Notifications Active', {
+      await this.serviceWorkerRegistration.showNotification('TunnelForge Notifications Active', {
         body: "You'll receive notifications for session events",
         icon: '/apple-touch-icon.png',
         badge: '/favicon-32.png',
-        tag: 'vibetunnel-welcome',
+        tag: 'tunnelforge-welcome',
         requireInteraction: false,
         silent: false,
       });

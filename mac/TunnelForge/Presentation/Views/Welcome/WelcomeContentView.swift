@@ -7,6 +7,11 @@ import SwiftUI
 struct WelcomeContentView: View {
     var body: some View {
         VStack(spacing: 30) {
+            // Add the logo at the top
+            SVGLogoView(height: 60, showAnimation: true)
+                .frame(height: 60)
+                .padding(.bottom, 10)
+            
             VStack(spacing: 16) {
                 Text("Welcome to TunnelForge")
                     .font(.largeTitle)

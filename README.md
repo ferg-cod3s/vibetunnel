@@ -1,41 +1,41 @@
 <!-- Generated: 2025-07-28 12:35:00 UTC -->
 <p align="center">
-  <img src="assets/banner.png" alt="VibeTunnel Banner" />
+  <img src="assets/banner.png" alt="TunnelForge Banner" />
 </p>
 
 <p align="center">
   <strong>Turn any browser into your Mac terminal.</strong><br>
-  VibeTunnel proxies your terminals right into the browser, so you can vibe-code anywhere.
+  TunnelForge proxies your terminals right into the browser, so you can code anywhere.
 </p>
 
 <p align="center">
-  <a href="https://github.com/amantus-ai/vibetunnel/releases/latest"><img src="https://img.shields.io/badge/Download-macOS-blue" alt="Download"></a>
-  <a href="https://www.npmjs.com/package/vibetunnel"><img src="https://img.shields.io/npm/v/vibetunnel.svg" alt="npm version"></a>
-  <a href="https://formulae.brew.sh/cask/vibetunnel"><img src="https://img.shields.io/homebrew/cask/v/vibetunnel" alt="Homebrew"></a>
+  <a href="https://github.com/johnferguson/tunnelforge/releases/latest"><img src="https://img.shields.io/badge/Download-macOS-blue" alt="Download"></a>
+  <a href="https://www.npmjs.com/package/tunnelforge"><img src="https://img.shields.io/npm/v/tunnelforge.svg" alt="npm version"></a>
+  <a href="https://formulae.brew.sh/cask/tunnelforge"><img src="https://img.shields.io/homebrew/cask/v/tunnelforge" alt="Homebrew"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-20+-339933?logo=node.js" alt="Node.js 20+"></a>
   <a href="https://discord.gg/3Ub3EUwrcR"><img src="https://img.shields.io/discord/1394471066990280875?label=Discord&logo=discord" alt="Discord"></a>
-  <a href="https://twitter.com/vibetunnel"><img src="https://img.shields.io/twitter/follow/vibetunnel?style=social" alt="Twitter"></a>
+  <a href="https://twitter.com/tunnelforge"><img src="https://img.shields.io/twitter/follow/tunnelforge?style=social" alt="Twitter"></a>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/vibetunnel"><img src="https://img.shields.io/badge/Linux-Supported-brightgreen" alt="Linux Support"></a>
+  <a href="https://www.npmjs.com/package/tunnelforge"><img src="https://img.shields.io/badge/Linux-Supported-brightgreen" alt="Linux Support"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green" alt="License"></a>
   <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-14.0+-red" alt="macOS 14.0+"></a>
   <a href="https://support.apple.com/en-us/HT211814"><img src="https://img.shields.io/badge/Apple%20Silicon-Required-orange" alt="Apple Silicon"></a>
-  <a href="https://vibetunnel.sh/#support"><img src="https://img.shields.io/badge/Support%20us-on%20Polar-purple" alt="Support us on Polar"></a>
-  <a href="https://deepwiki.com/amantus-ai/vibetunnel"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+  <a href="https://tunnelforge.sh/#support"><img src="https://img.shields.io/badge/Support%20us-on%20Polar-purple" alt="Support us on Polar"></a>
+  <a href="https://deepwiki.com/johnferguson/tunnelforge"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
 <p align="center">
-  <a href="https://docs.vibetunnel.sh">Documentation</a> •
-  <a href="https://github.com/amantus-ai/vibetunnel/releases">Releases</a> •
+  <a href="https://docs.tunnelforge.sh">Documentation</a> •
+  <a href="https://github.com/johnferguson/tunnelforge/releases">Releases</a> •
   <a href="https://discord.gg/3Ub3EUwrcR">Discord</a> •
-  <a href="https://twitter.com/vibetunnel">Twitter</a>
+  <a href="https://twitter.com/tunnelforge">Twitter</a>
 </p>
 
 ## Table of Contents
 
-- [Why VibeTunnel?](#why-vibetunnel)
+- [Why TunnelForge?](#why-tunnelforge)
 - [Installation Options](#installation-options)
 - [Quick Start](#quick-start)
 - [Features](#features)
@@ -50,13 +50,13 @@
 - [Documentation](#documentation)
 - [macOS Permissions](#macos-permissions)
 - [Contributing](#contributing)
-- [Support VibeTunnel](#support-vibetunnel)
+- [Support TunnelForge](#support-tunnelforge)
 - [Credits](#credits)
 - [License](#license)
 
-## Why VibeTunnel?
+## Why TunnelForge?
 
-Ever wanted to check on your AI agents while you're away? Need to monitor that long-running build from your phone? Want to share a terminal session with a colleague without complex SSH setups? VibeTunnel makes it happen with zero friction.
+Ever wanted to check on your AI agents while you're away? Need to monitor that long-running build from your phone? Want to share a terminal session with a colleague without complex SSH setups? TunnelForge makes it happen with zero friction.
 
 ## Installation Options
 
@@ -67,10 +67,10 @@ The native macOS app provides the best experience with menu bar integration and 
 For Linux servers, Docker containers, or headless macOS systems, install via npm:
 
 ```bash
-npm install -g vibetunnel
+npm install -g tunnelforge
 ```
 
-This gives you the full VibeTunnel server with web UI, just without the macOS menu bar app. See the [npm Package section](#npm-package) for detailed usage.
+This gives you the full TunnelForge server with web UI, just without the macOS menu bar app. See the [npm Package section](#npm-package) for detailed usage.
 
 ## Quick Start
 
@@ -78,28 +78,28 @@ This gives you the full VibeTunnel server with web UI, just without the macOS me
 
 **macOS App**: Requires an Apple Silicon Mac (M1+). Intel Macs are not supported for the native app.
 
-**npm Package**: Works on any system with Node.js 20+, including Intel Macs and Linux. Windows is not yet supported ([#252](https://github.com/amantus-ai/vibetunnel/issues/252)).
+**npm Package**: Works on any system with Node.js 20+, including Intel Macs and Linux. Windows is not yet supported ([#252](https://github.com/johnferguson/tunnelforge/issues/252)).
 
 ### 1. Download & Install
 
 #### Option 1: Direct Download
-[Download VibeTunnel](https://github.com/amantus-ai/vibetunnel/releases/latest) and drag it to your Applications folder.
+[Download TunnelForge](https://github.com/johnferguson/tunnelforge/releases/latest) and drag it to your Applications folder.
 
 #### Option 2: Homebrew
 ```bash
-brew install --cask vibetunnel
+brew install --cask tunnelforge
 ```
 
-### 2. Launch VibeTunnel
+### 2. Launch TunnelForge
 
-VibeTunnel lives in your menu bar. Click the icon to start the server.
+TunnelForge lives in your menu bar. Click the icon to start the server.
 
 ### 3. Use the `vt` Command
 
-The `vt` command is a smart wrapper that forwards your terminal sessions through VibeTunnel:
+The `vt` command is a smart wrapper that forwards your terminal sessions through TunnelForge:
 
 **How it works**:
-- `vt` is a bash script that internally calls `vibetunnel fwd` to forward terminal output
+- `vt` is a bash script that internally calls `tunnelforge fwd` to forward terminal output
 - It provides additional features like shell alias resolution and session title management
 - Available from both the Mac app and npm package installations
 
@@ -109,9 +109,9 @@ The `vt` command is a smart wrapper that forwards your terminal sessions through
 
 **Smart detection**:
 When you run `vt` from the npm package, it:
-1. Checks if the Mac app is installed at `/Applications/VibeTunnel.app`
+1. Checks if the Mac app is installed at `/Applications/TunnelForge.app`
 2. If found, forwards to the Mac app's `vt` for the best experience
-3. If not found, uses the npm-installed `vibetunnel fwd`
+3. If not found, uses the npm-installed `tunnelforge fwd`
 4. This ensures `vt` always uses the best available implementation
 
 ```bash
@@ -141,7 +141,7 @@ vt unfollow       # Stop following
 
 ### Git Repository Scanning on First Session
 
-When opening a new session for the first time, VibeTunnel's working directory scanner will look for Git repositories. By default, this scans your home directory, which may trigger macOS permission prompts for accessing protected folders (like Desktop, Documents, Downloads, iCloud Drive, or external volumes).
+When opening a new session for the first time, TunnelForge's working directory scanner will look for Git repositories. By default, this scans your home directory, which may trigger macOS permission prompts for accessing protected folders (like Desktop, Documents, Downloads, iCloud Drive, or external volumes).
 
 To avoid these prompts:
 - **Option 1**: Navigate to your actual projects directory before opening a session
@@ -172,7 +172,7 @@ Visit [http://localhost:4020](http://localhost:4020) to see all your terminal se
 
 ## Architecture
 
-VibeTunnel consists of three main components:
+TunnelForge consists of three main components:
 
 1. **macOS Menu Bar App** - Native Swift application that manages the server lifecycle
 2. **Node.js Server** - High-performance TypeScript server handling terminal sessions
@@ -184,7 +184,7 @@ The server runs as a standalone Node.js executable with embedded modules, provid
 
 ### Option 1: Tailscale (Recommended)
 
-[Tailscale](https://tailscale.com) creates a secure peer-to-peer VPN network between your devices. It's the most secure option as traffic stays within your private network without exposing VibeTunnel to the public internet.
+[Tailscale](https://tailscale.com) creates a secure peer-to-peer VPN network between your devices. It's the most secure option as traffic stays within your private network without exposing TunnelForge to the public internet.
 
 **How it works**: Tailscale creates an encrypted WireGuard tunnel between your devices, allowing them to communicate as if they were on the same local network, regardless of their physical location.
 
@@ -196,7 +196,7 @@ The server runs as a standalone Node.js executable with embedded modules, provid
    - **Other platforms**: [All Downloads](https://tailscale.com/download)
 3. Sign in to both devices with the same account
 4. Find your Mac's Tailscale hostname in the Tailscale menu bar app (e.g., `my-mac.tailnet-name.ts.net`)
-5. Access VibeTunnel at `http://[your-tailscale-hostname]:4020`
+5. Access TunnelForge at `http://[your-tailscale-hostname]:4020`
 
 **Benefits**:
 - End-to-end encrypted traffic
@@ -206,15 +206,15 @@ The server runs as a standalone Node.js executable with embedded modules, provid
 
 ### Option 2: ngrok
 
-[ngrok](https://ngrok.com) creates secure tunnels to your localhost, making VibeTunnel accessible via a public URL. Perfect for quick sharing or temporary access.
+[ngrok](https://ngrok.com) creates secure tunnels to your localhost, making TunnelForge accessible via a public URL. Perfect for quick sharing or temporary access.
 
-**How it works**: ngrok establishes a secure tunnel from a public endpoint to your local VibeTunnel server, handling SSL/TLS encryption and providing a unique URL for access.
+**How it works**: ngrok establishes a secure tunnel from a public endpoint to your local TunnelForge server, handling SSL/TLS encryption and providing a unique URL for access.
 
 **Setup Guide**:
 1. Create a free ngrok account: [Sign up for ngrok](https://dashboard.ngrok.com/signup)
 2. Copy your auth token from the [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken)
-3. Add the token in VibeTunnel settings (Settings → Remote Access → ngrok)
-4. Enable ngrok tunneling in VibeTunnel
+3. Add the token in TunnelForge settings (Settings → Remote Access → ngrok)
+4. Enable ngrok tunneling in TunnelForge
 5. Share the generated `https://[random].ngrok-free.app` URL
 
 **Benefits**:
@@ -268,7 +268,7 @@ vt unfollow
 
 ### How It Works
 
-1. **Git Hooks**: VibeTunnel installs lightweight Git hooks (post-commit, post-checkout) in worktrees that detect branch changes
+1. **Git Hooks**: TunnelForge installs lightweight Git hooks (post-commit, post-checkout) in worktrees that detect branch changes
 2. **Main Repo Sync**: When you switch branches in a worktree, the main repository automatically checks out to the same branch
 3. **Smart Handling**: If the main repo has uncommitted changes, follow mode pauses to prevent data loss
 4. **Development Continuity**: Your IDE, servers, and tools running on the main repo seamlessly follow your active work
@@ -295,7 +295,7 @@ cd ../project && vt follow
 Follow mode stores the worktree path in your main repository's Git config:
 ```bash
 # Check which worktree is being followed
-git config vibetunnel.followWorktree
+git config tunnelforge.followWorktree
 
 # Follow mode is active when this returns a path
 # The config is managed by vt commands - manual editing not recommended
@@ -305,7 +305,7 @@ For more advanced Git worktree workflows, see our [detailed worktree documentati
 
 ## Terminal Title Management
 
-VibeTunnel provides intelligent terminal title management to help you track what's happening in each session:
+TunnelForge provides intelligent terminal title management to help you track what's happening in each session:
 
 ### Title Modes
 
@@ -330,7 +330,7 @@ Dynamic mode includes real-time activity detection:
 
 ## Authentication
 
-VibeTunnel provides multiple authentication modes to secure your terminal sessions:
+TunnelForge provides multiple authentication modes to secure your terminal sessions:
 
 ### Authentication Modes
 
@@ -343,8 +343,8 @@ Uses your operating system's native authentication:
 #### 2. Environment Variable Authentication
 Simple authentication for deployments:
 ```bash
-export VIBETUNNEL_USERNAME=admin
-export VIBETUNNEL_PASSWORD=your-secure-password
+export TUNNELFORGE_USERNAME=admin
+export TUNNELFORGE_PASSWORD=your-secure-password
 npm run start
 ```
 
@@ -405,45 +405,45 @@ If SSH key generation fails with crypto errors, see the [detailed troubleshootin
 
 ## npm Package
 
-The VibeTunnel npm package provides the full server functionality for Linux, Docker, CI/CD environments, and headless macOS systems.
+The TunnelForge npm package provides the full server functionality for Linux, Docker, CI/CD environments, and headless macOS systems.
 
 ### Installation
 
 ```bash
 # Install globally via npm
-npm install -g vibetunnel
+npm install -g tunnelforge
 
 # Or with yarn
-yarn global add vibetunnel
+yarn global add tunnelforge
 
 # Or with pnpm
-pnpm add -g vibetunnel
+pnpm add -g tunnelforge
 ```
 
 **Requirements**: Node.js 20.0.0 or higher
 
-### Running the VibeTunnel Server
+### Running the TunnelForge Server
 
 #### Basic Usage
 
 ```bash
 # Start with default settings (localhost:4020)
-vibetunnel
+tunnelforge
 
 # Bind to all network interfaces
-vibetunnel --bind 0.0.0.0
+tunnelforge --bind 0.0.0.0
 
 # Use a custom port
-vibetunnel --port 8080
+tunnelforge --port 8080
 
 # With authentication
-VIBETUNNEL_USERNAME=admin VIBETUNNEL_PASSWORD=secure vibetunnel --bind 0.0.0.0
+TUNNELFORGE_USERNAME=admin TUNNELFORGE_PASSWORD=secure tunnelforge --bind 0.0.0.0
 
 # Enable debug logging
-VIBETUNNEL_DEBUG=1 vibetunnel
+TUNNELFORGE_DEBUG=1 tunnelforge
 
 # Run without authentication (trusted networks only!)
-vibetunnel --no-auth
+tunnelforge --no-auth
 ```
 
 #### Using the `vt` Command
@@ -479,13 +479,13 @@ vt -vvv python app.py  # Debug mode - show everything
 # Shell aliases work automatically!
 vt claude-danger  # Your custom alias for claude --dangerously-skip-permissions
 
-# Update session title (inside a VibeTunnel session)
+# Update session title (inside a TunnelForge session)
 vt title "My Project - Testing"
 ```
 
 ### The `vt` Forwarding Command
 
-The `vt` command is VibeTunnel's terminal forwarding wrapper that allows you to run any command while making its output visible in the browser. Under the hood, `vt` is a convenient shortcut for `vibetunnel fwd` - it's a bash script that calls the full command with proper path resolution and additional features like shell alias support. The `vt` wrapper acts as a transparent proxy between your terminal and the command, forwarding all input and output through VibeTunnel's infrastructure.
+The `vt` command is TunnelForge's terminal forwarding wrapper that allows you to run any command while making its output visible in the browser. Under the hood, `vt` is a convenient shortcut for `tunnelforge fwd` - it's a bash script that calls the full command with proper path resolution and additional features like shell alias support. The `vt` wrapper acts as a transparent proxy between your terminal and the command, forwarding all input and output through TunnelForge's infrastructure.
 
 #### Command Syntax
 
@@ -511,29 +511,29 @@ vt [options] <command> [args...]
 **Other Options:**
 - `--shell, -i` - Launch your current shell interactively
 - `--no-shell-wrap, -S` - Execute command directly without shell interpretation
-- `--log-file <path>` - Override default log file location (defaults to `~/.vibetunnel/log.txt`)
+- `--log-file <path>` - Override default log file location (defaults to `~/.tunnelforge/log.txt`)
 - `--help, -h` - Show help message with all options
 
 #### Verbosity Levels
 
-VibeTunnel uses a hierarchical logging system where each level includes all messages from more severe levels:
+TunnelForge uses a hierarchical logging system where each level includes all messages from more severe levels:
 
 | Level | Flag | Environment Variable | Shows |
 |-------|------|---------------------|-------|
-| SILENT | `-q` | `VIBETUNNEL_LOG_LEVEL=silent` | No console output (file logging only) |
-| ERROR | (default) | `VIBETUNNEL_LOG_LEVEL=error` | Errors only |
-| WARN | - | `VIBETUNNEL_LOG_LEVEL=warn` | Errors and warnings |
-| INFO | `-v` | `VIBETUNNEL_LOG_LEVEL=info` | Errors, warnings, and informational messages |
-| VERBOSE | `-vv` | `VIBETUNNEL_LOG_LEVEL=verbose` | All messages except debug |
-| DEBUG | `-vvv` | `VIBETUNNEL_LOG_LEVEL=debug` | Everything including debug traces |
+| SILENT | `-q` | `TUNNELFORGE_LOG_LEVEL=silent` | No console output (file logging only) |
+| ERROR | (default) | `TUNNELFORGE_LOG_LEVEL=error` | Errors only |
+| WARN | - | `TUNNELFORGE_LOG_LEVEL=warn` | Errors and warnings |
+| INFO | `-v` | `TUNNELFORGE_LOG_LEVEL=info` | Errors, warnings, and informational messages |
+| VERBOSE | `-vv` | `TUNNELFORGE_LOG_LEVEL=verbose` | All messages except debug |
+| DEBUG | `-vvv` | `TUNNELFORGE_LOG_LEVEL=debug` | Everything including debug traces |
 
-**Note:** All logs are always written to `~/.vibetunnel/log.txt` regardless of verbosity settings. The verbosity only controls terminal output.
+**Note:** All logs are always written to `~/.tunnelforge/log.txt` regardless of verbosity settings. The verbosity only controls terminal output.
 
 #### Examples
 
 ```bash
 # Basic command forwarding
-vt ls -la                    # List files with VibeTunnel monitoring
+vt ls -la                    # List files with TunnelForge monitoring
 vt npm run dev              # Run development server
 vt python script.py         # Execute Python script
 
@@ -556,17 +556,17 @@ vt -S /usr/bin/python      # Run python directly without shell
 #### How It Works
 
 1. **Command Resolution**: The `vt` wrapper first checks if your command is an alias, shell function, or binary
-2. **Session Creation**: It creates a new VibeTunnel session with a unique ID
+2. **Session Creation**: It creates a new TunnelForge session with a unique ID
 3. **PTY Allocation**: A pseudo-terminal is allocated to preserve terminal features (colors, cursor control, etc.)
 4. **I/O Forwarding**: All input/output is forwarded between your terminal and the browser in real-time
 5. **Process Management**: The wrapper monitors the process and handles signals, exit codes, and cleanup
 
 #### Environment Variables
 
-- `VIBETUNNEL_LOG_LEVEL` - Set default verbosity level (silent, error, warn, info, verbose, debug)
-- `VIBETUNNEL_TITLE_MODE` - Set default title mode (none, filter, static, dynamic)
-- `VIBETUNNEL_DEBUG` - Legacy debug flag, equivalent to `VIBETUNNEL_LOG_LEVEL=debug`
-- `VIBETUNNEL_CLAUDE_DYNAMIC_TITLE` - Force dynamic title mode for Claude commands
+- `TUNNELFORGE_LOG_LEVEL` - Set default verbosity level (silent, error, warn, info, verbose, debug)
+- `TUNNELFORGE_TITLE_MODE` - Set default title mode (none, filter, static, dynamic)
+- `TUNNELFORGE_DEBUG` - Legacy debug flag, equivalent to `TUNNELFORGE_LOG_LEVEL=debug`
+- `TUNNELFORGE_CLAUDE_DYNAMIC_TITLE` - Force dynamic title mode for Claude commands
 
 #### Special Features
 
@@ -578,7 +578,7 @@ alias gs='git status'
 vt gs  # Works as expected
 ```
 
-**Session Title Updates**: Inside a VibeTunnel session, use `vt title` to update the session name:
+**Session Title Updates**: Inside a TunnelForge session, use `vt title` to update the session name:
 ```bash
 vt title "Building Production Release"
 ```
@@ -589,13 +589,13 @@ The npm package is designed to work seamlessly alongside the Mac app:
 
 #### Smart Command Routing
 - The `vt` command automatically detects if the Mac app is installed
-- If found at `/Applications/VibeTunnel.app`, it defers to the Mac app
+- If found at `/Applications/TunnelForge.app`, it defers to the Mac app
 - If not found, it uses the npm-installed server
 - This ensures you always get the best available implementation
 
 #### Installation Behavior
 - If `/usr/local/bin/vt` already exists (from another tool), npm won't overwrite it
-- You'll see a helpful warning with alternatives: `vibetunnel` or `npx vt`
+- You'll see a helpful warning with alternatives: `tunnelforge` or `npx vt`
 - The installation always succeeds, even if the `vt` symlink can't be created
 
 #### When to Use Each Version
@@ -607,8 +607,8 @@ The npm package is designed to work seamlessly alongside the Mac app:
 ### Package Contents
 
 The npm package includes:
-- Full VibeTunnel server with web UI
-- CLI tools (`vibetunnel` and `vt` commands)
+- Full TunnelForge server with web UI
+- CLI tools (`tunnelforge` and `vt` commands)
 - Native PTY support via node-pty
 - Pre-built binaries for common platforms
 - Complete feature parity with macOS app (minus menu bar)
@@ -660,20 +660,20 @@ npm publish
 
 ```bash
 # Clone the repository
-git clone https://github.com/amantus-ai/vibetunnel.git
-cd vibetunnel
+git clone https://github.com/johnferguson/tunnelforge.git
+cd tunnelforge
 
 # Set up code signing (required for macOS/iOS development)
 # Create Local.xcconfig files with your Apple Developer Team ID
 # Note: These files must be in the same directory as Shared.xcconfig
-cat > mac/VibeTunnel/Local.xcconfig << EOF
+cat > mac/TunnelForge/Local.xcconfig << EOF
 // Local Development Configuration
 // DO NOT commit this file to version control
 DEVELOPMENT_TEAM = YOUR_TEAM_ID
 CODE_SIGN_STYLE = Automatic
 EOF
 
-cat > ios/VibeTunnel/Local.xcconfig << EOF
+cat > ios/TunnelForge/Local.xcconfig << EOF
 // Local Development Configuration  
 // DO NOT commit this file to version control
 DEVELOPMENT_TEAM = YOUR_TEAM_ID
@@ -686,7 +686,7 @@ pnpm install
 pnpm run build
 
 # Optional: Build with custom Node.js for smaller binary (46% size reduction)
-# export VIBETUNNEL_USE_CUSTOM_NODE=YES
+# export TUNNELFORGE_USE_CUSTOM_NODE=YES
 # node build-custom-node.js  # Build optimized Node.js (one-time, ~20 min)
 # pnpm run build              # Will use custom Node.js automatically
 
@@ -697,17 +697,17 @@ cd ../mac
 
 ### Custom Node.js Builds
 
-VibeTunnel supports building with a custom Node.js for a 46% smaller executable (61MB vs 107MB):
+TunnelForge supports building with a custom Node.js for a 46% smaller executable (61MB vs 107MB):
 
 ```bash
 # Build custom Node.js (one-time, ~20 minutes)
 node build-custom-node.js
 
 # Use environment variable for all builds
-export VIBETUNNEL_USE_CUSTOM_NODE=YES
+export TUNNELFORGE_USE_CUSTOM_NODE=YES
 
 # Or use in Xcode Build Settings
-# Add User-Defined Setting: VIBETUNNEL_USE_CUSTOM_NODE = YES
+# Add User-Defined Setting: TUNNELFORGE_USE_CUSTOM_NODE = YES
 ```
 
 See [Custom Node Build Flags](docs/custom-node-build-flags.md) for detailed optimization information.
@@ -717,14 +717,14 @@ See [Custom Node Build Flags](docs/custom-node-build-flags.md) for detailed opti
 For development setup and contribution guidelines, see [CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 ### Key Files
-- **macOS App**: `mac/VibeTunnel/VibeTunnelApp.swift`
+- **macOS App**: `mac/TunnelForge/TunnelForgeApp.swift`
 - **Server**: `web/src/server/` (TypeScript/Node.js)
 - **Web UI**: `web/src/client/` (Lit/TypeScript)
-- **iOS App**: `ios/VibeTunnel/`
+- **iOS App**: `ios/TunnelForge/`
 
 ### Testing & Code Coverage
 
-VibeTunnel has comprehensive test suites with code coverage enabled for all projects:
+TunnelForge has comprehensive test suites with code coverage enabled for all projects:
 
 ```bash
 # Run all tests with coverage
@@ -746,7 +746,7 @@ cd web && ./scripts/coverage-report.sh
 
 ### Development Server & Hot Reload
 
-VibeTunnel includes a development server with automatic rebuilding for faster iteration:
+TunnelForge includes a development server with automatic rebuilding for faster iteration:
 
 #### Development Mode
 
@@ -797,7 +797,7 @@ When developing the web interface, you often need to test changes on external de
 
 ##### Pasting on Mobile Devices
 
-When using VibeTunnel on mobile browsers (Safari, Chrome), pasting works differently than on desktop:
+When using TunnelForge on mobile browsers (Safari, Chrome), pasting works differently than on desktop:
 
 **To paste on mobile:**
 1. Press the paste button on the keyboard toolbar
@@ -818,13 +818,13 @@ For true hot module replacement without manual refresh, see our [Vite migration 
 
 #### Mac App Development Server Mode
 
-The VibeTunnel Mac app includes a special development server mode that integrates with the web development workflow:
+The TunnelForge Mac app includes a special development server mode that integrates with the web development workflow:
 
 **Setup:**
-1. Open VibeTunnel Settings → Debug tab (enable Debug Mode first in General settings)
+1. Open TunnelForge Settings → Debug tab (enable Debug Mode first in General settings)
 2. Enable "Use Development Server"
 3. Set the path to your `web/` directory
-4. Restart the VibeTunnel server
+4. Restart the TunnelForge server
 
 **How it works:**
 - Instead of using the bundled production server, the Mac app runs `pnpm run dev` in your web directory
@@ -843,7 +843,7 @@ The VibeTunnel Mac app includes a special development server mode that integrate
 If you prefer working outside the Mac app:
 
 1. Build the web project: `cd web && pnpm run build`
-2. In VibeTunnel settings, set Dashboard Access to "Network"
+2. In TunnelForge settings, set Dashboard Access to "Network"
 3. Access from external device: `http://[your-mac-ip]:4020`
 
 Note: This requires rebuilding after each change, so the dev server mode above is preferred for rapid iteration.
@@ -854,46 +854,46 @@ Enable debug logging for troubleshooting:
 
 ```bash
 # Enable debug mode
-export VIBETUNNEL_DEBUG=1
+export TUNNELFORGE_DEBUG=1
 
 # Or use inline
-VIBETUNNEL_DEBUG=1 vt your-command
+TUNNELFORGE_DEBUG=1 vt your-command
 ```
 
-Debug logs are written to `~/.vibetunnel/log.txt`.
+Debug logs are written to `~/.tunnelforge/log.txt`.
 
 ### Using Development Builds with vt
 
-When developing VibeTunnel, you can use the `VIBETUNNEL_PREFER_DERIVED_DATA` environment variable to make the `vt` command prefer development builds from Xcode's DerivedData folder:
+When developing TunnelForge, you can use the `TUNNELFORGE_PREFER_DERIVED_DATA` environment variable to make the `vt` command prefer development builds from Xcode's DerivedData folder:
 
 ```bash
 # Enable DerivedData preference
-export VIBETUNNEL_PREFER_DERIVED_DATA=1
+export TUNNELFORGE_PREFER_DERIVED_DATA=1
 
-# vt will now search for and use the latest VibeTunnel build from DerivedData
+# vt will now search for and use the latest TunnelForge build from DerivedData
 vt your-command
 ```
 
 When this environment variable is set, `vt` will:
-1. First search for VibeTunnel builds in `~/Library/Developer/Xcode/DerivedData`
+1. First search for TunnelForge builds in `~/Library/Developer/Xcode/DerivedData`
 2. Use the most recently modified build found there
-3. Fall back to `/Applications/VibeTunnel.app` if no DerivedData build exists
+3. Fall back to `/Applications/TunnelForge.app` if no DerivedData build exists
 4. Log the exact binary location, version, and build timestamp being used
 
 This is particularly useful for:
 - Testing changes without installing to `/Applications`
-- Working with multiple VibeTunnel builds simultaneously
+- Working with multiple TunnelForge builds simultaneously
 - Quickly switching between development and production versions
-- Debugging which version of VibeTunnel is being used
+- Debugging which version of TunnelForge is being used
 
 The version information is also:
 - Stored in `session.json` for each session
 - Displayed in `vt status` output
-- Shown in the initial log output when `VIBETUNNEL_PREFER_DERIVED_DATA` is set
+- Shown in the initial log output when `TUNNELFORGE_PREFER_DERIVED_DATA` is set
 
 ### Verbosity Control
 
-Control the amount of output from VibeTunnel commands:
+Control the amount of output from TunnelForge commands:
 
 ```bash
 # Command-line flags
@@ -904,17 +904,17 @@ vt -vv cargo build           # Extra verbose - all except debug
 vt -vvv python script.py     # Debug mode - everything
 
 # Environment variable
-export VIBETUNNEL_LOG_LEVEL=error    # Default
-export VIBETUNNEL_LOG_LEVEL=warn     # Show errors and warnings
-export VIBETUNNEL_LOG_LEVEL=info     # Show errors, warnings, and info
-export VIBETUNNEL_LOG_LEVEL=verbose  # All except debug
-export VIBETUNNEL_LOG_LEVEL=debug    # Everything
+export TUNNELFORGE_LOG_LEVEL=error    # Default
+export TUNNELFORGE_LOG_LEVEL=warn     # Show errors and warnings
+export TUNNELFORGE_LOG_LEVEL=info     # Show errors, warnings, and info
+export TUNNELFORGE_LOG_LEVEL=verbose  # All except debug
+export TUNNELFORGE_LOG_LEVEL=debug    # Everything
 
 # Or use inline
-VIBETUNNEL_LOG_LEVEL=silent vt npm test
+TUNNELFORGE_LOG_LEVEL=silent vt npm test
 ```
 
-**Note**: All logs are always written to `~/.vibetunnel/log.txt` regardless of verbosity level. The verbosity settings only control what's displayed in the terminal.
+**Note**: All logs are always written to `~/.tunnelforge/log.txt` regardless of verbosity level. The verbosity settings only control what's displayed in the terminal.
 
 ## Documentation
 
@@ -932,17 +932,17 @@ macOS is finicky when it comes to permissions. The system will only remember the
 
 Important: You need to set your Developer ID in Local.xcconfig. If apps are signed Ad-Hoc, each new signing will count as a new app for macOS and the permissions have to be (deleted and) requested again.
 
-**Debug vs Release Bundle IDs**: The Debug configuration uses a different bundle identifier (`sh.vibetunnel.vibetunnel.debug`) than Release (`sh.vibetunnel.vibetunnel`). This allows you to have both versions installed simultaneously, but macOS treats them as separate apps for permissions. You'll need to grant permissions separately for each version.
+**Debug vs Release Bundle IDs**: The Debug configuration uses a different bundle identifier (`sh.tunnelforge.tunnelforge.debug`) than Release (`sh.tunnelforge.tunnelforge`). This allows you to have both versions installed simultaneously, but macOS treats them as separate apps for permissions. You'll need to grant permissions separately for each version.
 
 If that fails, use the terminal to reset:
 
 ```
 # This removes Accessibility permission for a specific bundle ID:
-sudo tccutil reset Accessibility sh.vibetunnel.vibetunnel
-sudo tccutil reset Accessibility sh.vibetunnel.vibetunnel.debug  # For debug builds
+sudo tccutil reset Accessibility sh.tunnelforge.tunnelforge
+sudo tccutil reset Accessibility sh.tunnelforge.tunnelforge.debug  # For debug builds
 
-sudo tccutil reset ScreenCapture sh.vibetunnel.vibetunnel
-sudo tccutil reset ScreenCapture sh.vibetunnel.vibetunnel.debug  # For debug builds
+sudo tccutil reset ScreenCapture sh.tunnelforge.tunnelforge
+sudo tccutil reset ScreenCapture sh.tunnelforge.tunnelforge.debug  # For debug builds
 
 # This removes all Automation permissions system-wide (cannot target specific apps):
 sudo tccutil reset AppleEvents
@@ -950,22 +950,22 @@ sudo tccutil reset AppleEvents
 
 ## Logging and Privacy
 
-VibeTunnel uses Apple's unified logging system with the subsystem `sh.vibetunnel.vibetunnel`. By default, macOS redacts sensitive runtime data in logs, showing `<private>` instead of actual values. This is a privacy feature to prevent accidental exposure of sensitive information.
+TunnelForge uses Apple's unified logging system with the subsystem `sh.tunnelforge.tunnelforge`. By default, macOS redacts sensitive runtime data in logs, showing `<private>` instead of actual values. This is a privacy feature to prevent accidental exposure of sensitive information.
 
 ### Bundle Identifiers
 
-VibeTunnel uses the following bundle identifiers:
+TunnelForge uses the following bundle identifiers:
 
 **Production:**
-- `sh.vibetunnel.vibetunnel` - Main macOS app and logging subsystem
-- `sh.vibetunnel.vibetunnel.debug` - Debug builds of the macOS app
+- `sh.tunnelforge.tunnelforge` - Main macOS app and logging subsystem
+- `sh.tunnelforge.tunnelforge.debug` - Debug builds of the macOS app
 
 **Testing:**
-- `sh.vibetunnel.vibetunnel.tests` - macOS test suite
-- `sh.vibetunnel.ios.tests` - iOS test suite
+- `sh.tunnelforge.tunnelforge.tests` - macOS test suite
+- `sh.tunnelforge.ios.tests` - iOS test suite
 
 **iOS:**
-- `sh.vibetunnel.ios` - iOS keychain service and URL scheme
+- `sh.tunnelforge.ios` - iOS keychain service and URL scheme
 
 ### Viewing Unredacted Logs
 
@@ -974,9 +974,9 @@ To see full log details for debugging, you have several options:
 1. **Install the Configuration Profile** (Recommended - easiest method):
    ```bash
    # Install the logging configuration profile
-   open apple/logging/VibeTunnel-Logging.mobileconfig
+   open apple/logging/TunnelForge-Logging.mobileconfig
    
-   # This enables debug logging for all VibeTunnel components
+   # This enables debug logging for all TunnelForge components
    # To remove later: System Settings → Privacy & Security → Profiles
    ```
 
@@ -1008,9 +1008,9 @@ To see full log details for debugging, you have several options:
 
 4. **Enable private data logging** using a plist file (alternative):
    ```bash
-   # Create the plist to enable private data for VibeTunnel
+   # Create the plist to enable private data for TunnelForge
    sudo mkdir -p /Library/Preferences/Logging/Subsystems
-   sudo tee /Library/Preferences/Logging/Subsystems/sh.vibetunnel.vibetunnel.plist > /dev/null << 'EOF'
+   sudo tee /Library/Preferences/Logging/Subsystems/sh.tunnelforge.tunnelforge.plist > /dev/null << 'EOF'
    <?xml version="1.0" encoding="UTF-8"?>
    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
    <plist version="1.0">
@@ -1030,15 +1030,15 @@ For more detailed information about logging privacy and additional methods, see 
 
 ## Contributing
 
-We welcome contributions! VibeTunnel is a community-driven project and we'd love to have you join us.
+We welcome contributions! TunnelForge is a community-driven project and we'd love to have you join us.
 
 ### Join Our Community
 
-Connect with the VibeTunnel team and other contributors on our [Discord server](https://discord.gg/3Ub3EUwrcR). It's the best place to:
+Connect with the TunnelForge team and other contributors on our [Discord server](https://discord.gg/3Ub3EUwrcR). It's the best place to:
 - Discuss new features and ideas
 - Get help with development setup
 - Coordinate on larger changes
-- Share your VibeTunnel use cases
+- Share your TunnelForge use cases
 
 ### How to Contribute
 
@@ -1047,13 +1047,13 @@ Connect with the VibeTunnel team and other contributors on our [Discord server](
 3. **Development Setup**: Follow our [Contributing Guide](docs/CONTRIBUTING.md) for detailed setup instructions
 4. **Submit PRs**: Fork the repo, create a branch, and submit your changes
 
-For technical details on building and developing VibeTunnel, see our [Contributing Guide](docs/CONTRIBUTING.md).
+For technical details on building and developing TunnelForge, see our [Contributing Guide](docs/CONTRIBUTING.md).
 
-## Support VibeTunnel
+## Support TunnelForge
 
-Love VibeTunnel? Help us keep the terminal vibes flowing! Your support helps us buy pizza and drinks while we keep hacking on your favorite AI agent orchestration platform.
+Love TunnelForge? Help us keep the terminal vibes flowing! Your support helps us buy pizza and drinks while we keep hacking on your favorite AI agent orchestration platform.
 
-All donations go directly to the development team. Choose your own amount - one-time or monthly! Visit our [Polar page](https://vibetunnel.sh/#support) to support us.
+All donations go directly to the development team. Choose your own amount - one-time or monthly! Visit our [Polar page](https://tunnelforge.sh/#support) to support us.
 
 ## Credits
 
@@ -1066,8 +1066,8 @@ Created with ❤️ by:
 
 ## License
 
-VibeTunnel is open source software licensed under the MIT License. See [LICENSE](LICENSE) for details.
+TunnelForge is open source software licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-**Ready to vibe?** [Download VibeTunnel](https://github.com/amantus-ai/vibetunnel/releases/latest) and start tunneling!
+**Ready to vibe?** [Download TunnelForge](https://github.com/johnferguson/tunnelforge/releases/latest) and start tunneling!

@@ -6,15 +6,15 @@ import { suppressXtermErrors } from './shared/suppress-xterm-errors.js';
 
 suppressXtermErrors();
 
-import { startVibeTunnelForward } from './server/fwd.js';
-import { startVibeTunnelServer } from './server/server.js';
+import { startTunnelForgeForward } from './server/fwd.js';
+import { startTunnelForgeServer } from './server/server.js';
 import { closeLogger, createLogger, initLogger, VerbosityLevel } from './server/utils/logger.js';
 import { parseVerbosityFromEnv } from './server/utils/verbosity-parser.js';
 import { VERSION } from './server/version.js';
 
 // Check for version command early - before logger initialization
 if (process.argv[2] === 'version') {
-  console.log(`VibeTunnel Server v${VERSION}`);
+  console.log(`TunnelForge Server v${VERSION}`);
   process.exit(0);
 }
 
@@ -23,7 +23,7 @@ if (process.argv[2] === 'version') {
 const verbosityLevel = parseVerbosityFromEnv();
 
 // Check for legacy debug mode (for backward compatibility with initLogger)
-const debugMode = process.env.VIBETUNNEL_DEBUG === '1' || process.env.VIBETUNNEL_DEBUG === 'true';
+const debugMode = process.env.TUNNELFORGE_DEBUG === '1' || process.env.TUNNELFORGE_DEBUG === 'true';
 
 initLogger(debugMode, verbosityLevel);
 const logger = createLogger('cli');
@@ -33,15 +33,15 @@ const logger = createLogger('cli');
 // Prevent double execution in SEA context where require.main might be undefined
 // Use a global flag to ensure we only run once
 interface GlobalWithVibetunnel {
-  __vibetunnelStarted?: boolean;
+  __tunnelforgeStarted?: boolean;
 }
 
 const globalWithVibetunnel = global as unknown as GlobalWithVibetunnel;
 
-if (globalWithVibetunnel.__vibetunnelStarted) {
+if (globalWithVibetunnel.__tunnelforgeStarted) {
   process.exit(0);
 }
-globalWithVibetunnel.__vibetunnelStarted = true;
+globalWithVibetunnel.__tunnelforgeStarted = true;
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
@@ -64,38 +64,38 @@ process.on('unhandledRejection', (reason, promise) => {
  * Print help message with version and usage information
  */
 function printHelp(): void {
-  console.log(`VibeTunnel Server v${VERSION}`);
+  console.log(`TunnelForge Server v${VERSION}`);
   console.log('');
   console.log('Usage:');
-  console.log('  vibetunnel [options]                    Start VibeTunnel server');
-  console.log('  vibetunnel fwd <session-id> <command>   Forward command to session');
-  console.log('  vibetunnel status                       Show server and follow mode status');
-  console.log('  vibetunnel follow [branch]              Enable Git follow mode');
-  console.log('  vibetunnel unfollow                     Disable Git follow mode');
-  console.log('  vibetunnel git-event                    Notify server of Git event');
-  console.log('  vibetunnel systemd [action]             Manage systemd service (Linux)');
-  console.log('  vibetunnel version                      Show version');
-  console.log('  vibetunnel help                         Show this help');
+  console.log('  tunnelforge [options]                    Start TunnelForge server');
+  console.log('  tunnelforge fwd <session-id> <command>   Forward command to session');
+  console.log('  tunnelforge status                       Show server and follow mode status');
+  console.log('  tunnelforge follow [branch]              Enable Git follow mode');
+  console.log('  tunnelforge unfollow                     Disable Git follow mode');
+  console.log('  tunnelforge git-event                    Notify server of Git event');
+  console.log('  tunnelforge systemd [action]             Manage systemd service (Linux)');
+  console.log('  tunnelforge version                      Show version');
+  console.log('  tunnelforge help                         Show this help');
   console.log('');
   console.log('Systemd Service Actions:');
-  console.log('  install   - Install VibeTunnel as systemd service (default)');
-  console.log('  uninstall - Remove VibeTunnel systemd service');
+  console.log('  install   - Install TunnelForge as systemd service (default)');
+  console.log('  uninstall - Remove TunnelForge systemd service');
   console.log('  status    - Check systemd service status');
   console.log('');
   console.log('Examples:');
-  console.log('  vibetunnel --port 8080 --no-auth');
-  console.log('  vibetunnel fwd abc123 "ls -la"');
-  console.log('  vibetunnel systemd');
-  console.log('  vibetunnel systemd uninstall');
+  console.log('  tunnelforge --port 8080 --no-auth');
+  console.log('  tunnelforge fwd abc123 "ls -la"');
+  console.log('  tunnelforge systemd');
+  console.log('  tunnelforge systemd uninstall');
   console.log('');
-  console.log('For more options, run: vibetunnel --help');
+  console.log('For more options, run: tunnelforge --help');
 }
 
 /**
  * Print version information
  */
 function printVersion(): void {
-  console.log(`VibeTunnel Server v${VERSION}`);
+  console.log(`TunnelForge Server v${VERSION}`);
 }
 
 /**
@@ -103,7 +103,7 @@ function printVersion(): void {
  */
 async function handleForwardCommand(): Promise<void> {
   try {
-    await startVibeTunnelForward(process.argv.slice(3));
+    await startTunnelForgeForward(process.argv.slice(3));
   } catch (error) {
     logger.error('Fatal error:', error);
     closeLogger();
@@ -138,7 +138,7 @@ async function handleSocketCommand(command: string): Promise<void> {
     switch (command) {
       case 'status': {
         const status = await client.getStatus();
-        console.log('VibeTunnel Server Status:');
+        console.log('TunnelForge Server Status:');
         console.log(`  Running: ${status.running ? 'Yes' : 'No'}`);
         if (status.running) {
           console.log(`  Port: ${status.port || 'Unknown'}`);
@@ -224,9 +224,9 @@ async function handleSocketCommand(command: string): Promise<void> {
       }
     }
   } catch (error) {
-    if (error instanceof Error && error.message === 'VibeTunnel server is not running') {
-      console.error('Error: VibeTunnel server is not running');
-      console.error('Start the server first with: vibetunnel');
+    if (error instanceof Error && error.message === 'TunnelForge server is not running') {
+      console.error('Error: TunnelForge server is not running');
+      console.error('Start the server first with: tunnelforge');
     } else {
       logger.error('Socket command failed:', error);
     }
@@ -236,14 +236,14 @@ async function handleSocketCommand(command: string): Promise<void> {
 }
 
 /**
- * Start the VibeTunnel server with optional startup logging
+ * Start the TunnelForge server with optional startup logging
  */
 function handleStartServer(): void {
   // Show startup message at INFO level or when debug is enabled
   if (verbosityLevel !== undefined && verbosityLevel >= VerbosityLevel.INFO) {
-    logger.log('Starting VibeTunnel server...');
+    logger.log('Starting TunnelForge server...');
   }
-  startVibeTunnelServer();
+  startTunnelForgeServer();
 }
 
 /**
@@ -295,7 +295,7 @@ function isMainModule(): boolean {
     !module.parent &&
     (require.main === module ||
       require.main === undefined ||
-      (require.main?.filename?.endsWith('/vibetunnel-cli') ?? false))
+      (require.main?.filename?.endsWith('/tunnelforge-cli') ?? false))
   );
 }
 

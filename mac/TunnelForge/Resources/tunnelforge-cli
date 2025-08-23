@@ -1,0 +1,204 @@
+#!/bin/bash
+# TunnelForge CLI wrapper - compatible with both Mac app and npm installations
+
+# Function to convert absolute paths to use ~
+prettify_path() {
+    local path="$1"
+    local home="$HOME"
+    if [[ "$path" == "$home"* ]]; then
+        echo "~${path#$home}"
+    else
+        echo "$path"
+    fi
+}
+
+# Only check for Mac app on macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS symlink resolution function using BSD readlink
+    resolve_symlink_macos() {
+        local target="$1"
+        local current="$target"
+        while [ -L "$current" ]; do
+            current="$(readlink "$current")"
+            # Handle relative symlinks
+            if [[ "$current" != /* ]]; then
+                current="$(dirname "$target")/$current"
+            fi
+        done
+        echo "$current"
+    }
+
+    # Get the real path of this script to avoid infinite recursion
+    SCRIPT_REAL_PATH="$(resolve_symlink_macos "${BASH_SOURCE[0]}")"
+
+    # Comprehensive Mac app search - order depends on TUNNELFORGE_PREFER_DERIVED_DATA
+    APP_PATH=""
+    
+    if [ -n "$TUNNELFORGE_PREFER_DERIVED_DATA" ]; then
+        # When preference is set, try DerivedData first
+        for CANDIDATE in $(find ~/Library/Developer/Xcode/DerivedData -name "TunnelForge.app" -type d 2>/dev/null | grep -v "\.dSYM" | grep -v "Index\.noindex" | sort -r); do
+            if [ -f "$CANDIDATE/Contents/Resources/tunnelforge" ]; then
+                TUNNELFORGE_SCRIPT="$CANDIDATE/Contents/Resources/tunnelforge-cli"
+                if [ -f "$TUNNELFORGE_SCRIPT" ] && [ -x "$TUNNELFORGE_SCRIPT" ]; then
+                    TUNNELFORGE_REAL_PATH="$(resolve_symlink_macos "$TUNNELFORGE_SCRIPT")"
+                    if [ "$SCRIPT_REAL_PATH" != "$TUNNELFORGE_REAL_PATH" ]; then
+                        # Don't exec to the app bundle script - use the binary instead
+                        # This allows our self-healing to work
+                        true  # Continue to use the binary
+                    fi
+                fi
+                APP_PATH="$CANDIDATE"
+                break
+            fi
+        done
+    fi
+    
+    # If not found yet, try standard locations
+    if [ -z "$APP_PATH" ]; then
+        for TRY_PATH in "/Applications/TunnelForge.app" "$HOME/Applications/TunnelForge.app"; do
+            if [ -d "$TRY_PATH" ] && [ -f "$TRY_PATH/Contents/Resources/tunnelforge" ]; then
+                TUNNELFORGE_SCRIPT="$TRY_PATH/Contents/Resources/tunnelforge-cli"
+                if [ -f "$TUNNELFORGE_SCRIPT" ] && [ -x "$TUNNELFORGE_SCRIPT" ]; then
+                    # Avoid infinite recursion by checking if this is the same script
+                    TUNNELFORGE_REAL_PATH="$(resolve_symlink_macos "$TUNNELFORGE_SCRIPT")"
+                    if [ "$SCRIPT_REAL_PATH" != "$TUNNELFORGE_REAL_PATH" ]; then
+                        exec "$TUNNELFORGE_SCRIPT" "$@"
+                    fi
+                fi
+                APP_PATH="$TRY_PATH"
+                break
+            fi
+        done
+    fi
+    
+    # If not found in standard locations and TUNNELFORGE_PREFER_DERIVED_DATA wasn't set, search development builds
+    if [ -z "$APP_PATH" ] && [ -z "$TUNNELFORGE_PREFER_DERIVED_DATA" ]; then
+        # Try DerivedData (for development)
+        for CANDIDATE in $(find ~/Library/Developer/Xcode/DerivedData -name "TunnelForge.app" -type d 2>/dev/null | grep -v "\.dSYM" | grep -v "Index\.noindex"); do
+            if [ -f "$CANDIDATE/Contents/Resources/tunnelforge" ]; then
+                TUNNELFORGE_SCRIPT="$CANDIDATE/Contents/Resources/tunnelforge-cli"
+                if [ -f "$TUNNELFORGE_SCRIPT" ] && [ -x "$TUNNELFORGE_SCRIPT" ]; then
+                    TUNNELFORGE_REAL_PATH="$(resolve_symlink_macos "$TUNNELFORGE_SCRIPT")"
+                    if [ "$SCRIPT_REAL_PATH" != "$TUNNELFORGE_REAL_PATH" ]; then
+                        # Don't exec to the app bundle script - use the binary instead
+                        # This allows our self-healing to work
+                        true  # Continue to use the binary
+                    fi
+                fi
+                APP_PATH="$CANDIDATE"
+                break
+            fi
+        done
+        
+        # If still not found, use mdfind as last resort
+        if [ -z "$APP_PATH" ]; then
+            for CANDIDATE in $(mdfind -name "TunnelForge.app" 2>/dev/null | grep -v "\.dSYM"); do
+                if [ -f "$CANDIDATE/Contents/Resources/tunnelforge" ]; then
+                    TUNNELFORGE_SCRIPT="$CANDIDATE/Contents/Resources/tunnelforge-cli"
+                    if [ -f "$TUNNELFORGE_SCRIPT" ] && [ -x "$TUNNELFORGE_SCRIPT" ]; then
+                        TUNNELFORGE_REAL_PATH="$(resolve_symlink_macos "$TUNNELFORGE_SCRIPT")"
+                        if [ "$SCRIPT_REAL_PATH" != "$TUNNELFORGE_REAL_PATH" ]; then
+                            exec "$TUNNELFORGE_SCRIPT" "$@"
+                        fi
+                    fi
+                    APP_PATH="$CANDIDATE"
+                    break
+                fi
+            done
+        fi
+    fi
+    
+    # If we found a Mac app but couldn't use its script, use its binary directly
+    if [ -n "$APP_PATH" ]; then
+        TUNNELFORGE_BIN="$APP_PATH/Contents/Resources/tunnelforge"
+        if [ -f "$TUNNELFORGE_BIN" ]; then
+            # Found Mac app bundle - will use this binary
+            true  # No-op command to fix syntax error
+        fi
+    fi
+fi
+
+# If we get here without a Mac app, use the npm-installed tunnelforge
+if [ -z "$TUNNELFORGE_BIN" ]; then
+    # First, try to find tunnelforge in the same directory as this script
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -f "$SCRIPT_DIR/tunnelforge" ]; then
+        TUNNELFORGE_BIN="$SCRIPT_DIR/tunnelforge"
+    else
+        # Try to find tunnelforge in PATH
+        if command -v tunnelforge >/dev/null 2>&1; then
+            TUNNELFORGE_BIN="$(command -v tunnelforge)"
+        fi
+    fi
+
+    if [ -z "$TUNNELFORGE_BIN" ] || [ ! -f "$TUNNELFORGE_BIN" ]; then
+        echo "Error: tunnelforge binary not found. Please ensure tunnelforge is installed." >&2
+        echo "Install with: npm install -g tunnelforge" >&2
+        exit 1
+    fi
+fi
+
+# Check if this is a command that should suppress wrapper output
+SUPPRESS_OUTPUT=false
+if [[ "$1" == "title" || "$1" == "status" || "$1" == "--version" || "$1" == "version" || "$1" == "follow" || "$1" == "unfollow" || ("$1" == "git" && "$2" == "event") ]]; then
+    SUPPRESS_OUTPUT=true
+fi
+
+# Log TunnelForge binary info when TUNNELFORGE_PREFER_DERIVED_DATA is set
+if [ -n "$TUNNELFORGE_PREFER_DERIVED_DATA" ] && [ -n "$TUNNELFORGE_BIN" ] && [ "$SUPPRESS_OUTPUT" != "true" ]; then
+    # Get version and build info
+    VERSION_OUTPUT=$("$TUNNELFORGE_BIN" --version 2>&1)
+    VERSION_LINE=$(echo "$VERSION_OUTPUT" | grep "^TunnelForge Server" | head -n 1)
+    BUILD_LINE=$(echo "$VERSION_OUTPUT" | grep "^Built:" | head -n 1)
+    
+    # Gray color (bright black)
+    GRAY='\033[90m'
+    RESET='\033[0m'
+    
+    # Always log this info regardless of verbosity level
+    # Shorten path by removing /Contents/Resources/tunnelforge suffix
+    DISPLAY_PATH=$(prettify_path "$TUNNELFORGE_BIN")
+    DISPLAY_PATH=${DISPLAY_PATH%/Contents/Resources/tunnelforge}
+    echo -e "${GRAY}[TunnelForge] ${DISPLAY_PATH}${RESET}"
+    if [ -n "$VERSION_LINE" ] && [ -n "$BUILD_LINE" ]; then
+        echo -e "${GRAY}[TunnelForge] Version: ${VERSION_LINE#TunnelForge Server } (${BUILD_LINE})${RESET}"
+    elif [ -n "$VERSION_LINE" ]; then
+        echo -e "${GRAY}[TunnelForge] Version: ${VERSION_LINE#TunnelForge Server }${RESET}"
+    fi
+fi
+
+# Handle safe commands first that work both inside and outside sessions
+# This must come BEFORE the session check to avoid the recursive session error
+if [[ "$1" == "status" || "$1" == "version" || "$1" == "--version" ]]; then
+    # These commands can run safely inside or outside a session
+    exec "$TUNNELFORGE_BIN" "$@"
+fi
+
+# Check if we're already inside a TunnelForge session
+if [ -n "$TUNNELFORGE_SESSION_ID" ]; then
+    # Special case: handle 'tunnelforge title' command inside a session
+    if [[ "$1" == "title" ]]; then
+        if [[ $# -lt 2 ]]; then
+            echo "Error: 'tunnelforge title' requires a title argument" >&2
+            echo "Usage: tunnelforge title <new title>" >&2
+            exit 1
+        fi
+        shift # Remove 'title' from arguments
+        TITLE="$*" # Get all remaining arguments as the title
+        
+        # Use the tunnelforge binary's new --update-title flag
+        exec "$TUNNELFORGE_BIN" fwd --update-title "$TITLE" --session-id "$TUNNELFORGE_SESSION_ID"
+        # If exec fails, exit with error
+        exit 1
+    fi
+    
+    # For all other commands, block recursive sessions
+    echo "Error: Already inside a TunnelForge session (ID: $TUNNELFORGE_SESSION_ID). Recursive TunnelForge sessions are not supported." >&2
+    echo "If you need to run commands from within a session, use the 'tunnelforge title' command to update the session title," >&2
+    echo "or exit the current session first." >&2
+    exit 1
+fi
+
+# Default action: Execute the tunnelforge binary with fwd command
+# All arguments are passed through to the fwd command
+exec "$TUNNELFORGE_BIN" fwd "$@"

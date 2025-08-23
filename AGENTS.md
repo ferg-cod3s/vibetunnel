@@ -12,7 +12,7 @@
   - Swift: define error enums conforming to LocalizedError; use Result and throws; never fatalError in production paths; log with OSLog categories (see apple/logging/README.md).
 - Testing
   - Vitest for web; group by feature; Arrange/Act/Assert; include edge cases. Single test selection with -t. Avoid network in unit tests.
-  - Swift tests under VibeTunnelTests; do not launch app; use xcodebuild via provided scripts; beware simulator boot in CI.
+  - Swift tests under TunnelForgeTests; do not launch app; use xcodebuild via provided scripts; beware simulator boot in CI.
 - Conventions
   - Early returns; small functions (<30 lines); max 3 nesting levels; DRY; SRP. No backwards compatibility layers—change both sides.
 - Tools/rules
@@ -20,4 +20,4 @@
 - Single-test quick refs
   - Web: pnpm test -- src/path/file.spec.ts
   - Web (name): pnpm test -- -t "name"
-  - Mac: xcodebuild test -workspace VibeTunnel.xcworkspace -scheme VibeTunnel -destination 'platform=macOS'
+  - Mac: xcodebuild test -workspace TunnelForge.xcworkspace -scheme TunnelForge -destination 'platform=macOS'

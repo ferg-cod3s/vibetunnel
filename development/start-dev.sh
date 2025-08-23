@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# VibeTunnel Development Environment Startup Script
+# TunnelForge Development Environment Startup Script
 # This script starts both the Go backend server and Bun frontend proxy
 
 set -e
 
-echo "🚀 Starting VibeTunnel Development Environment"
+echo "🚀 Starting TunnelForge Development Environment"
 echo ""
 
 # Function to cleanup background processes
@@ -76,11 +76,11 @@ cd ..
 sleep 3
 
 echo ""
-echo "✅ VibeTunnel Development Environment is running!"
+echo "✅ TunnelForge Development Environment is running!"
 echo ""
 echo "🌐 Frontend (Bun):     http://localhost:3000"
 echo "🔧 Backend (Go):       http://localhost:4021"
-echo "🖥️  CLI Tool:           go-server/bin/vibetunnel"
+echo "🖥️  CLI Tool:           go-server/bin/tunnelforge"
 echo ""
 echo "📡 API Endpoints:"
 echo "   Health Check:       http://localhost:3000/api/health"
@@ -89,9 +89,9 @@ echo "   Server-Sent Events: http://localhost:3000/api/events"
 echo "   WebSocket:          ws://localhost:3000/ws?sessionId={id}"
 echo ""
 echo "🔧 CLI Commands:"
-echo "   ./go-server/bin/vibetunnel status    - Check server status"  
-echo "   ./go-server/bin/vibetunnel help      - Show CLI help"
-echo "   ./go-server/bin/vibetunnel version   - Show version"
+echo "   ./go-server/bin/tunnelforge status    - Check server status"  
+echo "   ./go-server/bin/tunnelforge help      - Show CLI help"
+echo "   ./go-server/bin/tunnelforge version   - Show version"
 echo ""
 echo "📢 Real-time Events:"
 echo "   Connect to SSE:     curl -N http://localhost:3000/api/events"

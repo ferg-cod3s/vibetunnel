@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  vibetunnel-npm-beta:
+  tunnelforge-npm-beta:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: vibetunnel-npm-beta-test
+    container_name: tunnelforge-npm-beta-test
     environment:
       - NODE_ENV=development
       - VIBETUNNEL_NO_AUTH=true

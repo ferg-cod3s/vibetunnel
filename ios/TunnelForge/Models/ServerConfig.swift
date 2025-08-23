@@ -1,9 +1,9 @@
 import Foundation
 
-/// Configuration for connecting to a VibeTunnel server.
+/// Configuration for connecting to a TunnelForge server.
 ///
 /// ServerConfig stores all necessary information to establish
-/// a connection to a VibeTunnel server, including host, port,
+/// a connection to a TunnelForge server, including host, port,
 /// optional authentication, and display name.
 struct ServerConfig: Codable, Equatable {
     let host: String

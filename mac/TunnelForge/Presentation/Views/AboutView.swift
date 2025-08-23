@@ -76,6 +76,11 @@ struct AboutView: View {
 
     private var appInfoSection: some View {
         VStack(spacing: 12) {
+            // Full TunnelForge logo
+            SVGLogoView(height: 80, showAnimation: true)
+                .frame(height: 80)
+                .padding(.bottom, 8)
+            
             GlowingAppIcon(
                 size: 128,
                 enableFloating: true,

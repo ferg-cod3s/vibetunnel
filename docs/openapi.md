@@ -1,8 +1,8 @@
-# OpenAPI Migration Plan for VibeTunnel
+# OpenAPI Migration Plan for TunnelForge
 
 ## Overview
 
-This document outlines the plan to adopt OpenAPI 3.1 for VibeTunnel's REST API to achieve type safety and consistency between the TypeScript server and Swift clients.
+This document outlines the plan to adopt OpenAPI 3.1 for TunnelForge's REST API to achieve type safety and consistency between the TypeScript server and Swift clients.
 
 ## Goals
 
@@ -38,7 +38,7 @@ Create `web/openapi/openapi.yaml`:
 ```yaml
 openapi: 3.1.0
 info:
-  title: VibeTunnel API
+  title: TunnelForge API
   version: 1.0.0
   description: Terminal sharing and remote access API
 servers:

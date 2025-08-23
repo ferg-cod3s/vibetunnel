@@ -6,7 +6,7 @@ import SwiftUI
 
 struct CLIInstallationSection: View {
     @State private var cliInstaller = CLIInstaller()
-    @State private var showingVtConflictAlert = false
+    @State private var showingTunnelforgeConflictAlert = false
     @AppStorage(AppConstants.UserDefaultsKeys.debugMode)
     private var debugMode = false
 
@@ -48,7 +48,7 @@ struct CLIInstallationSection: View {
                             // Updated status
                             if cliInstaller.isOutdated {
                                 HStack(spacing: 8) {
-                                    Button("Update 'vt' Command") {
+                                    Button("Update 'tunnelforge' Command") {
                                         Task {
                                             await cliInstaller.install()
                                         }
@@ -73,7 +73,7 @@ struct CLIInstallationSection: View {
                                 HStack(spacing: 8) {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(.green)
-                                    Text("VT installed")
+                                    Text("TunnelForge installed")
                                         .foregroundColor(.secondary)
 
                                     // Show reinstall button in debug mode
@@ -104,7 +104,7 @@ struct CLIInstallationSection: View {
                                 }
                             }
                         } else {
-                            Button("Install 'vt' Command") {
+                            Button("Install 'tunnelforge' Command") {
                                 Task {
                                     await cliInstaller.install()
                                 }
@@ -122,11 +122,11 @@ struct CLIInstallationSection: View {
                 } else {
                     HStack(alignment: .center, spacing: 8) {
                         if cliInstaller.isInstalled {
-                            Text("The 'vt' command line tool is installed at /usr/local/bin/vt")
+                            Text("The 'tunnelforge' command line tool is installed at /usr/local/bin/tunnelforge")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         } else {
-                            Text("Install the 'vt' command line tool to /usr/local/bin for terminal access.")
+                            Text("Install the 'tunnelforge' command line tool to /usr/local/bin for terminal access.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -134,7 +134,7 @@ struct CLIInstallationSection: View {
                         Spacer()
 
                         Button(action: {
-                            showingVtConflictAlert = true
+                            showingTunnelforgeConflictAlert = true
                         }, label: {
                             Text("Use a different name")
                                 .font(.caption)
@@ -148,7 +148,7 @@ struct CLIInstallationSection: View {
                 .font(.headline)
         } footer: {
             Text(
-                "Prefix any terminal command with 'vt' to enable remote control."
+                "Prefix any terminal command with 'tunnelforge' to enable remote control."
             )
             .font(.caption)
             .frame(maxWidth: .infinity)
@@ -157,33 +157,33 @@ struct CLIInstallationSection: View {
         .onAppear {
             cliInstaller.checkInstallationStatus()
         }
-        .alert("Using a Different Command Name", isPresented: $showingVtConflictAlert) {
+        .alert("Using a Different Command Name", isPresented: $showingTunnelforgeConflictAlert) {
             Button("OK") {}
             Button("Copy to Clipboard") {
                 copyCommandToClipboard()
             }
         } message: {
-            Text(vtConflictMessage)
+            Text(tunnelforgeConflictMessage)
         }
     }
 
-    private var vtScriptPath: String {
-        if let path = Bundle.main.path(forResource: "vt", ofType: nil) {
+    private var tunnelforgeScriptPath: String {
+        if let path = Bundle.main.path(forResource: "tunnelforge-cli", ofType: nil) {
             return path
         }
-        return "/Applications/TunnelForge.app/Contents/Resources/vt"
+        return "/Applications/TunnelForge.app/Contents/Resources/tunnelforge-cli"
     }
 
-    private var vtConflictMessage: String {
+    private var tunnelforgeConflictMessage: String {
         """
-        You can install the `vt` bash script with a different name. For example:
+        You can install the `tunnelforge` bash script with a different name. For example:
 
-        cp "\(vtScriptPath)" /usr/local/bin/vtunnel && chmod +x /usr/local/bin/vtunnel
+        cp "\(tunnelforgeScriptPath)" /usr/local/bin/tf && chmod +x /usr/local/bin/tf
         """
     }
 
     private func copyCommandToClipboard() {
-        let command = "cp \"\(vtScriptPath)\" /usr/local/bin/vtunnel && chmod +x /usr/local/bin/vtunnel"
+        let command = "cp \"\(tunnelforgeScriptPath)\" /usr/local/bin/tf && chmod +x /usr/local/bin/tf"
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(command, forType: .string)

@@ -1,12 +1,12 @@
-# 🎉 VibeTunnel Migration Testing Environment - COMPLETE!
+# 🎉 TunnelForge Migration Testing Environment - COMPLETE!
 
 ## 📋 What We've Built
 
-We've created a comprehensive **production-ready migration testing environment** for transitioning from the Node.js VibeTunnel server to a high-performance Go implementation with full Docker containerization support.
+We've created a comprehensive **production-ready migration testing environment** for transitioning from the Node.js TunnelForge server to a high-performance Go implementation with full Docker containerization support.
 
 ## 🎯 Current Achievement: ~90% Feature Parity ✅
 
-The VibeTunnel Go server now has **excellent feature parity** with the Node.js version and is ready for production migration testing.
+The TunnelForge Go server now has **excellent feature parity** with the Node.js version and is ready for production migration testing.
 
 ### ✅ **Core Features Implemented**
 - **Terminal Session Management**: Full PTY lifecycle, concurrent sessions
@@ -79,7 +79,7 @@ The VibeTunnel Go server now has **excellent feature parity** with the Node.js v
 ./start-unified.sh --native --dev
 
 # View logs
-./start-docker.sh --logs vibetunnel-go-server
+./start-docker.sh --logs tunnelforge-go-server
 ```
 
 ### **Migration Testing**
@@ -196,7 +196,7 @@ node frontend-integration-test.js
 
 ## ✨ **Ready for Production Migration!**
 
-The VibeTunnel Go server migration environment is **production-ready** with:
+The TunnelForge Go server migration environment is **production-ready** with:
 - ✅ **Complete feature parity** (90%+ validation score)
 - ✅ **Superior performance** (faster, more efficient)
 - ✅ **Docker containerization** (production deployment ready)
@@ -208,5 +208,5 @@ The VibeTunnel Go server migration environment is **production-ready** with:
 
 ---
 
-*VibeTunnel Go Server Migration - Production Ready*  
+*TunnelForge Go Server Migration - Production Ready*  
 *Generated: 2025-08-08 by Claude Code*

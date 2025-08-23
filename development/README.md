@@ -1,6 +1,6 @@
-# VibeTunnel Go Server Migration Testing
+# TunnelForge Go Server Migration Testing
 
-This directory contains the complete migration testing environment for replacing the Node.js VibeTunnel server with a high-performance Go implementation.
+This directory contains the complete migration testing environment for replacing the Node.js TunnelForge server with a high-performance Go implementation.
 
 ## 🎯 Migration Overview
 
@@ -141,11 +141,11 @@ The `validate-migration.sh` script runs 8 comprehensive test categories:
 ./start-docker.sh --profile production --monitoring
 
 # View container logs
-./start-docker.sh --logs vibetunnel-go-server
-./start-docker.sh --logs vibetunnel-bun-web
+./start-docker.sh --logs tunnelforge-go-server
+./start-docker.sh --logs tunnelforge-bun-web
 
 # Container shell access
-./start-docker.sh --shell vibetunnel-go-server
+./start-docker.sh --shell tunnelforge-go-server
 
 # Stop all containers
 ./start-docker.sh --stop
@@ -157,7 +157,7 @@ The `validate-migration.sh` script runs 8 comprehensive test categories:
 cd go-server
 go run cmd/server/main.go --port=4021
 go test ./...
-go build -o vibetunnel-server cmd/server/main.go
+go build -o tunnelforge-server cmd/server/main.go
 
 # Bun web development  
 cd bun-web
@@ -271,7 +271,7 @@ bun run dev
 **Port conflicts**:
 ```bash
 # Kill existing processes
-pkill -f vibetunnel
+pkill -f tunnelforge
 pkill -f "bun run dev"
 
 # Use different ports
@@ -305,7 +305,7 @@ DEBUG=1 ./start-unified.sh
 
 ## 🎉 Ready for Production
 
-The VibeTunnel Go server implementation is production-ready with:
+The TunnelForge Go server implementation is production-ready with:
 - ✅ Complete feature parity with Node.js version
 - ✅ Superior performance and resource efficiency
 - ✅ Comprehensive security implementations
@@ -319,5 +319,5 @@ Run the validation suite to confirm migration readiness:
 
 ---
 
-*Migration Testing Environment - VibeTunnel Go Server*  
+*Migration Testing Environment - TunnelForge Go Server*  
 *Last Updated: 2025-08-08*

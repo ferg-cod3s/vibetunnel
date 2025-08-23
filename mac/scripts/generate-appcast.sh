@@ -33,7 +33,7 @@ if [[ -z "${GITHUB_USERNAME:-}" ]] || [[ -z "${GITHUB_REPO:-}" ]]; then
         GITHUB_REPO="${GITHUB_REPO:-${BASH_REMATCH[2]%.git}}"
     else
         GITHUB_USERNAME="${GITHUB_USERNAME:-amantus-ai}"
-        GITHUB_REPO="${GITHUB_REPO:-vibetunnel}"
+        GITHUB_REPO="${GITHUB_REPO:-tunnelforge}"
     fi
 fi
 
@@ -413,7 +413,7 @@ main() {
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>TunnelForge Updates</title>
-        <link>https://github.com/amantus-ai/vibetunnel</link>
+        <link>https://github.com/amantus-ai/tunnelforge</link>
         <description>TunnelForge automatic updates feed</description>
         <language>en</language>
 EOF
@@ -456,7 +456,7 @@ EOF
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>TunnelForge Pre-release Updates</title>
-        <link>https://github.com/amantus-ai/vibetunnel</link>
+        <link>https://github.com/amantus-ai/tunnelforge</link>
         <description>TunnelForge pre-release and beta updates feed</description>
         <language>en</language>
 EOF

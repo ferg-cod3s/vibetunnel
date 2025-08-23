@@ -67,7 +67,7 @@
 #   ./scripts/release.sh --dry-run beta 1     # Preview beta.1 release
 #
 # OUTPUT:
-#   - GitHub release at: https://github.com/amantus-ai/vibetunnel/releases
+#   - GitHub release at: https://github.com/amantus-ai/tunnelforge/releases
 #   - Signed DMG file in build/ directory
 #   - Updated appcast.xml and appcast-prerelease.xml files
 #   - Git commits and tags pushed to repository
@@ -853,7 +853,7 @@ if [[ -z "$RELEASE_NOTES" ]]; then
 
 This release includes various improvements and bug fixes.
 
-For details, please see the [CHANGELOG](https://github.com/amantus-ai/vibetunnel/blob/main/CHANGELOG.md).
+For details, please see the [CHANGELOG](https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md).
 
 **Build**: $BUILD_NUMBER"
 fi
@@ -970,7 +970,7 @@ echo "Release details:"
 echo "  - Version: $RELEASE_VERSION"
 echo "  - Build: $BUILD_NUMBER"
 echo "  - Tag: $TAG_NAME"
-echo "  - GitHub: https://github.com/amantus-ai/vibetunnel/releases/tag/$TAG_NAME"
+echo "  - GitHub: https://github.com/amantus-ai/tunnelforge/releases/tag/$TAG_NAME"
 echo ""
 echo "Release artifacts:"
 echo "  - DMG: $(basename "$DMG_PATH")"

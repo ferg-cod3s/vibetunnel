@@ -24,7 +24,7 @@ interface RemoteWebSocketConnection {
  *
  * The BufferAggregator acts as a central hub for WebSocket-based terminal buffer streaming,
  * managing connections between clients and terminal sessions. In HQ (headquarters) mode,
- * it also handles connections to remote VibeTunnel servers, enabling cross-server terminal
+ * it also handles connections to remote TunnelForge servers, enabling cross-server terminal
  * session access.
  *
  * Key features:
@@ -68,7 +68,7 @@ interface RemoteWebSocketConnection {
  * ```
  *
  * @see TerminalManager - Manages local terminal instances
- * @see RemoteRegistry - Tracks remote VibeTunnel servers in HQ mode
+ * @see RemoteRegistry - Tracks remote TunnelForge servers in HQ mode
  * @see web/src/server/routes/buffer.ts - WebSocket endpoint setup
  */
 export class BufferAggregator {

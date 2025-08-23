@@ -13,7 +13,7 @@ protocol BonjourDiscoveryProtocol {
     func stopDiscovery()
 }
 
-/// Represents a discovered VibeTunnel server.
+/// Represents a discovered TunnelForge server.
 /// Contains server information including name, host, port, and metadata.
 struct DiscoveredServer: Identifiable, Equatable {
     let id: UUID
@@ -46,7 +46,7 @@ struct DiscoveredServer: Identifiable, Equatable {
     }
 }
 
-/// Service for discovering VibeTunnel servers on the local network using Bonjour/mDNS
+/// Service for discovering TunnelForge servers on the local network using Bonjour/mDNS
 @MainActor
 @Observable
 final class BonjourDiscoveryService: BonjourDiscoveryProtocol {
@@ -67,16 +67,16 @@ final class BonjourDiscoveryService: BonjourDiscoveryProtocol {
             return
         }
 
-        logger.info("Starting Bonjour discovery for _vibetunnel._tcp services")
+        logger.info("Starting Bonjour discovery for _tunnelforge._tcp services")
 
         // Clear existing servers
         discoveredServers.removeAll()
 
-        // Create browser for VibeTunnel services
+        // Create browser for TunnelForge services
         let parameters = NWParameters()
         parameters.includePeerToPeer = true
 
-        browser = NWBrowser(for: .bonjour(type: "_vibetunnel._tcp", domain: nil), using: parameters)
+        browser = NWBrowser(for: .bonjour(type: "_tunnelforge._tcp", domain: nil), using: parameters)
 
         browser?.browseResultsChangedHandler = { [weak self] results, _ in
             Task { @MainActor [weak self] in
@@ -205,7 +205,7 @@ final class BonjourDiscoveryService: BonjourDiscoveryProtocol {
         let parameters = NWParameters.tcp
         let endpoint = NWEndpoint.service(
             name: serverName,
-            type: "_vibetunnel._tcp",
+            type: "_tunnelforge._tcp",
             domain: "local",
             interface: nil
         )
@@ -282,7 +282,7 @@ final class BonjourDiscoveryService: BonjourDiscoveryProtocol {
 
 // MARK: - Discovery Sheet View
 
-/// Sheet view for discovering VibeTunnel servers on the local network.
+/// Sheet view for discovering TunnelForge servers on the local network.
 /// Displays found servers and allows selection for connection.
 struct ServerDiscoverySheet: View {
     @Binding var selectedHost: String
@@ -300,7 +300,7 @@ struct ServerDiscoverySheet: View {
                     VStack(spacing: 20) {
                         ProgressView()
                             .scaleEffect(1.5)
-                        Text("Searching for VibeTunnel servers...")
+                        Text("Searching for TunnelForge servers...")
                             .foregroundColor(Theme.Colors.terminalGray)
                     }
                     .frame(maxHeight: .infinity)
@@ -311,7 +311,7 @@ struct ServerDiscoverySheet: View {
                             .foregroundColor(Theme.Colors.terminalGray)
                         Text("No servers found")
                             .font(.title2)
-                        Text("Make sure VibeTunnel is running on your Mac\nand both devices are on the same network")
+                        Text("Make sure TunnelForge is running on your Mac\nand both devices are on the same network")
                             .multilineTextAlignment(.center)
                             .foregroundColor(Theme.Colors.terminalGray)
                     }

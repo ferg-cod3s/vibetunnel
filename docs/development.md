@@ -1,9 +1,9 @@
 <!-- Generated: 2025-07-18 11:30:00 UTC -->
-# VibeTunnel Development Guide
+# TunnelForge Development Guide
 
 ## Overview
 
-VibeTunnel follows modern Swift 6 and TypeScript development practices with a focus on async/await patterns, protocol-oriented design, and reactive UI architectures. The codebase is organized into three main components: macOS app (Swift/SwiftUI), iOS app (Swift/SwiftUI), and web dashboard (TypeScript/Lit).
+TunnelForge follows modern Swift 6 and TypeScript development practices with a focus on async/await patterns, protocol-oriented design, and reactive UI architectures. The codebase is organized into three main components: macOS app (Swift/SwiftUI), iOS app (Swift/SwiftUI), and web dashboard (TypeScript/Lit).
 
 Key architectural principles:
 - **Protocol-oriented design** for flexibility and testability
@@ -15,7 +15,7 @@ Key architectural principles:
 
 ### Swift Conventions
 
-**Modern Swift 6 patterns** - From `mac/VibeTunnel/Core/Services/ServerManager.swift`:
+**Modern Swift 6 patterns** - From `mac/TunnelForge/Core/Services/ServerManager.swift`:
 ```swift
 @MainActor
 @Observable
@@ -32,7 +32,7 @@ class ServerManager {
 }
 ```
 
-**Error handling** - From `mac/VibeTunnel/Core/Protocols/VibeTunnelServer.swift`:
+**Error handling** - From `mac/TunnelForge/Core/Protocols/TunnelForgeServer.swift`:
 ```swift
 enum ServerError: LocalizedError {
     case binaryNotFound(String)
@@ -51,7 +51,7 @@ enum ServerError: LocalizedError {
 }
 ```
 
-**SwiftUI view patterns** - From `mac/VibeTunnel/Presentation/Views/Settings/GeneralSettingsView.swift`:
+**SwiftUI view patterns** - From `mac/TunnelForge/Presentation/Views/Settings/GeneralSettingsView.swift`:
 ```swift
 struct GeneralSettingsView: View {
     @AppStorage("autostart")
@@ -67,7 +67,7 @@ struct GeneralSettingsView: View {
                 Section {
                     VStack(alignment: .leading, spacing: 4) {
                         Toggle("Launch at Login", isOn: launchAtLoginBinding)
-                        Text("Automatically start VibeTunnel when you log in.")
+                        Text("Automatically start TunnelForge when you log in.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -124,9 +124,9 @@ export class VibeTerminalBuffer extends LitElement {
 
 **Protocol-based services** - Services define protocols for testability:
 ```swift
-// mac/VibeTunnel/Core/Protocols/VibeTunnelServer.swift
+// mac/TunnelForge/Core/Protocols/TunnelForgeServer.swift
 @MainActor
-protocol VibeTunnelServer: AnyObject {
+protocol TunnelForgeServer: AnyObject {
     var isRunning: Bool { get }
     var port: String { get set }
     var logStream: AsyncStream<ServerLogEntry> { get }
@@ -139,16 +139,16 @@ protocol VibeTunnelServer: AnyObject {
 
 **Singleton managers** - Core services use thread-safe singletons:
 ```swift
-// mac/VibeTunnel/Core/Services/ServerManager.swift:14
+// mac/TunnelForge/Core/Services/ServerManager.swift:14
 @MainActor static let shared = ServerManager()
 
-// ios/VibeTunnel/Services/APIClient.swift:93
+// ios/TunnelForge/Services/APIClient.swift:93
 static let shared = APIClient()
 ```
 
 ### Async/Await Patterns
 
-**Swift async operations** - From `ios/VibeTunnel/Services/APIClient.swift`:
+**Swift async operations** - From `ios/TunnelForge/Services/APIClient.swift`:
 ```swift
 func getSessions() async throws -> [Session] {
     guard let url = makeURL(path: "/api/sessions") else {
@@ -188,7 +188,7 @@ async handleClientMessage(
 
 **Swift error enums** - Comprehensive error types with localized descriptions:
 ```swift
-// ios/VibeTunnel/Services/APIClient.swift:4-70
+// ios/TunnelForge/Services/APIClient.swift:4-70
 enum APIError: LocalizedError {
     case invalidURL
     case serverError(Int, String?)
@@ -224,7 +224,7 @@ try {
 
 ### State Management
 
-**SwiftUI Observable** - From `mac/VibeTunnel/Core/Services/ServerManager.swift`:
+**SwiftUI Observable** - From `mac/TunnelForge/Core/Services/ServerManager.swift`:
 ```swift
 @Observable
 class ServerManager {
@@ -236,14 +236,14 @@ class ServerManager {
 
 **AppStorage for persistence**:
 ```swift
-// mac/VibeTunnel/Presentation/Views/Settings/GeneralSettingsView.swift:5
+// mac/TunnelForge/Presentation/Views/Settings/GeneralSettingsView.swift:5
 @AppStorage("autostart") private var autostart = false
 @AppStorage("updateChannel") private var updateChannelRaw = UpdateChannel.stable.rawValue
 ```
 
 ### UI Patterns
 
-**SwiftUI form layouts** - From `mac/VibeTunnel/Presentation/Views/Settings/GeneralSettingsView.swift`:
+**SwiftUI form layouts** - From `mac/TunnelForge/Presentation/Views/Settings/GeneralSettingsView.swift`:
 ```swift
 Form {
     Section {
@@ -273,7 +273,7 @@ Form {
 
 ### Adding a New Service
 
-1. **Define the protocol** in `mac/VibeTunnel/Core/Protocols/`:
+1. **Define the protocol** in `mac/TunnelForge/Core/Protocols/`:
 ```swift
 @MainActor
 protocol MyServiceProtocol {
@@ -281,7 +281,7 @@ protocol MyServiceProtocol {
 }
 ```
 
-2. **Implement the service** in `mac/VibeTunnel/Core/Services/`:
+2. **Implement the service** in `mac/TunnelForge/Core/Services/`:
 ```swift
 @MainActor
 class MyService: MyServiceProtocol {
@@ -293,7 +293,7 @@ class MyService: MyServiceProtocol {
 }
 ```
 
-3. **Add to environment** if needed in `mac/VibeTunnel/Core/Extensions/EnvironmentValues+Services.swift`
+3. **Add to environment** if needed in `mac/TunnelForge/Core/Extensions/EnvironmentValues+Services.swift`
 
 ### Creating UI Components
 
@@ -323,7 +323,7 @@ export class MyComponent extends LitElement {
 
 ### Testing Patterns
 
-**Swift unit tests** - From `mac/VibeTunnelTests/ServerManagerTests.swift`:
+**Swift unit tests** - From `mac/TunnelForgeTests/ServerManagerTests.swift`:
 ```swift
 @MainActor
 final class ServerManagerTests: XCTestCase {
@@ -357,11 +357,11 @@ describe('BufferAggregator', () => {
 ### File Organization
 
 **Swift packages**:
-- `mac/VibeTunnel/Core/` - Core business logic, protocols, services
-- `mac/VibeTunnel/Presentation/` - SwiftUI views and view models
-- `mac/VibeTunnel/Utilities/` - Helper classes and extensions
-- `ios/VibeTunnel/Services/` - iOS-specific services
-- `ios/VibeTunnel/Views/` - iOS UI components
+- `mac/TunnelForge/Core/` - Core business logic, protocols, services
+- `mac/TunnelForge/Presentation/` - SwiftUI views and view models
+- `mac/TunnelForge/Utilities/` - Helper classes and extensions
+- `ios/TunnelForge/Services/` - iOS-specific services
+- `ios/TunnelForge/Views/` - iOS UI components
 
 **TypeScript modules**:
 - `web/src/client/` - Frontend components and utilities
@@ -373,7 +373,7 @@ describe('BufferAggregator', () => {
 
 **Swift**:
 - Services: `*Manager`, `*Service` (e.g., `ServerManager`, `APIClient`)
-- Protocols: `*Protocol`, `*able` (e.g., `VibeTunnelServer`, `HTTPClientProtocol`)
+- Protocols: `*Protocol`, `*able` (e.g., `TunnelForgeServer`, `HTTPClientProtocol`)
 - Views: `*View` (e.g., `GeneralSettingsView`, `TerminalView`)
 - Errors: `*Error` enum (e.g., `ServerError`, `APIError`)
 
@@ -384,20 +384,20 @@ describe('BufferAggregator', () => {
 
 ### Common Issues
 
-**Port conflicts** - Handled in `mac/VibeTunnel/Core/Utilities/PortConflictResolver.swift`
-**Permission management** - See `mac/VibeTunnel/Core/Services/*PermissionManager.swift`
-**WebSocket reconnection** - Implemented in `ios/VibeTunnel/Services/BufferWebSocketClient.swift`
+**Port conflicts** - Handled in `mac/TunnelForge/Core/Utilities/PortConflictResolver.swift`
+**Permission management** - See `mac/TunnelForge/Core/Services/*PermissionManager.swift`
+**WebSocket reconnection** - Implemented in `ios/TunnelForge/Services/BufferWebSocketClient.swift`
 **Terminal resizing** - Handled in both Swift and TypeScript terminal components
 
-### VibeTunnel CLI Wrapper (vt)
+### TunnelForge CLI Wrapper (vt)
 
-The `vt` command is a bash wrapper script that allows users to run commands through VibeTunnel's terminal forwarding. It's installed at `/usr/local/bin/vt` when the Mac app is built.
+The `vt` command is a bash wrapper script that allows users to run commands through TunnelForge's terminal forwarding. It's installed at `/usr/local/bin/vt` when the Mac app is built.
 
-**Source location**: `mac/VibeTunnel/vt`
+**Source location**: `mac/TunnelForge/vt`
 
 **Usage**:
 ```bash
-# Run a command through VibeTunnel
+# Run a command through TunnelForge
 vt ls -la
 
 # Run an aliased command (e.g., if 'claude' is an alias)
@@ -413,23 +413,23 @@ vt -S command
 ```
 
 **How it works**:
-1. Locates the VibeTunnel.app bundle (checks standard locations and uses Spotlight if needed)
-2. Finds the `vibetunnel` binary within the app bundle's Resources
+1. Locates the TunnelForge.app bundle (checks standard locations and uses Spotlight if needed)
+2. Finds the `tunnelforge` binary within the app bundle's Resources
 3. Determines if the command is a binary or alias/function
-4. For binaries: executes directly through `vibetunnel fwd`
+4. For binaries: executes directly through `tunnelforge fwd`
 5. For aliases/functions: wraps in appropriate shell (`zsh -i -c` or `bash -c`) for proper resolution
 
 **Technical Details**:
 - The `--` separator should not be passed to `fwd` as it was being misinterpreted as a command
 - Aliases require interactive shell mode to be resolved properly
-- The script prevents recursive VibeTunnel sessions by checking `VIBETUNNEL_SESSION_ID`
+- The script prevents recursive TunnelForge sessions by checking `TUNNELFORGE_SESSION_ID`
 - The `fwd` binary now properly handles `--` as an argument separator when needed
 
 ## Web Development
 
 ### Code Quality Tools
 
-VibeTunnel uses several tools to maintain code quality:
+TunnelForge uses several tools to maintain code quality:
 
 #### Running All Checks
 

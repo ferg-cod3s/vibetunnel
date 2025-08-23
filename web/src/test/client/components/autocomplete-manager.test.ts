@@ -80,17 +80,17 @@ describe('AutocompleteManager', () => {
       const repositories: Repository[] = [
         {
           id: '1',
-          path: '/Users/test/Projects/vibetunnel',
-          folderName: 'vibetunnel',
+          path: '/Users/test/Projects/tunnelforge',
+          folderName: 'tunnelforge',
           lastModified: '2024-01-01',
-          relativePath: '~/Projects/vibetunnel',
+          relativePath: '~/Projects/tunnelforge',
         },
         {
           id: '2',
-          path: '/Users/test/Projects/vibetunnel2',
-          folderName: 'vibetunnel2',
+          path: '/Users/test/Projects/tunnelforge2',
+          folderName: 'tunnelforge2',
           lastModified: '2024-01-02',
-          relativePath: '~/Projects/vibetunnel2',
+          relativePath: '~/Projects/tunnelforge2',
         },
         {
           id: '3',
@@ -111,9 +111,9 @@ describe('AutocompleteManager', () => {
       const result = await manager.fetchCompletions('vibe');
 
       expect(result).toHaveLength(2);
-      expect(result[0].name).toBe('vibetunnel');
+      expect(result[0].name).toBe('tunnelforge');
       expect(result[0].isRepository).toBe(true);
-      expect(result[1].name).toBe('vibetunnel2');
+      expect(result[1].name).toBe('tunnelforge2');
     });
 
     it('should merge filesystem and repository completions without duplicates', async () => {

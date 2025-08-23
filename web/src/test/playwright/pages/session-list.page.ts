@@ -92,7 +92,7 @@ export class SessionListPage extends BasePage {
     // This ensures the form loads with the correct state
     await this.page.evaluate((shouldSpawnWindow) => {
       // Set the spawn window value we want
-      localStorage.setItem('vibetunnel_spawn_window', String(shouldSpawnWindow));
+      localStorage.setItem('tunnelforge_spawn_window', String(shouldSpawnWindow));
     }, spawnWindow);
 
     // Dismiss any error messages
@@ -388,7 +388,7 @@ export class SessionListPage extends BasePage {
         await this.page.waitForFunction(
           ({ id }) => {
             // Check if the app has loaded this session
-            const app = document.querySelector('vibetunnel-app') as HTMLElement & {
+            const app = document.querySelector('tunnelforge-app') as HTMLElement & {
               sessions?: Array<{ id: string }>;
             };
             if (app?.sessions) {
@@ -727,5 +727,29 @@ export class SessionListPage extends BasePage {
   async closeAnyOpenModals() {
     // Alias for backward compatibility
     await this.closeAnyOpenModal();
+  }
+
+  /**
+   * Kill a session by ID (more reliable than by name when dealing with duplicates)
+   */
+  async killSessionById(sessionId: string) {
+    try {
+      // Use API to directly delete the session for most reliable cleanup
+      await this.page.evaluate(async (id) => {
+        try {
+          const response = await fetch(`/api/sessions/${id}`, { method: 'DELETE' });
+          if (!response.ok) {
+            console.warn(`Failed to delete session ${id}: ${response.status}`);
+          }
+        } catch (error) {
+          console.warn(`Error deleting session ${id}:`, error);
+        }
+      }, sessionId);
+
+      // Wait a moment for the UI to update
+      await this.page.waitForTimeout(100);
+    } catch (error) {
+      console.warn(`Failed to kill session by ID ${sessionId}:`, error);
+    }
   }
 }

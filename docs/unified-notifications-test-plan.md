@@ -13,7 +13,7 @@ Test the new unified notification system that sends all notifications from the s
 
 ### 1. Bell Notification Test
 ```bash
-# In any VibeTunnel session
+# In any TunnelForge session
 echo -e '\a'
 # or
 printf '\007'
@@ -57,7 +57,7 @@ false
 ## Verification Steps
 
 1. **Enable all notifications in Mac Settings**:
-   - Open VibeTunnel → Settings → Notifications
+   - Open TunnelForge → Settings → Notifications
    - Enable "Show Session Notifications" 
    - Enable all notification types
    - Enable sound if desired
@@ -65,12 +65,12 @@ false
 2. **Monitor Unix socket traffic** (optional):
    ```bash
    # In a separate terminal, monitor the control socket
-   sudo dtrace -n 'syscall::write:entry /execname == "VibeTunnel" || execname == "node"/ { printf("%d: %s", pid, copyinstr(arg1, 200)); }'
+   sudo dtrace -n 'syscall::write:entry /execname == "TunnelForge" || execname == "node"/ { printf("%d: %s", pid, copyinstr(arg1, 200)); }'
    ```
 
 3. **Check logs**:
    ```bash
-   # Monitor VibeTunnel logs
+   # Monitor TunnelForge logs
    ./scripts/vtlog.sh -f -c NotificationControl
    
    # Check for session-monitor events
@@ -97,5 +97,5 @@ false
   - Claude turn has 2-second debounce by design
   
 - If getting duplicate notifications:
-  - Ensure only one VibeTunnel instance is running
+  - Ensure only one TunnelForge instance is running
   - Check that old SessionMonitor code is not running

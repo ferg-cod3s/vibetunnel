@@ -29,8 +29,8 @@ find_changelog() {
         # From grandparent directory
         "../../CHANGELOG.md"
         # Absolute paths as fallback
-        "$HOME/Projects/vibetunnel/CHANGELOG.md"
-        "/Users/runner/work/vibetunnel/vibetunnel/CHANGELOG.md"  # GitHub Actions
+        "$HOME/Projects/tunnelforge/CHANGELOG.md"
+        "/Users/runner/work/tunnelforge/tunnelforge/CHANGELOG.md"  # GitHub Actions
     )
     
     for path in "${search_paths[@]}"; do

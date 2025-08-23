@@ -71,7 +71,7 @@ enum APIError: LocalizedError {
     }
 }
 
-/// Protocol defining the API client interface for VibeTunnel server communication.
+/// Protocol defining the API client interface for TunnelForge server communication.
 protocol APIClientProtocol {
     func getSessions() async throws -> [Session]
     func getSession(_ sessionId: String) async throws -> Session
@@ -85,7 +85,7 @@ protocol APIClientProtocol {
     func checkHealth() async throws -> Bool
 }
 
-/// Main API client for communicating with the VibeTunnel server.
+/// Main API client for communicating with the TunnelForge server.
 ///
 /// APIClient handles all HTTP requests to the server including session management,
 /// terminal I/O, and file system operations. It uses URLSession for networking

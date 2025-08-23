@@ -3,7 +3,7 @@ import { webcrypto } from 'crypto';
 import { vi } from 'vitest';
 
 // Disable SEA loader for tests
-process.env.VIBETUNNEL_SEA = '';
+process.env.TUNNELFORGE_SEA = '';
 
 // Polyfill crypto for Node.js environments
 if (!globalThis.crypto) {
@@ -283,7 +283,7 @@ if (typeof window !== 'undefined') {
 
 // Clean up any hanging processes before each test suite
 beforeAll(async () => {
-  // Kill any leftover vibetunnel server processes
+  // Kill any leftover tunnelforge server processes
   try {
     const { exec } = await import('child_process');
     const { promisify } = await import('util');

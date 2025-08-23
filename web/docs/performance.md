@@ -2,7 +2,7 @@
 
 ## Session Management Models
 
-VibeTunnel supports two distinct session management approaches, each with different performance characteristics:
+TunnelForge supports two distinct session management approaches, each with different performance characteristics:
 
 ### 1. Server-Managed Sessions (API-initiated)
 

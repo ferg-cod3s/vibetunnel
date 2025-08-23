@@ -2,8 +2,8 @@
 # Shared configuration for both macOS and iOS apps
 
 included:
-  - ../mac/VibeTunnel
-  - ../ios/VibeTunnel
+  - ../mac/TunnelForge
+  - ../ios/TunnelForge
 
 excluded:
   - Carthage
@@ -11,9 +11,9 @@ excluded:
   - DerivedData
   - .build
   - .swiftpm
-  - ../mac/VibeTunnelTests
-  - ../mac/VibeTunnelUITests
-  - ../ios/VibeTunnelTests
+  - ../mac/TunnelForgeTests
+  - ../mac/TunnelForgeUITests
+  - ../ios/TunnelForgeTests
   - ../mac/build
   - ../ios/build
   - Package.swift

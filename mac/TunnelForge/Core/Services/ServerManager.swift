@@ -51,9 +51,33 @@ final class ServerManager {
         state == .running
     }
 
-    var port: String = ""
+    var port: String = {
+        // Load port from UserDefaults or use default
+        let storedPort = AppConstants.intValue(for: AppConstants.UserDefaultsKeys.serverPort)
+        return storedPort > 0 ? String(storedPort) : String(AppConstants.Defaults.serverPort)
+    }() {
+        didSet {
+            // Save to UserDefaults when changed
+            if let portInt = Int(port), portInt > 0 {
+                UserDefaults.standard.set(portInt, forKey: AppConstants.UserDefaultsKeys.serverPort)
+            }
+        }
+    }
 
-    var bindAddress: String = "127.0.0.1"
+    var bindAddress: String = {
+        // Load bind address based on dashboard access mode
+        let mode = AppConstants.getDashboardAccessMode()
+        return mode.bindAddress
+    }() {
+        didSet {
+            // Update dashboard access mode when bind address changes
+            if bindAddress == "127.0.0.1" {
+                AppConstants.setDashboardAccessMode(.localhost)
+            } else if bindAddress == "0.0.0.0" {
+                AppConstants.setDashboardAccessMode(.network)
+            }
+        }
+    }
 
     /// The process identifier of the running server, if available
     var processIdentifier: Int32? {
@@ -171,15 +195,15 @@ final class ServerManager {
             serverOutput.info("Project: \(devConfig.devServerPath)")
             try await startDevServer(path: devConfig.devServerPath)
         } else {
-            logger.info("Starting embedded Go server on port \(self.port)")
+            logger.info("Starting embedded server on port \(self.port)")
             try await startEmbeddedGoServer()
         }
     }
 
     private func startEmbeddedGoServer() async throws {
-        // Use the embedded TunnelForge Go server binary
-        let binaryName = "tunnelforge-server"
-        let serverType = "Embedded TunnelForge Go server"
+        // Use the embedded TunnelForge server binary (Node.js based)
+        let binaryName = "tunnelforge"
+        let serverType = "Embedded TunnelForge server"
         
         guard let binaryPath = Bundle.main.path(forResource: binaryName, ofType: nil) else {
             let error = ServerManagerError.binaryNotFound
@@ -204,8 +228,8 @@ final class ServerManager {
         }
 
         logger.info("Using \(serverType) executable at: \(binaryPath)")
-        serverOutput.notice("🚀 Starting embedded TunnelForge Go server")
-        serverOutput.info("High-performance Go backend with 50x better performance than Node.js")
+        serverOutput.notice("🚀 Starting embedded TunnelForge server")
+        serverOutput.info("Node.js-based server with web terminal capabilities")
 
         // Ensure binary is executable
         do {
@@ -227,39 +251,50 @@ final class ServerManager {
             {
                 logger
                     .info(
-                        "tunnelforge-server binary size: \(fileSize.intValue) bytes, permissions: \(String(permissions.intValue, radix: 8))"
+                        "tunnelforge binary size: \(fileSize.intValue) bytes, permissions: \(String(permissions.intValue, radix: 8))"
                     )
             }
         } else if !fileExists {
-            logger.error("tunnelforge-server binary NOT FOUND at: \(binaryPath)")
+            logger.error("tunnelforge binary NOT FOUND at: \(binaryPath)")
         }
 
         // Run the Go server directly (no shell wrapper needed)
         let process = Process()
         process.executableURL = URL(fileURLWithPath: binaryPath)
 
-        // Set working directory to user's home directory (Go server handles its own paths)
-        process.currentDirectoryURL = FileManager.default.homeDirectoryForCurrentUser
-        logger.info("Process working directory: \(process.currentDirectoryURL?.path ?? "unknown")")
+        // Set working directory to the Resources folder where web assets are located
+        // The tunnelforge server expects to find public/ relative to its working directory
+        if let resourcesPath = Bundle.main.resourcePath {
+            let resourcesURL = URL(fileURLWithPath: resourcesPath).appendingPathComponent("web")
+            process.currentDirectoryURL = resourcesURL
+            logger.info("Process working directory: \(resourcesURL.path)")
+        } else {
+            // Fallback to home directory
+            process.currentDirectoryURL = FileManager.default.homeDirectoryForCurrentUser
+            logger.info("Process working directory: \(process.currentDirectoryURL?.path ?? "unknown")")
+        }
 
-        // The Go server handles its own static file serving and doesn't need web directory setup
-        logger.info("Configuring embedded Go server with port=\(self.port), bindAddress=\(self.bindAddress)")
+        // The Node.js server needs command line arguments for configuration
+        logger.info("Configuring embedded server with port=\(self.port), bindAddress=\(self.bindAddress)")
 
-        // No command arguments needed - Go server uses environment variables
+        // Set up command arguments for tunnelforge
+        // Pass --no-auth to disable authentication for the Mac app
+        // Note: tunnelforge doesn't support --host, it uses environment variables for that
+        process.arguments = ["--port", self.port, "--no-auth"]
 
         // Set up a termination handler for logging
         process.terminationHandler = { [weak self] process in
             self?.logger.info("TunnelForge server process terminated with status: \(process.terminationStatus)")
         }
 
-        logger.info("Executing embedded TunnelForge Go server")
+        logger.info("Executing embedded TunnelForge server")
         logger.info("Binary location: \(binaryPath)")
         logger.info("Server configuration: port=\(self.port), bindAddress=\(self.bindAddress)")
 
-        // Set up environment for the Go server
+        // Set up environment for the server
         var environment = ProcessInfo.processInfo.environment
 
-        // Configure TunnelForge Go server via environment variables
+        // Configure TunnelForge server via environment variables
         environment["PORT"] = self.port
         environment["HOST"] = self.bindAddress
         environment["AUTH_REQUIRED"] = "false" // Disable auth for Mac app integration
@@ -267,6 +302,14 @@ final class ServerManager {
         environment["ENABLE_REQUEST_LOG"] = "false" // Reduce noise in logs
         environment["PERSISTENCE_ENABLED"] = "true" // Enable session persistence
         environment["SERVER_NAME"] = "TunnelForge Mac App Server" // Identify as Mac app server
+        
+        // Set the path to web assets
+        if let staticPath = getStaticFilesPath() {
+            environment["PUBLIC_PATH"] = staticPath
+            logger.info("Setting PUBLIC_PATH to: \(staticPath)")
+        } else {
+            logger.warning("Could not determine static files path")
+        }
         
         // Add authentication configuration
         let authConfig = AuthConfig.current()
@@ -282,8 +325,8 @@ final class ServerManager {
             environment["AUTH_REQUIRED"] = "false" // For Mac app, keep simple for now
         }
         
-        logger.info("TunnelForge Go server environment: PORT=\(self.port), HOST=\(self.bindAddress), AUTH_REQUIRED=\(environment["AUTH_REQUIRED"] ?? "false")")
-        serverOutput.info("Server will persist sessions across restarts and provide optimal performance")
+        logger.info("TunnelForge server environment: PORT=\(self.port), HOST=\(self.bindAddress), AUTH_REQUIRED=\(environment["AUTH_REQUIRED"] ?? "false")")
+        serverOutput.info("Server ready to handle terminal sessions")
 
         process.environment = environment
 
@@ -304,10 +347,10 @@ final class ServerManager {
             // Start the process with parent termination handling
             try await process.runWithParentTerminationAsync()
 
-            logger.info("TunnelForge Go server process started")
+            logger.info("TunnelForge server process started")
 
             // Give the process a moment to start before checking for early failures
-            try await Task.sleep(for: .milliseconds(100))
+            try await Task.sleep(for: .milliseconds(500))
 
             // Check if process exited immediately (indicating failure)
             if !process.isRunning {
@@ -348,9 +391,9 @@ final class ServerManager {
             state = .running
             lastError = nil // Clear any previous errors
 
-            logger.info("TunnelForge Go server process started successfully")
-            serverOutput.notice("✅ Embedded TunnelForge Go server is running")
-            serverOutput.info("Server ready with session persistence and high performance")
+            logger.info("TunnelForge server process started successfully")
+            serverOutput.notice("✅ Embedded TunnelForge server is running")
+            serverOutput.info("Server ready to accept connections")
 
             // Monitor process termination
             Task {
@@ -368,7 +411,7 @@ final class ServerManager {
                 error.localizedDescription
             }
 
-            logger.error("Failed to start TunnelForge Go server: \(errorMessage)")
+            logger.error("Failed to start TunnelForge server: \(errorMessage)")
             lastError = error
             throw error
         }
@@ -672,6 +715,7 @@ final class ServerManager {
 
     func getStaticFilesPath() -> String? {
         guard let resourcesPath = Bundle.main.resourcePath else { return nil }
+        // Updated path for TunnelForge web assets
         return URL(fileURLWithPath: resourcesPath).appendingPathComponent("web/public").path
     }
 

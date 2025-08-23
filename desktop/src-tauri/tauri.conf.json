@@ -1,60 +1,40 @@
 {
+  "$schema": "../gen/schemas/desktop-schema.json",
   "build": {
-    "beforeDevCommand": "",
-    "beforeBuildCommand": "",
-    "devPath": "http://localhost:4021",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "beforeDevCommand": "cd ../web && bun run start:bun",
+    "beforeBuildCommand": "cd ../web && bun run build:bun",
+    "devUrl": "http://localhost:3001",
+    "frontendDist": "../web/public"
   },
-  "package": {
-    "productName": "TunnelForge",
-    "version": "1.0.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "path": {
-        "all": true
-      },
-      "fs": {
-        "all": true,
-        "scope": ["$HOME/**", "$APPDATA/**", "$APPCONFIG/**", "$APPLOCALDATA/**", "$APPLOG/**"]
-      },
-      "process": {
-        "all": false,
-        "command": true,
-        "commandScope": {
-          "allow": [
-            {
-              "name": "tunnelforge-server",
-              "cmd": "",
-              "args": true,
-              "sidecar": true
-            }
-          ],
-          "deny": []
-        }
-      },
-      "window": {
-        "all": false,
-        "close": true,
-        "hide": true,
-        "show": true,
-        "maximize": true,
-        "minimize": true,
-        "unmaximize": true,
-        "unminimize": true,
-        "startDragging": true
-      },
-      "notification": {
-        "all": true
-      }
+  "productName": "TunnelForge",
+  "version": "1.0.0",
+  "identifier": "dev.tunnelforge.desktop",
+  "plugins": {
+    "fs": {
+      "scope": ["$HOME/**", "$APPDATA/**", "$APPCONFIG/**", "$APPLOCALDATA/**", "$APPLOG/**"]
     },
-    "bundle": {
+    "shell": {
+      "open": true,
+      "sidecar": true,
+      "scope": [
+        {
+          "name": "tunnelforge",
+          "cmd": "tunnelforge",
+          "args": true
+        }
+      ]
+    },
+    "process": {
+      "exit": true,
+      "restart_api": true
+    },
+    "notification": {
+      "default": [
+        "core:default"
+      ]
+    }
+  },
+  "bundle": {
       "active": true,
       "targets": "all",
       "identifier": "dev.tunnelforge.desktop",
@@ -109,17 +89,11 @@
           "files": {}
         }
       }
-    },
+    }
+  },
+  "app": {
     "security": {
       "csp": null
-    },
-    "updater": {
-      "active": true,
-      "endpoints": [
-        "https://releases.tunnelforge.dev/desktop/{{current_version}}/{{target}}/{{arch}}"
-      ],
-      "dialog": true,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJBMUY0QkU5RkQ4NEUyOUEKUldSWXR0L3VyRWY3TXE4dFJhWkZOS3FzZWFJS2tCdnVuNzN2SFhBaDhJbzE5RVoxU2RmZzNKZwoK"
     },
     "windows": [
       {
@@ -136,7 +110,7 @@
         "skipTaskbar": false
       }
     ],
-    "systemTray": {
+    "trayIcon": {
       "iconPath": "icons/tray.png",
       "iconAsTemplate": true,
       "menuOnLeftClick": false,

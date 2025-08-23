@@ -1,4 +1,4 @@
-# Test VibeTunnel beta 15 npm package
+# Test TunnelForge beta 15 npm package
 FROM node:22-slim
 
 # Install system dependencies including build tools
@@ -15,12 +15,12 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /test
 
 # Create a test package.json
-RUN echo '{"name": "vibetunnel-test", "version": "1.0.0", "type": "module"}' > package.json
+RUN echo '{"name": "tunnelforge-test", "version": "1.0.0", "type": "module"}' > package.json
 
-# Install VibeTunnel beta 15 (skip postinstall due to bug)
-RUN npm install vibetunnel@1.0.0-beta.15 --ignore-scripts
+# Install TunnelForge beta 15 (skip postinstall due to bug)
+RUN npm install tunnelforge@1.0.0-beta.15 --ignore-scripts
 
 # Copy test script
-COPY test-vibetunnel-beta15.js test-vibetunnel.js
+COPY test-tunnelforge-beta15.js test-tunnelforge.js
 
-CMD ["node", "test-vibetunnel.js"]
+CMD ["node", "test-tunnelforge.js"]

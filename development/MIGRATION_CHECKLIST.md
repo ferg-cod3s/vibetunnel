@@ -1,10 +1,10 @@
-# VibeTunnel Migration Checklist
+# TunnelForge Migration Checklist
 
 Complete validation checklist for migrating from Node.js to Go server implementation.
 
 ## 🎯 Migration Overview
 
-**Goal**: Replace the Node.js VibeTunnel server (`web/`) with the high-performance Go implementation (`go-server/`) while maintaining 100% feature parity and compatibility with existing clients (Mac app, iOS app, web frontend).
+**Goal**: Replace the Node.js TunnelForge server (`web/`) with the high-performance Go implementation (`go-server/`) while maintaining 100% feature parity and compatibility with existing clients (Mac app, iOS app, web frontend).
 
 **Architecture**: 
 - **Go Server** (`go-server/`) → Production backend on port 4021

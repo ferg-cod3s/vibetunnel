@@ -54,8 +54,8 @@ interface SessionViewElement extends HTMLElement {
   } | null;
 }
 
-@customElement('vibetunnel-app')
-export class VibeTunnelApp extends LitElement {
+@customElement('tunnelforge-app')
+export class TunnelForgeApp extends LitElement {
   // Disable shadow DOM to use Tailwind
   createRenderRoot() {
     return this;
@@ -373,7 +373,7 @@ export class VibeTunnelApp extends LitElement {
       return;
     }
 
-    // VibeTunnel-specific shortcuts below this line
+    // TunnelForge-specific shortcuts below this line
 
     // Handle Cmd+O / Ctrl+O to open file browser (only in list view)
     if ((e.metaKey || e.ctrlKey) && e.key === 'o' && this.currentView === 'list') {
@@ -476,8 +476,14 @@ export class VibeTunnelApp extends LitElement {
     }
   }
 
-  private async handleAuthSuccess() {
-    logger.log('✅ Authentication successful');
+  private async handleAuthSuccess(e: CustomEvent) {
+    logger.log('✅ Authentication successful', e.detail);
+
+    // Handle no-auth mode by setting the user in AuthClient
+    if (e.detail?.authMethod === 'no-auth' && e.detail?.userId) {
+      authClient.setNoAuthUser(e.detail.userId);
+      logger.log('👤 No-auth user configured:', authClient.getCurrentUser());
+    }
 
     // If already authenticated (e.g., in no-auth mode), don't re-initialize
     if (this.isAuthenticated && this.initialLoadComplete) {
@@ -1523,7 +1529,7 @@ export class VibeTunnelApp extends LitElement {
   private setupPreferences() {
     // Load preferences from localStorage
     try {
-      const stored = localStorage.getItem('vibetunnel_app_preferences');
+      const stored = localStorage.getItem('tunnelforge_app_preferences');
       if (stored) {
         JSON.parse(stored); // Parse to validate JSON
         // Preferences loaded but showLogLink removed

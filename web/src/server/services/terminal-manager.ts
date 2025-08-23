@@ -92,7 +92,7 @@ interface BufferSnapshot {
  *
  * @example
  * ```typescript
- * const manager = new TerminalManager('/var/run/vibetunnel');
+ * const manager = new TerminalManager('/var/run/tunnelforge');
  *
  * // Get terminal for session
  * const terminal = await manager.getTerminal(sessionId);
@@ -223,9 +223,24 @@ export class TerminalManager {
           try {
             const stats = fs.statSync(streamPath);
             if (stats.size > lastOffset) {
+              const readSize = stats.size - lastOffset;
+
+              // Limit read size to prevent ERR_STRING_TOO_LONG errors
+              const MAX_READ_SIZE = 64 * 1024 * 1024; // 64MB limit
+              if (readSize > MAX_READ_SIZE) {
+                logger.warn(
+                  `Large file read detected for session ${truncateForLog(sessionId)}: ${Math.round(readSize / 1024 / 1024)}MB. ` +
+                    `Limiting to ${Math.round(MAX_READ_SIZE / 1024 / 1024)}MB to prevent memory issues.`
+                );
+                // Skip to end of file to avoid reading massive amounts of data
+                lastOffset = stats.size;
+                sessionTerminal.lastFileOffset = lastOffset;
+                return;
+              }
+
               // Read only the new data
               const fd = fs.openSync(streamPath, 'r');
-              const buffer = Buffer.alloc(stats.size - lastOffset);
+              const buffer = Buffer.alloc(readSize);
               fs.readSync(fd, buffer, 0, buffer.length, lastOffset);
               fs.closeSync(fd);
 

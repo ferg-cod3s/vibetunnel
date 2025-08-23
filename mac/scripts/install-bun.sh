@@ -90,7 +90,7 @@ fi
 
 # Check if prebuilts are available
 PREBUILTS_DIR="$PROJECT_DIR/Resources/BunPrebuilts"
-if [ -d "$PREBUILTS_DIR/arm64" ] && [ -f "$PREBUILTS_DIR/arm64/vibetunnel" ]; then
+if [ -d "$PREBUILTS_DIR/arm64" ] && [ -f "$PREBUILTS_DIR/arm64/tunnelforge" ]; then
     echo -e "${YELLOW}No npx found, but prebuilt binaries are available${NC}"
     echo -e "${GREEN}✓ Build can proceed using prebuilt binaries${NC}"
     exit 0

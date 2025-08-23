@@ -28,7 +28,7 @@ interface SessionActivityState {
  * @example
  * ```typescript
  * // Create and start the activity monitor
- * const monitor = new ActivityMonitor('/var/lib/vibetunnel/control');
+ * const monitor = new ActivityMonitor('/var/lib/tunnelforge/control');
  * monitor.start();
  *
  * // Get activity status for all sessions

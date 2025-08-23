@@ -93,10 +93,10 @@ if [ -d "$APP_BUNDLE/Contents/Frameworks" ]; then
     done
 fi
 
-# Sign embedded binaries (like vibetunnel)
-if [ -f "$APP_BUNDLE/Contents/Resources/vibetunnel" ]; then
-    log "Signing vibetunnel binary..."
-    codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" $KEYCHAIN_OPTS "$APP_BUNDLE/Contents/Resources/vibetunnel" || log "Warning: Failed to sign vibetunnel"
+# Sign embedded binaries (like tunnelforge)
+if [ -f "$APP_BUNDLE/Contents/Resources/tunnelforge" ]; then
+    log "Signing tunnelforge binary..."
+    codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" $KEYCHAIN_OPTS "$APP_BUNDLE/Contents/Resources/tunnelforge" || log "Warning: Failed to sign tunnelforge"
 fi
 
 # Sign the main executable

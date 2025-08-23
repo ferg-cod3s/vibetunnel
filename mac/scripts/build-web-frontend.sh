@@ -11,8 +11,8 @@ else
     PROJECT_DIR="${SRCROOT}"
 fi
 
-# Use TunnelForge web assets instead of VibeTunnel
-WEB_DIR="${PROJECT_DIR}/../development/bun-web"
+# Use TunnelForge web assets from new location
+WEB_DIR="${PROJECT_DIR}/../web"
 HASH_FILE="${BUILT_PRODUCTS_DIR}/.web-content-hash"
 PREVIOUS_HASH_FILE="${BUILT_PRODUCTS_DIR}/.web-content-hash.previous"
 PUBLIC_DIR="${WEB_DIR}/public"
@@ -20,7 +20,7 @@ PUBLIC_DIR="${WEB_DIR}/public"
 # Set destination directory
 if [ -z "${BUILT_PRODUCTS_DIR}" ]; then
     # Default for testing outside Xcode
-    DEST_DIR="/tmp/vibetunnel-web-build"
+    DEST_DIR="/tmp/tunnelforge-web-build"
 else
     DEST_DIR="${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Resources/web/public"
 fi
@@ -47,10 +47,10 @@ if [ "${CI}" = "true" ] && [ -f "${WEB_DIR}/dist/server/server.js" ]; then
     # Copy native executable and modules to app bundle if they exist
     NATIVE_DIR="${WEB_DIR}/native"
     
-    if [ -f "${NATIVE_DIR}/vibetunnel" ]; then
+    if [ -f "${NATIVE_DIR}/tunnelforge" ]; then
         echo "Copying native executable to app bundle..."
-        cp "${NATIVE_DIR}/vibetunnel" "${APP_RESOURCES}/"
-        chmod +x "${APP_RESOURCES}/vibetunnel"
+        cp "${NATIVE_DIR}/tunnelforge" "${APP_RESOURCES}/"
+        chmod +x "${APP_RESOURCES}/tunnelforge"
     fi
     
     if [ -f "${NATIVE_DIR}/pty.node" ]; then
@@ -93,7 +93,7 @@ if [ -f "${PREVIOUS_HASH_FILE}" ]; then
     PREVIOUS_HASH=$(cat "${PREVIOUS_HASH_FILE}")
     if [ "${CURRENT_HASH}" = "${PREVIOUS_HASH}" ]; then
         # Also check if the built files actually exist
-        if [ -d "${DEST_DIR}" ] && [ -f "${APP_RESOURCES}/vibetunnel" ] && [ -f "${APP_RESOURCES}/pty.node" ] && [ -f "${APP_RESOURCES}/spawn-helper" ]; then
+        if [ -d "${DEST_DIR}" ] && [ -f "${APP_RESOURCES}/tunnelforge" ] && [ -f "${APP_RESOURCES}/pty.node" ] && [ -f "${APP_RESOURCES}/spawn-helper" ]; then
             echo "Web content unchanged and build outputs exist. Skipping rebuild."
             NEED_REBUILD=0
         else
@@ -116,25 +116,25 @@ echo "Building web frontend..."
 # Setup Node.js PATH (Homebrew, nvm, Volta, fnm)
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 # Set environment variable to use clean build environment
-export VIBETUNNEL_BUILD_CLEAN_ENV=true
+export TUNNELFORGE_BUILD_CLEAN_ENV=true
 source "${SCRIPT_DIR}/node-path-setup.sh"
 
 # Export CI to prevent interactive prompts
 export CI=true
 
-# Check if pnpm is available (skip in CI when web artifacts are pre-built)
+# Check if bun is available (skip in CI when web artifacts are pre-built)
 if [ "${SKIP_NODE_CHECK}" = "true" ] && [ "${CI}" = "true" ]; then
-    echo "✓ Skipping pnpm check in CI (web artifacts are pre-built)"
+    echo "✓ Skipping bun check in CI (web artifacts are pre-built)"
     echo "✓ This script should not be running in CI - web build should already be complete"
     exit 0
 fi
 
-if ! command -v pnpm &> /dev/null; then
-    echo "error: pnpm not found. Please install pnpm"
+if ! command -v bun &> /dev/null; then
+    echo "error: bun not found. Please install bun"
     exit 1
 fi
 
-echo "Using pnpm version: $(pnpm --version)"
+echo "Using bun version: $(bun --version)"
 echo "Using Node.js version: $(node --version)"
 
 # Check if web directory exists
@@ -199,8 +199,8 @@ filter_build_output() {
     grep -v -E "$pattern" || true
 }
 
-# Run pnpm install with filtered output
-pnpm install --frozen-lockfile 2>&1 | filter_build_output
+# Run bun install with filtered output
+bun install 2>&1 | filter_build_output
 
 # Determine build configuration
 BUILD_CONFIG="${CONFIGURATION:-Debug}"
@@ -249,9 +249,9 @@ if [ "$BUILD_CONFIG" = "Release" ]; then
     
     # Skip custom Node.js build in CI to avoid timeout
     if [ "${CI:-false}" = "true" ]; then
-        echo "CI environment detected - skipping custom Node.js build to avoid timeout"
-        echo "The app will be larger than optimal but will build within CI time limits."
-        pnpm run build 2>&1 | filter_build_output
+        echo "CI environment detected - using Bun build for Mac app"
+        echo "Using Bun for optimal performance and smaller executable size."
+        bun run build:bun 2>&1 | filter_build_output
     elif [ ! -f "$CUSTOM_NODE_PATH" ]; then
         echo "Custom Node.js not found, building it for optimal size..."
         echo "This will take 10-20 minutes on first run but will be cached."
@@ -267,27 +267,27 @@ if [ "$BUILD_CONFIG" = "Release" ]; then
     if [ "${CI:-false}" != "true" ] && [ -f "$CUSTOM_NODE_PATH" ]; then
         CUSTOM_NODE_VERSION=$("$CUSTOM_NODE_PATH" --version 2>/dev/null || echo "unknown")
         CUSTOM_NODE_SIZE=$(ls -lh "$CUSTOM_NODE_PATH" 2>/dev/null | awk '{print $5}' || echo "unknown")
-        echo "Using custom Node.js for release build:"
-        echo "  Version: $CUSTOM_NODE_VERSION"
-        echo "  Size: $CUSTOM_NODE_SIZE (vs ~110MB for standard Node.js)"
-        echo "  Path: $CUSTOM_NODE_PATH"
-        pnpm run build -- --custom-node 2>&1 | filter_build_output
+        echo "Using Bun build for Mac app (ignoring custom Node.js for better performance):"
+        echo "  Custom Node.js Version: $CUSTOM_NODE_VERSION"
+        echo "  Custom Node.js Size: $CUSTOM_NODE_SIZE (vs Bun's smaller executable)"
+        echo "  Custom Node.js Path: $CUSTOM_NODE_PATH"
+        echo "Note: Mac app will use Bun executable instead for optimal performance"
+        bun run build:bun 2>&1 | filter_build_output
     else
-        echo "WARNING: Custom Node.js build failed, using system Node.js"
-        echo "The app will be larger than optimal."
-        pnpm run build 2>&1 | filter_build_output
+        echo "Using Bun build for Mac app (optimal performance and size)"
+        bun run build:bun 2>&1 | filter_build_output
     fi
 else
     # Debug build
     if [ -f "$CUSTOM_NODE_PATH" ]; then
         CUSTOM_NODE_VERSION=$("$CUSTOM_NODE_PATH" --version 2>/dev/null || echo "unknown")
         echo "Debug build - found existing custom Node.js $CUSTOM_NODE_VERSION, using it for consistency"
-        pnpm run build -- --custom-node 2>&1 | filter_build_output
+        bun run build -- --custom-node 2>&1 | filter_build_output
     else
         echo "Debug build - using system Node.js for faster builds"
         echo "System Node.js: $(node --version)"
         echo "To use custom Node.js in debug builds, run: cd web && node build-custom-node.js --latest"
-        pnpm run build 2>&1 | filter_build_output
+        bun run build 2>&1 | filter_build_output
     fi
 fi
 
@@ -303,14 +303,14 @@ cp -R "${PUBLIC_DIR}/"* "${DEST_DIR}/"
 # Copy native executable and modules to app bundle
 NATIVE_DIR="${WEB_DIR}/native"
 
-if [ -f "${NATIVE_DIR}/vibetunnel" ]; then
+if [ -f "${NATIVE_DIR}/tunnelforge" ]; then
     echo "Copying native executable to app bundle..."
-    EXEC_SIZE=$(ls -lh "${NATIVE_DIR}/vibetunnel" | awk '{print $5}')
+    EXEC_SIZE=$(ls -lh "${NATIVE_DIR}/tunnelforge" | awk '{print $5}')
     echo "  Executable size: $EXEC_SIZE"
-    cp "${NATIVE_DIR}/vibetunnel" "${APP_RESOURCES}/"
-    chmod +x "${APP_RESOURCES}/vibetunnel"
+    cp "${NATIVE_DIR}/tunnelforge" "${APP_RESOURCES}/"
+    chmod +x "${APP_RESOURCES}/tunnelforge"
 else
-    echo "error: Native executable not found at ${NATIVE_DIR}/vibetunnel"
+    echo "error: Native executable not found at ${NATIVE_DIR}/tunnelforge"
     exit 1
 fi
 
@@ -356,9 +356,9 @@ echo "Performing final sanity check..."
 
 MISSING_FILES=()
 
-# Check for vibetunnel executable
-if [ ! -f "${APP_RESOURCES}/vibetunnel" ]; then
-    MISSING_FILES+=("vibetunnel executable")
+# Check for tunnelforge executable
+if [ ! -f "${APP_RESOURCES}/tunnelforge" ]; then
+    MISSING_FILES+=("tunnelforge executable")
 fi
 
 # Check for pty.node
@@ -371,9 +371,9 @@ if [ ! -f "${APP_RESOURCES}/spawn-helper" ]; then
     MISSING_FILES+=("spawn-helper")
 fi
 
-# Check if vibetunnel is executable
-if [ -f "${APP_RESOURCES}/vibetunnel" ] && [ ! -x "${APP_RESOURCES}/vibetunnel" ]; then
-    MISSING_FILES+=("vibetunnel is not executable")
+# Check if tunnelforge is executable
+if [ -f "${APP_RESOURCES}/tunnelforge" ] && [ ! -x "${APP_RESOURCES}/tunnelforge" ]; then
+    MISSING_FILES+=("tunnelforge is not executable")
 fi
 
 # Check if spawn-helper is executable
@@ -400,23 +400,23 @@ if [ ${#MISSING_FILES[@]} -gt 0 ]; then
     echo "Build artifacts in ${NATIVE_DIR}:"
     ls -la "${NATIVE_DIR}" || echo "  Directory does not exist"
     echo "App resources in ${APP_RESOURCES}:"
-    ls -la "${APP_RESOURCES}/vibetunnel" "${APP_RESOURCES}/pty.node" "${APP_RESOURCES}/spawn-helper" "${APP_RESOURCES}/vt" 2>/dev/null || true
+    ls -la "${APP_RESOURCES}/tunnelforge" "${APP_RESOURCES}/pty.node" "${APP_RESOURCES}/spawn-helper" "${APP_RESOURCES}/vt" 2>/dev/null || true
     exit 1
 fi
 
 # Verify the executable works
-echo "Verifying vibetunnel executable..."
-echo "Full path: ${APP_RESOURCES}/vibetunnel"
-if "${APP_RESOURCES}/vibetunnel" version &>/dev/null; then
-    VERSION_OUTPUT=$("${APP_RESOURCES}/vibetunnel" version 2>&1 | head -1)
+echo "Verifying tunnelforge executable..."
+echo "Full path: ${APP_RESOURCES}/tunnelforge"
+if "${APP_RESOURCES}/tunnelforge" version &>/dev/null; then
+    VERSION_OUTPUT=$("${APP_RESOURCES}/tunnelforge" version 2>&1 | head -1)
     echo "✓ TunnelForge executable verified: $VERSION_OUTPUT"
 else
     echo "error: TunnelForge executable failed verification (version command failed)"
-    echo "Full executable path: ${APP_RESOURCES}/vibetunnel"
+    echo "Full executable path: ${APP_RESOURCES}/tunnelforge"
     echo "Checking if file exists and is executable:"
-    ls -la "${APP_RESOURCES}/vibetunnel" || echo "File not found!"
+    ls -la "${APP_RESOURCES}/tunnelforge" || echo "File not found!"
     echo "Attempting to run with error output:"
-    "${APP_RESOURCES}/vibetunnel" version 2>&1 || true
+    "${APP_RESOURCES}/tunnelforge" version 2>&1 || true
     exit 1
 fi
 

@@ -26,7 +26,7 @@ const DEFAULT_APP_PREFERENCES: AppPreferences = {
   useBinaryMode: false, // Default to SSE/RSC mode for compatibility
 };
 
-export const STORAGE_KEY = 'vibetunnel_app_preferences';
+export const STORAGE_KEY = 'tunnelforge_app_preferences';
 
 @customElement('vt-settings')
 export class Settings extends LitElement {
@@ -378,7 +378,7 @@ export class Settings extends LitElement {
 
       // Step 5: Send test notification
       logger.debug('Step 5: Sending test notification');
-      await pushNotificationService.sendTestNotification('Test notification from VibeTunnel');
+      await pushNotificationService.sendTestNotification('Test notification from TunnelForge');
 
       logger.log('✅ Test notification sent successfully');
       this.dispatchEvent(
@@ -431,11 +431,11 @@ export class Settings extends LitElement {
 
     try {
       // Show notification directly
-      await registration.showNotification('VibeTunnel Notifications Enabled', {
+      await registration.showNotification('TunnelForge Notifications Enabled', {
         body: "You'll now receive notifications for session events",
         icon: '/apple-touch-icon.png',
         badge: '/favicon-32.png',
-        tag: 'vibetunnel-settings-welcome',
+        tag: 'tunnelforge-settings-welcome',
         requireInteraction: false,
         silent: false,
       });
@@ -594,10 +594,10 @@ export class Settings extends LitElement {
                         ⚠️ Push notifications require a secure connection
                       </p>
                       <p class="text-xs text-status-warning opacity-80 mb-2">
-                        You're accessing VibeTunnel via ${window.location.protocol}//${window.location.hostname}
+                        You're accessing TunnelForge via ${window.location.protocol}//${window.location.hostname}
                       </p>
                       <p class="text-xs text-status-info opacity-90">
-                        To enable notifications, access VibeTunnel using:
+                        To enable notifications, access TunnelForge using:
                         <br>• https://${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}
                         <br>• http://localhost:${window.location.port || '4020'}
                         <br>• http://127.0.0.1:${window.location.port || '4020'}

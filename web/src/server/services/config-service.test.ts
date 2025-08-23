@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   DEFAULT_CONFIG,
   type QuickStartCommand,
-  type VibeTunnelConfig,
+  type TunnelForgeConfig,
 } from '../../types/config.js';
 import { ConfigService } from './config-service.js';
 
@@ -32,7 +32,7 @@ vi.mock('../utils/logger', () => ({
 describe('ConfigService', () => {
   let configService: ConfigService;
   const mockHomeDir = '/home/testuser';
-  const mockConfigDir = path.join(mockHomeDir, '.vibetunnel');
+  const mockConfigDir = path.join(mockHomeDir, '.tunnelforge');
   const mockConfigPath = path.join(mockConfigDir, 'config.json');
 
   beforeEach(() => {
@@ -67,7 +67,7 @@ describe('ConfigService', () => {
         return false;
       });
 
-      const customConfig: VibeTunnelConfig = {
+      const customConfig: TunnelForgeConfig = {
         version: 1,
         quickStartCommands: [{ command: 'custom' }],
       };
@@ -124,7 +124,7 @@ describe('ConfigService', () => {
       });
 
       // Invalid config - empty command
-      const invalidConfig: VibeTunnelConfig = {
+      const invalidConfig: TunnelForgeConfig = {
         version: 1,
         quickStartCommands: [{ command: '' }],
       };
@@ -302,7 +302,7 @@ describe('ConfigService', () => {
 
   describe('updateConfig', () => {
     it('should update entire config and validate', () => {
-      const newConfig: VibeTunnelConfig = {
+      const newConfig: TunnelForgeConfig = {
         version: 2,
         quickStartCommands: [{ command: 'python3' }, { name: 'Node.js', command: 'node' }],
       };
@@ -321,7 +321,7 @@ describe('ConfigService', () => {
       const invalidConfig = {
         version: 'not-a-number', // Should be number
         quickStartCommands: [{ command: 'test' }],
-      } as unknown as VibeTunnelConfig;
+      } as unknown as TunnelForgeConfig;
 
       expect(() => {
         configService.updateConfig(invalidConfig);
@@ -338,7 +338,7 @@ describe('ConfigService', () => {
           { command: 'valid' },
           { notACommand: 'invalid' }, // Missing required 'command' field
         ],
-      } as unknown as VibeTunnelConfig;
+      } as unknown as TunnelForgeConfig;
 
       expect(() => {
         configService.updateConfig(invalidConfig);
@@ -349,7 +349,7 @@ describe('ConfigService', () => {
       const invalidConfig = {
         version: 1,
         quickStartCommands: 'not-an-array',
-      } as unknown as VibeTunnelConfig;
+      } as unknown as TunnelForgeConfig;
 
       expect(() => {
         configService.updateConfig(invalidConfig);

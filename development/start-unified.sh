@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# VibeTunnel Unified Startup Script
+# TunnelForge Unified Startup Script
 # Starts both Go backend server and Bun frontend proxy
 
 set -euo pipefail
@@ -30,7 +30,7 @@ mkdir -p "$LOG_DIR"
 
 # Cleanup function
 cleanup() {
-    echo -e "\n${YELLOW}🛑 Shutting down VibeTunnel services...${NC}"
+    echo -e "\n${YELLOW}🛑 Shutting down TunnelForge services...${NC}"
     
     if [[ -n "$GO_SERVER_PID" ]] && kill -0 "$GO_SERVER_PID" 2>/dev/null; then
         echo -e "${BLUE}Stopping Go server (PID: $GO_SERVER_PID)...${NC}"
@@ -45,7 +45,7 @@ cleanup() {
     fi
     
     # Clean up any remaining processes
-    pkill -f "vibetunnel-server" 2>/dev/null || true
+    pkill -f "tunnelforge-server" 2>/dev/null || true
     pkill -f "go run.*server" 2>/dev/null || true
     pkill -f "bun run dev" 2>/dev/null || true
     
@@ -108,7 +108,7 @@ build_go_server() {
     fi
     
     # Build server
-    if ! go build -o vibetunnel-server cmd/server/main.go; then
+    if ! go build -o tunnelforge-server cmd/server/main.go; then
         log "${RED}❌ Failed to build Go server${NC}"
         exit 1
     fi
@@ -147,7 +147,7 @@ start_go_server() {
         server_args="--no-auth"
         log "${YELLOW}⚠️  Starting Go server with authentication disabled${NC}"
     fi
-    HOST=0.0.0.0 PORT="$GO_SERVER_PORT" ENABLE_RATE_LIMIT=false ./vibetunnel-server $server_args > "../$LOG_DIR/go-server.log" 2>&1 &
+    HOST=0.0.0.0 PORT="$GO_SERVER_PORT" ENABLE_RATE_LIMIT=false ./tunnelforge-server $server_args > "../$LOG_DIR/go-server.log" 2>&1 &
     GO_SERVER_PID=$!
     
     cd - >/dev/null
@@ -195,7 +195,7 @@ start_bun_web() {
 }
 
 show_status() {
-    log "\n${PURPLE}📊 VibeTunnel Status:${NC}"
+    log "\n${PURPLE}📊 TunnelForge Status:${NC}"
     log "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     
     # Get local IP for network access info
@@ -233,7 +233,7 @@ show_status() {
     log "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     
     if [[ -n "$GO_SERVER_PID" ]] && kill -0 "$GO_SERVER_PID" 2>/dev/null && [[ -n "$BUN_WEB_PID" ]] && kill -0 "$BUN_WEB_PID" 2>/dev/null; then
-        log "${GREEN}🎉 VibeTunnel is running successfully!${NC}"
+        log "${GREEN}🎉 TunnelForge is running successfully!${NC}"
         log "${BLUE}👉 Local access: http://localhost:$BUN_WEB_PORT${NC}"
         if [[ -n "$local_ip" ]]; then
             log "${YELLOW}🌐 Network access: http://$local_ip:$BUN_WEB_PORT (requires authentication)${NC}"
@@ -249,7 +249,7 @@ show_status() {
 
 show_help() {
     cat << EOF
-${BLUE}VibeTunnel Unified Startup Script${NC}
+${BLUE}TunnelForge Unified Startup Script${NC}
 
 ${YELLOW}Usage:${NC}
   $0 [options]
@@ -291,8 +291,8 @@ EOF
 }
 
 wait_for_interrupt() {
-    log "\n${YELLOW}🎮 VibeTunnel is running. Press Ctrl+C to stop all services.${NC}"
-    log "${BLUE}💡 You can also run 'pkill -f vibetunnel' to stop services manually.${NC}\n"
+    log "\n${YELLOW}🎮 TunnelForge is running. Press Ctrl+C to stop all services.${NC}"
+    log "${BLUE}💡 You can also run 'pkill -f tunnelforge' to stop services manually.${NC}\n"
     
     # Wait for interrupt
     while true; do
@@ -358,7 +358,7 @@ done
 
 # Main execution
 main() {
-    log "${PURPLE}🎯 Starting VibeTunnel Migration Environment${NC}"
+    log "${PURPLE}🎯 Starting TunnelForge Migration Environment${NC}"
     log "${BLUE}═══════════════════════════════════════════════${NC}"
     
     # Check if Docker mode was requested

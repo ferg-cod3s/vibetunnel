@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * VibeTunnel Frontend Integration Test
+ * TunnelForge Frontend Integration Test
  * Tests the web frontend against the Go backend server
  */
 
@@ -39,7 +39,7 @@ const cleanup = () => {
     
     // Kill any remaining processes
     try {
-        spawn('pkill', ['-f', 'vibetunnel-server'], { stdio: 'ignore' });
+        spawn('pkill', ['-f', 'tunnelforge-server'], { stdio: 'ignore' });
         spawn('pkill', ['-f', 'bun run dev'], { stdio: 'ignore' });
     } catch (e) {
         // Ignore errors

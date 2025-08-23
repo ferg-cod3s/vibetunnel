@@ -136,7 +136,7 @@ export async function initializeMonaco(): Promise<void> {
     });
 
     // Add custom themes if needed
-    /*monaco.editor.defineTheme('vibetunnel-dark', {
+    /*monaco.editor.defineTheme('tunnelforge-dark', {
       base: 'vs-dark',
       inherit: true,
       rules: [

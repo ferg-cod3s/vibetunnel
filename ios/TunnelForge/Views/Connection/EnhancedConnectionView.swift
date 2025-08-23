@@ -126,7 +126,7 @@ struct EnhancedConnectionView: View {
             }
 
             VStack(spacing: Theme.Spacing.small) {
-                Text("VibeTunnel")
+                Text("TunnelForge")
                     .font(.system(size: 42, weight: .bold, design: .rounded))
                     .foregroundColor(Theme.Colors.terminalForeground)
 

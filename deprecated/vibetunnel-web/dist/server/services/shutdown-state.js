@@ -1,0 +1,17 @@
+"use strict";
+/**
+ * Global shutdown state management for the server.
+ * This module tracks whether the server is currently shutting down
+ * to allow various components to handle shutdown gracefully.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isShuttingDown = isShuttingDown;
+exports.setShuttingDown = setShuttingDown;
+let shuttingDown = false;
+function isShuttingDown() {
+    return shuttingDown;
+}
+function setShuttingDown(value) {
+    shuttingDown = value;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2h1dGRvd24tc3RhdGUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvc2VydmVyL3NlcnZpY2VzL3NodXRkb3duLXN0YXRlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQTs7OztHQUlHOztBQUlILHdDQUVDO0FBRUQsMENBRUM7QUFSRCxJQUFJLFlBQVksR0FBRyxLQUFLLENBQUM7QUFFekIsU0FBZ0IsY0FBYztJQUM1QixPQUFPLFlBQVksQ0FBQztBQUN0QixDQUFDO0FBRUQsU0FBZ0IsZUFBZSxDQUFDLEtBQWM7SUFDNUMsWUFBWSxHQUFHLEtBQUssQ0FBQztBQUN2QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBHbG9iYWwgc2h1dGRvd24gc3RhdGUgbWFuYWdlbWVudCBmb3IgdGhlIHNlcnZlci5cbiAqIFRoaXMgbW9kdWxlIHRyYWNrcyB3aGV0aGVyIHRoZSBzZXJ2ZXIgaXMgY3VycmVudGx5IHNodXR0aW5nIGRvd25cbiAqIHRvIGFsbG93IHZhcmlvdXMgY29tcG9uZW50cyB0byBoYW5kbGUgc2h1dGRvd24gZ3JhY2VmdWxseS5cbiAqL1xuXG5sZXQgc2h1dHRpbmdEb3duID0gZmFsc2U7XG5cbmV4cG9ydCBmdW5jdGlvbiBpc1NodXR0aW5nRG93bigpOiBib29sZWFuIHtcbiAgcmV0dXJuIHNodXR0aW5nRG93bjtcbn1cblxuZXhwb3J0IGZ1bmN0aW9uIHNldFNodXR0aW5nRG93bih2YWx1ZTogYm9vbGVhbik6IHZvaWQge1xuICBzaHV0dGluZ0Rvd24gPSB2YWx1ZTtcbn1cbiJdfQ==

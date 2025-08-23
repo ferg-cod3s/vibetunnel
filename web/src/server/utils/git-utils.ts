@@ -38,8 +38,8 @@ export async function getMainRepositoryPath(gitPath: string): Promise<string> {
     }
 
     // Extract main repo path from worktree path
-    // Example: /Users/steipete/Projects/vibetunnel/.git/worktrees/vibetunnel-treetest
-    // We want: /Users/steipete/Projects/vibetunnel
+    // Example: /Users/steipete/Projects/tunnelforge/.git/worktrees/tunnelforge-treetest
+    // We want: /Users/steipete/Projects/tunnelforge
     const worktreePath = match[1].trim();
     const mainRepoMatch = worktreePath.match(/^(.+)\/.git\/worktrees\/.+$/);
 

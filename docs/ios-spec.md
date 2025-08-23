@@ -1,8 +1,8 @@
-# VibeTunnel iOS/iPadOS Native App Specification
+# TunnelForge iOS/iPadOS Native App Specification
 
 ## Overview
 
-VibeTunnel iOS is a native SwiftUI application that provides a beautiful, native interface to the VibeTunnel terminal multiplexer backend. The app allows users to create, manage, and interact with terminal sessions on their Mac from their iOS/iPadOS devices.
+TunnelForge iOS is a native SwiftUI application that provides a beautiful, native interface to the TunnelForge terminal multiplexer backend. The app allows users to create, manage, and interact with terminal sessions on their Mac from their iOS/iPadOS devices.
 
 ## Target Platform
 
@@ -97,9 +97,9 @@ VibeTunnel iOS is a native SwiftUI application that provides a beautiful, native
 ### 1. Project Structure
 ```
 ios/
-├── VibeTunnel/
+├── TunnelForge/
 │   ├── App/
-│   │   ├── VibeTunnelApp.swift
+│   │   ├── TunnelForgeApp.swift
 │   │   └── ContentView.swift
 │   ├── Models/
 │   │   ├── Session.swift
@@ -132,7 +132,7 @@ ios/
 │   └── Resources/
 │       ├── Assets.xcassets
 │       └── Info.plist
-└── VibeTunnel.xcodeproj
+└── TunnelForge.xcodeproj
 ```
 
 ### 2. Data Models
@@ -332,7 +332,7 @@ SessionListView (main screen)
 
 ## Future Enhancements
 
-1. **Multiple Connections**: Support multiple VibeTunnel servers
+1. **Multiple Connections**: Support multiple TunnelForge servers
 2. **Session Sharing**: Share terminal sessions with others
 3. **Recording**: Record and playback terminal sessions
 4. **Themes**: Additional color themes beyond VS Code
@@ -355,4 +355,4 @@ SessionListView (main screen)
 
 ## Conclusion
 
-This specification outlines a comprehensive native iOS/iPadOS client for VibeTunnel that leverages SwiftUI and SwiftTerm to provide a superior terminal experience compared to the web interface. The app will be fast, responsive, and take full advantage of native iOS features while maintaining feature parity with the web frontend.
+This specification outlines a comprehensive native iOS/iPadOS client for TunnelForge that leverages SwiftUI and SwiftTerm to provide a superior terminal experience compared to the web interface. The app will be fast, responsive, and take full advantage of native iOS features while maintaining feature parity with the web frontend.

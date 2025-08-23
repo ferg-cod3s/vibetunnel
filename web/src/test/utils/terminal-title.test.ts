@@ -90,9 +90,9 @@ describe('Terminal Title Utilities', () => {
     it('should use only custom session names that are not redundant', () => {
       const cwd = '/home/user/projects';
       const command = ['claude'];
-      const sessionName = 'Working on VibeTunnel';
+      const sessionName = 'Working on TunnelForge';
       const result = generateTitleSequence(cwd, command, sessionName);
-      expect(result).toBe('\x1B]2;Working on VibeTunnel\x07');
+      expect(result).toBe('\x1B]2;Working on TunnelForge\x07');
     });
 
     it('should handle empty session name', () => {
@@ -325,7 +325,7 @@ describe('Terminal Title Utilities', () => {
 
       // Test with full path like /home/user/.claude/local/claude
       const result = generateDynamicTitle(
-        '/home/user/Projects/vibetunnel',
+        '/home/user/Projects/tunnelforge',
         ['/home/user/.claude/local/claude'],
         activity,
         'Test Session'

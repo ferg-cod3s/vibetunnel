@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="${PROJECT_DIR}/build/Build/Products/Debug"
 APP_PATH="${BUILD_DIR}/TunnelForge.app"
-VIBETUNNEL_BIN="${APP_PATH}/Contents/Resources/vibetunnel"
+TUNNELFORGE_BIN="${APP_PATH}/Contents/Resources/tunnelforge"
 
 # Colors for output  
 RED='\033[0;31m'
@@ -51,30 +51,30 @@ run_test() {
     fi
 }
 
-# Check if vibetunnel exists
-if [ ! -f "$VIBETUNNEL_BIN" ]; then
-    echo -e "${RED}Error: vibetunnel not found at $VIBETUNNEL_BIN${NC}"
+# Check if tunnelforge exists
+if [ ! -f "$TUNNELFORGE_BIN" ]; then
+    echo -e "${RED}Error: tunnelforge not found at $TUNNELFORGE_BIN${NC}"
     echo "Please build the Debug configuration first: ./scripts/build.sh --configuration Debug"
     exit 1
 fi
 
 echo "Testing alias functionality fix..."
-echo "Using vibetunnel at: $VIBETUNNEL_BIN"
+echo "Using tunnelforge at: $TUNNELFORGE_BIN"
 echo ""
 
 # Test 1: Direct command execution (should work)
 run_test "Direct command execution" \
-    "$VIBETUNNEL_BIN fwd echo 'test direct'" \
+    "$TUNNELFORGE_BIN fwd echo 'test direct'" \
     "test direct"
 
 # Test 2: Shell command with proper formatting (simulates fixed vt behavior)
 run_test "Shell command without -- separator" \
-    "$VIBETUNNEL_BIN fwd /bin/zsh -i -c \"echo 'alias test works'\"" \
+    "$TUNNELFORGE_BIN fwd /bin/zsh -i -c \"echo 'alias test works'\"" \
     "alias test works"
 
 # Test 3: Test that -- is handled correctly if present in fwd.ts
 run_test "Command with -- as argument" \
-    "$VIBETUNNEL_BIN fwd echo -- test" \
+    "$TUNNELFORGE_BIN fwd echo -- test" \
     "-- test"
 
 # Test 4: Complex shell command (simulates alias resolution)
@@ -84,7 +84,7 @@ alias myalias="echo 'real alias output'"
 EOF
 
 run_test "Zsh alias resolution" \
-    "ZDOTDIR=$TEMP_DIR $VIBETUNNEL_BIN fwd /bin/zsh -i -c 'myalias'" \
+    "ZDOTDIR=$TEMP_DIR $TUNNELFORGE_BIN fwd /bin/zsh -i -c 'myalias'" \
     "real alias output"
 
 # Test 5: Bash alias resolution
@@ -94,7 +94,7 @@ alias myalias="echo 'bash alias output'"
 EOF
 
 run_test "Bash alias resolution" \
-    "HOME=$TEMP_DIR_BASH $VIBETUNNEL_BIN fwd /bin/bash -c 'shopt -s expand_aliases; source ~/.bashrc 2>/dev/null || true; myalias'" \
+    "HOME=$TEMP_DIR_BASH $TUNNELFORGE_BIN fwd /bin/bash -c 'shopt -s expand_aliases; source ~/.bashrc 2>/dev/null || true; myalias'" \
     "bash alias output"
 
 # Test 6: Shell function
@@ -106,7 +106,7 @@ myfunc() {
 EOF
 
 run_test "Zsh function resolution" \
-    "ZDOTDIR=$TEMP_DIR_FUNC $VIBETUNNEL_BIN fwd /bin/zsh -i -c 'myfunc testarg'" \
+    "ZDOTDIR=$TEMP_DIR_FUNC $TUNNELFORGE_BIN fwd /bin/zsh -i -c 'myfunc testarg'" \
     "function output: testarg"
 
 # Cleanup

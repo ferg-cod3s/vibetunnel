@@ -441,7 +441,7 @@
 				CODE_SIGN_ENTITLEMENTS = TunnelForge/TunnelForge.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = YOUR_TEAM_ID; /* Replace YOUR_TEAM_ID with your actual Development Team ID */
+				DEVELOPMENT_TEAM = PCJU8QD9FN;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(inherited)";
 				DEAD_CODE_STRIPPING = YES;
@@ -477,7 +477,7 @@ CODE_SIGN_STYLE = Automatic;
 				CODE_SIGN_ENTITLEMENTS = TunnelForge/TunnelForge.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = YOUR_TEAM_ID; /* Replace YOUR_TEAM_ID with your actual Development Team ID */
+				DEVELOPMENT_TEAM = PCJU8QD9FN;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(inherited)";
 				DEAD_CODE_STRIPPING = YES;

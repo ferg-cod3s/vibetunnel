@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Login view for authenticating with the VibeTunnel server
+/// Login view for authenticating with the TunnelForge server
 struct LoginView: View {
     @Environment(\.dismiss)
     private var dismiss

@@ -1,10 +1,10 @@
 {
-  "name": "vibetunnel",
-  "version": "1.0.0-beta.16",
+  "name": "tunnelforge",
+  "version": "1.0.0",
   "description": "Terminal sharing server with web interface - supports macOS, Linux, and headless environments",
   "main": "dist/server/server.js",
   "bin": {
-    "vibetunnel": "./bin/vibetunnel"
+    "tunnelforge": "./bin/tunnelforge"
   },
   "files": [
     "dist/",
@@ -29,19 +29,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/amantus-ai/vibetunnel.git",
+    "url": "https://github.com/amantus-ai/tunnelforge.git",
     "directory": "web"
   },
-  "homepage": "https://vibetunnel.sh",
+  "homepage": "https://tunnelforge.sh",
   "bugs": {
-    "url": "https://github.com/amantus-ai/vibetunnel/issues"
+    "url": "https://github.com/amantus-ai/tunnelforge/issues"
   },
   "scripts": {
     "clean": "node scripts/clean.js",
     "dev": "node scripts/dev.js",
+    "dev:bun": "node scripts/dev-bun.js",
+    "start:bun": "bun run src/bun-server.ts",
     "dev:server": "tsx watch src/cli.ts --no-auth",
     "dev:client": "node scripts/dev.js --client-only",
     "build": "node scripts/build.js",
+    "build:bun": "node scripts/build-bun.js",
     "build:ci": "node scripts/build-ci.js",
     "build:npm": "node scripts/build-npm.js",
     "prepublishOnly": "npm run build:npm",
@@ -117,6 +120,7 @@
     "monaco-editor": "^0.52.2",
     "multer": "^2.0.2",
     "node-pty": "file:node-pty",
+    "playwright": "^1.54.2",
     "postject": "1.0.0-alpha.6",
     "signal-exit": "^4.1.0",
     "web-push": "^3.6.7",

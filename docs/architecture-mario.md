@@ -1,10 +1,10 @@
-# VibeTunnel Architecture Analysis - Mario's Technical Deep Dive
+# TunnelForge Architecture Analysis - Mario's Technical Deep Dive
 
-This document contains comprehensive technical insights from Mario's debugging session about VibeTunnel's architecture, critical performance issues, and detailed solutions.
+This document contains comprehensive technical insights from Mario's debugging session about TunnelForge's architecture, critical performance issues, and detailed solutions.
 
 ## Executive Summary
 
-Mario identified two critical issues causing performance problems in VibeTunnel:
+Mario identified two critical issues causing performance problems in TunnelForge:
 
 1. **850MB Session Bug**: External terminal sessions (via `fwd.ts`) bypass the clear sequence truncation in `stream-watcher.ts`, sending entire gigabyte files instead of the last 2MB
 2. **Resize Loop**: Claude terminal app issues full clear sequence (`\x1b[2J`) and re-renders entire scroll buffer on every resize event, creating exponential data growth
@@ -158,7 +158,7 @@ This issue has been resolved by implementing a custom PTY solution without the s
 
 ## Ascinema Format Details
 
-VibeTunnel uses the ascinema format for recording terminal sessions:
+TunnelForge uses the ascinema format for recording terminal sessions:
 
 ```javascript
 // Format: [timestamp, event_type, data]
@@ -290,7 +290,7 @@ npm run dev
 SESSION_ID=$(curl -X POST localhost:3000/api/sessions | jq -r .id)
 
 # Stop server, inject large file
-cp /path/to/850mb-test-file ~/.vibetunnel/sessions/$SESSION_ID/stdout
+cp /path/to/850mb-test-file ~/.tunnelforge/sessions/$SESSION_ID/stdout
 
 # Restart and verify truncation works
 npm run dev
@@ -362,4 +362,4 @@ window.addEventListener('resize', () => {
 - "Es gibt keinen Grund, warum ich von da weg alles neu rendern muss" - There's no reason to re-render everything from the beginning
 - "Das ist known good" - Referring to battle-tested implementations
 
-This architecture analysis provides the technical foundation for fixing VibeTunnel's critical performance issues while maintaining its elegant simplicity.
+This architecture analysis provides the technical foundation for fixing TunnelForge's critical performance issues while maintaining its elegant simplicity.

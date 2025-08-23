@@ -1,7 +1,7 @@
 /**
  * Tests for WebSocket Input Handler
  *
- * This tests the low-latency WebSocket input protocol for VibeTunnel,
+ * This tests the low-latency WebSocket input protocol for TunnelForge,
  * focusing on special key handling, text input, and HQ mode support.
  */
 

@@ -2,15 +2,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "VibeTunnelDependencies",
+    name: "TunnelForgeDependencies",
     platforms: [
         .iOS(.v18),
         .macOS(.v10_15)
     ],
     products: [
         .library(
-            name: "VibeTunnelDependencies",
-            targets: ["VibeTunnelDependencies"]
+            name: "TunnelForgeDependencies",
+            targets: ["TunnelForgeDependencies"]
         )
     ],
     dependencies: [
@@ -19,7 +19,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "VibeTunnelDependencies",
+            name: "TunnelForgeDependencies",
             dependencies: [
                 .product(name: "SwiftTerm", package: "SwiftTerm"),
                 .product(name: "Dynamic", package: "Dynamic")

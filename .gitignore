@@ -110,13 +110,13 @@ Workspace.xcworkspace/
 private/
 
 # Built binaries (should be built during build process)
-VibeTunnel/Resources/vt
-VibeTunnel/Resources/vibetunnel
-web/vibetunnel
-/server/vibetunnel-server
-server/vibetunnel-fwd
+TunnelForge/Resources/vt
+TunnelForge/Resources/tunnelforge
+web/tunnelforge
+/server/tunnelforge-server
+server/tunnelforge-fwd
 /.build-tools
-linux/vibetunnel
+linux/tunnelforge
 *.o
 
 

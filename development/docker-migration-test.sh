@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# VibeTunnel Docker-based Migration Testing
+# TunnelForge Docker-based Migration Testing
 # Comprehensive test suite using Docker containers
 
 set -euo pipefail
@@ -15,7 +15,7 @@ NC='\033[0m'
 
 # Configuration
 COMPOSE_CMD="docker-compose"
-PROJECT_NAME="vibetunnel-test"
+PROJECT_NAME="tunnelforge-test"
 LOG_DIR="./logs"
 REPORT_FILE="$LOG_DIR/docker-migration-report.md"
 
@@ -97,7 +97,7 @@ start_test_services() {
     log "${BLUE}🚀 Starting test services...${NC}"
     
     # Start core services only (no monitoring for tests)
-    if ! COMPOSE_FILE=docker-compose.yml $COMPOSE_CMD --env-file .env.test up -d vibetunnel-go-server vibetunnel-bun-web; then
+    if ! COMPOSE_FILE=docker-compose.yml $COMPOSE_CMD --env-file .env.test up -d tunnelforge-go-server tunnelforge-bun-web; then
         log "${RED}❌ Failed to start test services${NC}"
         return 1
     fi
@@ -158,8 +158,8 @@ test_container_health() {
     local go_status
     local bun_status
     
-    go_status=$($COMPOSE_CMD --env-file .env.test ps vibetunnel-go-server --format json | jq -r '.[0].Health // "unknown"')
-    bun_status=$($COMPOSE_CMD --env-file .env.test ps vibetunnel-bun-web --format json | jq -r '.[0].Health // "unknown"')
+    go_status=$($COMPOSE_CMD --env-file .env.test ps tunnelforge-go-server --format json | jq -r '.[0].Health // "unknown"')
+    bun_status=$($COMPOSE_CMD --env-file .env.test ps tunnelforge-bun-web --format json | jq -r '.[0].Health // "unknown"')
     
     if [[ "$go_status" == "healthy" || "$go_status" == "unknown" ]]; then
         if curl -sf http://localhost:4021/health >/dev/null 2>&1; then
@@ -312,8 +312,8 @@ test_container_security() {
     local go_user
     local bun_user
     
-    go_user=$($COMPOSE_CMD --env-file .env.test exec -T vibetunnel-go-server whoami 2>/dev/null || echo "unknown")
-    bun_user=$($COMPOSE_CMD --env-file .env.test exec -T vibetunnel-bun-web whoami 2>/dev/null || echo "unknown")
+    go_user=$($COMPOSE_CMD --env-file .env.test exec -T tunnelforge-go-server whoami 2>/dev/null || echo "unknown")
+    bun_user=$($COMPOSE_CMD --env-file .env.test exec -T tunnelforge-bun-web whoami 2>/dev/null || echo "unknown")
     
     if [[ "$go_user" != "root" && "$go_user" != "unknown" ]]; then
         log "${GREEN}  ✓ Go server runs as non-root user: $go_user${NC}"
@@ -336,8 +336,8 @@ test_container_performance() {
     local go_memory
     local bun_memory
     
-    go_memory=$($COMPOSE_CMD --env-file .env.test exec -T vibetunnel-go-server sh -c 'cat /proc/self/status | grep VmRSS | awk "{print \$2}"' 2>/dev/null || echo "0")
-    bun_memory=$($COMPOSE_CMD --env-file .env.test exec -T vibetunnel-bun-web sh -c 'cat /proc/self/status | grep VmRSS | awk "{print \$2}"' 2>/dev/null || echo "0")
+    go_memory=$($COMPOSE_CMD --env-file .env.test exec -T tunnelforge-go-server sh -c 'cat /proc/self/status | grep VmRSS | awk "{print \$2}"' 2>/dev/null || echo "0")
+    bun_memory=$($COMPOSE_CMD --env-file .env.test exec -T tunnelforge-bun-web sh -c 'cat /proc/self/status | grep VmRSS | awk "{print \$2}"' 2>/dev/null || echo "0")
     
     # Convert to MB (from KB)
     go_memory_mb=$((go_memory / 1024))
@@ -367,7 +367,7 @@ generate_docker_report() {
     fi
     
     {
-        echo "# VibeTunnel Docker Migration Test Report"
+        echo "# TunnelForge Docker Migration Test Report"
         echo ""
         echo "**Generated:** $(date)"
         echo "**Test Results:** $TESTS_PASSED passed, $TESTS_FAILED failed ($pass_percentage% pass rate)"
@@ -390,8 +390,8 @@ generate_docker_report() {
         echo ""
         echo "## Container Environment"
         echo ""
-        echo "- **Go Server Container:** vibetunnel-go-server:latest"
-        echo "- **Bun Web Container:** vibetunnel-bun-web:latest"
+        echo "- **Go Server Container:** tunnelforge-go-server:latest"
+        echo "- **Bun Web Container:** tunnelforge-bun-web:latest"
         echo "- **Network:** Docker bridge network"
         echo "- **Volumes:** Persistent data and logs"
         echo "- **Security:** Non-root users, read-only filesystems where applicable"
@@ -427,8 +427,8 @@ generate_docker_report() {
         echo "./docker-migration-test.sh"
         echo ""
         echo "# View container logs"
-        echo "./start-docker.sh --logs vibetunnel-go-server"
-        echo "./start-docker.sh --logs vibetunnel-bun-web"
+        echo "./start-docker.sh --logs tunnelforge-go-server"
+        echo "./start-docker.sh --logs tunnelforge-bun-web"
         echo ""
         echo "# Stop all containers"
         echo "./start-docker.sh --stop"
@@ -459,7 +459,7 @@ show_summary() {
     
     if [[ $pass_percentage -ge 90 ]]; then
         log "${GREEN}🎉 EXCELLENT - Docker environment ready for production!${NC}"
-        log "${GREEN}The containerized VibeTunnel stack is working perfectly.${NC}"
+        log "${GREEN}The containerized TunnelForge stack is working perfectly.${NC}"
     elif [[ $pass_percentage -ge 80 ]]; then
         log "${YELLOW}✅ GOOD - Minor Docker issues to address${NC}"
         log "${YELLOW}Fix remaining issues for production readiness.${NC}"
@@ -473,7 +473,7 @@ show_summary() {
 }
 
 main() {
-    log "${PURPLE}🐳 VibeTunnel Docker Migration Testing${NC}"
+    log "${PURPLE}🐳 TunnelForge Docker Migration Testing${NC}"
     log "${BLUE}=====================================${NC}"
     
     # Initialize

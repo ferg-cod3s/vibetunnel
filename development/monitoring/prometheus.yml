@@ -22,19 +22,19 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # VibeTunnel Go Server direct metrics (if implemented)
-  - job_name: 'vibetunnel-go-server'
+  # TunnelForge Go Server direct metrics (if implemented)
+  - job_name: 'tunnelforge-go-server'
     static_configs:
-      - targets: ['vibetunnel-go-server:4021']
+      - targets: ['tunnelforge-go-server:4021']
     metrics_path: /metrics
     scrape_interval: 15s
     # Optional: Skip if /metrics endpoint doesn't exist yet
     # honor_labels: true
 
-  # VibeTunnel Bun Web Server metrics (if implemented)
-  - job_name: 'vibetunnel-bun-web'
+  # TunnelForge Bun Web Server metrics (if implemented)
+  - job_name: 'tunnelforge-bun-web'
     static_configs:
-      - targets: ['vibetunnel-bun-web:3000']
+      - targets: ['tunnelforge-bun-web:3000']
     metrics_path: /metrics
     scrape_interval: 15s
     # Optional: Skip if /metrics endpoint doesn't exist yet

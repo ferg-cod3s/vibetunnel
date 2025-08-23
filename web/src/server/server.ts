@@ -1,4 +1,4 @@
-// VibeTunnel server entry point
+// TunnelForge server entry point
 import chalk from 'chalk';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
@@ -108,9 +108,9 @@ interface Config {
 // Show help message
 function showHelp() {
   console.log(`
-VibeTunnel Server - Terminal Multiplexer
+TunnelForge Server - Terminal Multiplexer
 
-Usage: vibetunnel-server [options]
+Usage: tunnelforge-server [options]
 
 Options:
   --help                Show this help message
@@ -147,20 +147,20 @@ Remote Server Options:
 
 Environment Variables:
   PORT                  Default port if --port not specified
-  VIBETUNNEL_USERNAME   Default username if --username not specified
-  VIBETUNNEL_PASSWORD   Default password if --password not specified
-  VIBETUNNEL_CONTROL_DIR Control directory for session data
+  TUNNELFORGE_USERNAME   Default username if --username not specified
+  TUNNELFORGE_PASSWORD   Default password if --password not specified
+  TUNNELFORGE_CONTROL_DIR Control directory for session data
   PUSH_CONTACT_EMAIL    Contact email for VAPID configuration
 
 Examples:
   # Run a simple server with authentication
-  vibetunnel-server --username admin --password secret
+  tunnelforge-server --username admin --password secret
 
   # Run as HQ server
-  vibetunnel-server --hq --username hq-admin --password hq-secret
+  tunnelforge-server --hq --username hq-admin --password hq-secret
 
   # Run as remote server registering with HQ
-  vibetunnel-server --username local --password local123 \\
+  tunnelforge-server --username local --password local123 \\
     --hq-url https://hq.example.com \\
     --hq-username hq-admin --hq-password hq-secret \\
     --name remote-1
@@ -391,7 +391,7 @@ export async function createApp(): Promise<AppInstance> {
   // Check if version was requested
   if (config.showVersion) {
     const versionInfo = getVersionInfo();
-    console.log(`VibeTunnel Server v${versionInfo.version}`);
+    console.log(`TunnelForge Server v${versionInfo.version}`);
     console.log(`Built: ${versionInfo.buildDate}`);
     console.log(`Platform: ${versionInfo.platform}/${versionInfo.arch}`);
     console.log(`Node: ${versionInfo.nodeVersion}`);
@@ -403,7 +403,7 @@ export async function createApp(): Promise<AppInstance> {
 
   validateConfig(config);
 
-  logger.log('Initializing VibeTunnel server components');
+  logger.log('Initializing TunnelForge server components');
   const app = express();
   const server = createServer(app);
   const wss = new WebSocketServer({ noServer: true, perMessageDeflate: true });
@@ -423,6 +423,11 @@ export async function createApp(): Promise<AppInstance> {
 
   // Add CSRF protection for state-changing operations using Double-Submit Cookie pattern
   app.use((req, res, next) => {
+    // Skip CSRF protection completely when authentication is disabled (--no-auth mode)
+    if (config.noAuth) {
+      return next();
+    }
+
     // Skip CSRF protection for read-only operations
     if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') {
       return next();
@@ -500,7 +505,7 @@ export async function createApp(): Promise<AppInstance> {
 
   // Control directory for session data
   const CONTROL_DIR =
-    process.env.VIBETUNNEL_CONTROL_DIR || path.join(os.homedir(), '.vibetunnel/control');
+    process.env.TUNNELFORGE_CONTROL_DIR || path.join(os.homedir(), '.tunnelforge/control');
 
   // Ensure control directory exists
   if (!fs.existsSync(CONTROL_DIR)) {
@@ -515,7 +520,7 @@ export async function createApp(): Promise<AppInstance> {
   const ptyManager = new PtyManager(CONTROL_DIR);
   logger.debug('Initialized PTY manager');
 
-  // Clean up sessions from old VibeTunnel versions
+  // Clean up sessions from old TunnelForge versions
   const sessionManager = ptyManager.getSessionManager();
   const cleanupResult = sessionManager.cleanupOldVersionSessions();
   if (cleanupResult.versionChanged) {
@@ -587,7 +592,7 @@ export async function createApp(): Promise<AppInstance> {
       // Initialize VAPID manager with auto-generation
       vapidManager = new VapidManager();
       await vapidManager.initialize({
-        contactEmail: config.vapidEmail || 'noreply@vibetunnel.local',
+        contactEmail: config.vapidEmail || 'noreply@tunnelforge.local',
         generateIfMissing: true, // Auto-generate keys if none exist
       });
 
@@ -684,7 +689,7 @@ export async function createApp(): Promise<AppInstance> {
             ...pushPayload,
             icon: '/apple-touch-icon.png',
             badge: '/favicon-32.png',
-            tag: `vibetunnel-${pushPayload.type}`,
+            tag: `tunnelforge-${pushPayload.type}`,
             requireInteraction: pushPayload.type === 'command-error',
             actions: [
               {
@@ -781,16 +786,16 @@ export async function createApp(): Promise<AppInstance> {
     }
     // More precise npm package detection:
     // 1. Check if we're explicitly in an npm package structure
-    // 2. The file should be in node_modules/vibetunnel/lib/
+    // 2. The file should be in node_modules/tunnelforge/lib/
     // 3. Or check for our specific package markers
     const isNpmPackage = (() => {
-      // Most reliable: check if we're in node_modules/vibetunnel structure
-      if (__filename.includes(path.join('node_modules', 'vibetunnel', 'lib'))) {
+      // Most reliable: check if we're in node_modules/tunnelforge structure
+      if (__filename.includes(path.join('node_modules', 'tunnelforge', 'lib'))) {
         return true;
       }
 
       // Check for Windows path variant
-      if (__filename.includes('node_modules\\vibetunnel\\lib')) {
+      if (__filename.includes('node_modules\\tunnelforge\\lib')) {
         return true;
       }
 
@@ -802,7 +807,7 @@ export async function createApp(): Promise<AppInstance> {
         try {
           const packageJson = require(packageJsonPath);
           // Verify this is actually our package
-          return packageJson.name === 'vibetunnel';
+          return packageJson.name === 'tunnelforge';
         } catch {
           // Not a valid npm package structure
           return false;
@@ -812,7 +817,7 @@ export async function createApp(): Promise<AppInstance> {
       return false;
     })();
 
-    if (process.env.VIBETUNNEL_BUNDLED === 'true' || process.env.BUILD_DATE || isNpmPackage) {
+    if (process.env.TUNNELFORGE_BUNDLED === 'true' || process.env.BUILD_DATE || isNpmPackage) {
       // In bundled/production/npm mode, find package root
       // When bundled, __dirname is /path/to/package/dist, so go up one level
       // When globally installed, we need to find the package root
@@ -838,7 +843,7 @@ export async function createApp(): Promise<AppInstance> {
       }
 
       // Fallback: try going up from the bundled CLI location
-      // The bundled CLI might be in node_modules/vibetunnel/dist/
+      // The bundled CLI might be in node_modules/tunnelforge/dist/
       return path.join(__dirname, '..', 'public');
     } else {
       // In development mode, use current working directory
@@ -937,7 +942,7 @@ export async function createApp(): Promise<AppInstance> {
           body,
           icon: '/apple-touch-icon.png',
           badge: '/favicon-32.png',
-          tag: `vibetunnel-${notificationType}-${sessionId}`,
+          tag: `tunnelforge-${notificationType}-${sessionId}`,
           requireInteraction: false,
           data: {
             type: notificationType,
@@ -999,7 +1004,7 @@ export async function createApp(): Promise<AppInstance> {
           body: `${body} (${durationStr})`,
           icon: '/apple-touch-icon.png',
           badge: '/favicon-32.png',
-          tag: `vibetunnel-command-${sessionId}-${Date.now()}`,
+          tag: `tunnelforge-command-${sessionId}-${Date.now()}`,
           requireInteraction: false,
           data: {
             type: notificationType,
@@ -1033,7 +1038,7 @@ export async function createApp(): Promise<AppInstance> {
           body: `${sessionName} is waiting for your input.`,
           icon: '/apple-touch-icon.png',
           badge: '/favicon-32.png',
-          tag: `vibetunnel-claude-turn-${sessionId}`,
+          tag: `tunnelforge-claude-turn-${sessionId}`,
           requireInteraction: true,
           data: {
             type: 'claude-turn',
@@ -1428,7 +1433,7 @@ export async function createApp(): Promise<AppInstance> {
           );
           logger.error(`  2. Use environment variable: ${chalk.cyan('PORT=4021 pnpm run dev')}`);
           logger.error(
-            '  3. Stop the existing server (check Activity Monitor for vibetunnel processes)'
+            '  3. Stop the existing server (check Activity Monitor for tunnelforge processes)'
           );
         } else {
           logger.error(
@@ -1451,7 +1456,7 @@ export async function createApp(): Promise<AppInstance> {
         typeof address === 'string' ? requestedPort : address?.port || requestedPort;
       const displayAddress = bindAddress === '0.0.0.0' ? 'localhost' : bindAddress;
       logger.log(
-        chalk.green(`VibeTunnel Server running on http://${displayAddress}:${actualPort}`)
+        chalk.green(`TunnelForge Server running on http://${displayAddress}:${actualPort}`)
       );
 
       // Update API socket server with actual port information
@@ -1494,7 +1499,7 @@ export async function createApp(): Promise<AppInstance> {
           .catch((error) => {
             logger.error(chalk.red('Failed to start Tailscale Serve:'), error.message);
             logger.warn(
-              chalk.yellow('VibeTunnel will continue running, but Tailscale Serve is not available')
+              chalk.yellow('TunnelForge will continue running, but Tailscale Serve is not available')
             );
             logger.log(chalk.blue('You can manually configure Tailscale Serve with:'));
             logger.log(chalk.gray(`  tailscale serve ${actualPort}`));
@@ -1612,7 +1617,7 @@ export async function createApp(): Promise<AppInstance> {
 let serverStarted = false;
 
 // Export a function to start the server
-export async function startVibeTunnelServer() {
+export async function startTunnelForgeServer() {
   // Initialize logger if not already initialized (preserves debug mode from CLI)
   initLogger();
 
@@ -1628,7 +1633,7 @@ export async function startVibeTunnelServer() {
   }
   serverStarted = true;
 
-  logger.debug('Creating VibeTunnel application instance');
+  logger.debug('Creating TunnelForge application instance');
   // Create and configure the app
   const appInstance = await createApp();
   const {

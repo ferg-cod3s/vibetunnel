@@ -1,8 +1,37 @@
 <!-- Generated: 2025-07-18 11:00:00 UTC -->
 
-# Testing
+# Testing Strategy
 
-VibeTunnel uses modern testing frameworks across platforms: Swift Testing for macOS/iOS, Vitest for Node.js unit tests, and Playwright for end-to-end web testing. Tests are organized by platform and type, with comprehensive coverage requirements.
+Comprehensive testing approach for TunnelForge/TunnelForge, covering unit, integration, end-to-end, performance, security, and accessibility testing across all platforms.
+
+## Testing Philosophy
+
+### Test-Driven Development (TDD)
+1. **Write tests first** - Define expected behavior before implementation
+2. **Red-Green-Refactor** - Fail, pass, then optimize
+3. **Maintain test coverage** - Target 80-90% for critical paths
+4. **Test at multiple levels** - Unit, integration, and E2E
+5. **Automate everything** - CI/CD integration for all tests
+
+### Testing Pyramid
+```
+         /\        E2E Tests (10%)
+        /  \       - User journeys
+       /    \      - Critical workflows
+      /      \     
+     /--------\    Integration Tests (30%)
+    /          \   - API contracts
+   /            \  - Service interactions
+  /              \ 
+ /________________\ Unit Tests (60%)
+                    - Business logic
+                    - Component behavior
+                    - Utility functions
+```
+
+## Testing Frameworks
+
+TunnelForge uses modern testing frameworks across platforms: Swift Testing for macOS/iOS, Vitest for Node.js unit tests, and Playwright for end-to-end web testing. Tests are organized by platform and type, with comprehensive coverage requirements.
 
 ## Key Files
 
@@ -13,10 +42,10 @@ VibeTunnel uses modern testing frameworks across platforms: Swift Testing for ma
 
 **Test Utilities**
 - web/src/test/test-utils.ts (mock helpers)
-- mac/VibeTunnelTests/Utilities/TestTags.swift (test categorization)
+- mac/TunnelForgeTests/Utilities/TestTags.swift (test categorization)
 
 **Platform Tests**
-- mac/VibeTunnelTests/ (Swift tests)
+- mac/TunnelForgeTests/ (Swift tests)
 - web/src/test/ (Node.js tests)
 - web/tests/ (Playwright E2E tests)
 
@@ -27,7 +56,7 @@ VibeTunnel uses modern testing frameworks across platforms: Swift Testing for ma
 Swift Testing framework tests covering core functionality:
 
 ```swift
-// From mac/VibeTunnelTests/ServerManagerTests.swift:14-40
+// From mac/TunnelForgeTests/ServerManagerTests.swift:14-40
 @Test("Starting and stopping Bun server", .tags(.critical))
 func serverLifecycle() async throws {
     let manager = ServerManager.shared
@@ -49,7 +78,7 @@ func serverLifecycle() async throws {
 - NgrokServiceTests.swift - Ngrok integration
 - DashboardKeychainTests.swift - Keychain operations
 
-**Test Tags** (mac/VibeTunnelTests/Utilities/TestTags.swift):
+**Test Tags** (mac/TunnelForgeTests/Utilities/TestTags.swift):
 - `.critical` - Core functionality tests
 - `.networking` - Network-related tests
 - `.concurrency` - Async/concurrent operations
@@ -150,7 +179,7 @@ await page.getByText('Session Name').fill('My Session');
 await page.getByTestId('terminal-output').waitFor();
 ```
 
-### VibeTunnel-Specific Patterns
+### TunnelForge-Specific Patterns
 
 **Waiting for Terminal Ready**
 ```typescript
@@ -196,16 +225,85 @@ await page.waitForFunction(() => {
 });
 ```
 
+## Test Categories
+
+### Unit Testing
+**Purpose**: Test individual components in isolation
+**Coverage Target**: 80-90% of business logic
+
+#### Best Practices
+- Test one thing at a time
+- Use descriptive test names
+- Follow AAA pattern (Arrange, Act, Assert)
+- Mock external dependencies
+- Keep tests fast (< 100ms each)
+
+### Integration Testing
+**Purpose**: Test component interactions and API contracts
+**Coverage Target**: All critical data flows
+
+#### What to Test
+- Service interactions
+- Database operations
+- API endpoints
+- Message passing
+- File I/O operations
+
+### End-to-End Testing
+**Purpose**: Validate complete user workflows
+**Coverage Target**: Critical user journeys
+
+#### E2E Scenarios
+- User authentication flow
+- Session creation and management
+- Terminal interaction
+- Error recovery
+- Cross-browser compatibility
+
+### Performance Testing
+**Purpose**: Ensure system meets performance requirements
+**Metrics**: Response time, throughput, resource usage
+
+#### Performance Targets
+- API response time: < 200ms (p95)
+- Terminal input latency: < 50ms
+- WebSocket round-trip: < 100ms
+- Page load time: < 2s
+- Memory usage: < 100MB baseline
+
+### Security Testing
+**Purpose**: Identify and prevent security vulnerabilities
+**Scope**: Authentication, authorization, data protection
+
+#### Security Checks
+- Input validation
+- SQL injection prevention
+- XSS protection
+- CSRF tokens
+- Rate limiting
+- Dependency vulnerabilities
+
+### Accessibility Testing
+**Purpose**: Ensure WCAG 2.2 AA compliance
+**Tools**: axe-core, Pa11y, screen readers
+
+#### Accessibility Requirements
+- Keyboard navigation
+- Screen reader compatibility
+- Color contrast (4.5:1 minimum)
+- Focus indicators
+- ARIA labels
+
 ## Running Tests
 
 ### macOS Tests
 
 ```bash
 # Run all tests via Xcode
-xcodebuild test -project mac/VibeTunnel.xcodeproj -scheme VibeTunnel
+xcodebuild test -project mac/TunnelForge.xcodeproj -scheme TunnelForge
 
 # Run specific test tags
-xcodebuild test -project mac/VibeTunnel.xcodeproj -scheme VibeTunnel -only-testing:VibeTunnelTests/ServerManagerTests
+xcodebuild test -project mac/TunnelForge.xcodeproj -scheme TunnelForge -only-testing:TunnelForgeTests/ServerManagerTests
 ```
 
 ### Node.js Tests
@@ -241,7 +339,7 @@ pnpm exec playwright test --debug tests/session-management.spec.ts
 
 ### macOS Test Structure
 ```
-mac/VibeTunnelTests/
+mac/TunnelForgeTests/
 ├── Utilities/
 │   ├── TestTags.swift      - Test categorization
 │   ├── TestFixtures.swift  - Shared test data
@@ -256,7 +354,7 @@ mac/VibeTunnelTests/
 ├── DashboardKeychainTests.swift
 ├── ModelTests.swift
 ├── SessionIdHandlingTests.swift
-└── VibeTunnelTests.swift
+└── TunnelForgeTests.swift
 ```
 
 ### Web Test Structure

@@ -1,8 +1,8 @@
-# VibeTunnel Socket Protocol
+# TunnelForge Socket Protocol
 
 ## Overview
 
-VibeTunnel uses a binary framed message protocol over Unix domain sockets for all inter-process communication (IPC). This protocol replaces the previous file-based IPC system, providing better performance, real-time updates, and cleaner architecture.
+TunnelForge uses a binary framed message protocol over Unix domain sockets for all inter-process communication (IPC). This protocol replaces the previous file-based IPC system, providing better performance, real-time updates, and cleaner architecture.
 
 ## Architecture
 
@@ -143,10 +143,10 @@ VibeTunnel uses a binary framed message protocol over Unix domain sockets for al
 ### Example Usage
 
 ```typescript
-import { VibeTunnelSocketClient } from './socket-client.js';
+import { TunnelForgeSocketClient } from './socket-client.js';
 
 // Connect to session
-const client = new VibeTunnelSocketClient('/path/to/session/ipc.sock', {
+const client = new TunnelForgeSocketClient('/path/to/session/ipc.sock', {
   autoReconnect: true,
   heartbeatInterval: 30000 // 30 seconds
 });

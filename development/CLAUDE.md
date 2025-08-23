@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a development workspace for two high-performance implementations of the VibeTunnel terminal sharing server:
+This is a development workspace for two high-performance implementations of the TunnelForge terminal sharing server:
 
 1. **Go Server** (`go-server/`) - Complete production-ready implementation with authentication, security middleware, and comprehensive testing
 2. **Bun Web Server** (`bun-web/`) - Modern TypeScript-based web interface using Bun runtime
 
-Both servers are designed to replace the Node.js implementation in the main VibeTunnel project with better performance and resource efficiency.
+Both servers are designed to replace the Node.js implementation in the main TunnelForge project with better performance and resource efficiency.
 
 ## Commands
 
@@ -38,7 +38,7 @@ go test ./internal/session -v
 cd benchmarks && ./run_benchmarks.sh
 
 # Build binary
-go build -o vibetunnel-server cmd/server/main.go
+go build -o tunnelforge-server cmd/server/main.go
 ```
 
 ### Bun Web Server Development (`bun-web/`)

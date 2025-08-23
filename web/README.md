@@ -1,24 +1,24 @@
-# VibeTunnel CLI
+# TunnelForge CLI
 
-**Turn any browser into your terminal.** VibeTunnel proxies your terminals right into the browser, so you can vibe-code anywhere.
+**Turn any browser into your terminal.** TunnelForge proxies your terminals right into the browser, so you can vibe-code anywhere.
 
 Full-featured terminal sharing server with web interface for macOS and Linux. Windows not yet supported.
 
-## Why VibeTunnel?
+## Why TunnelForge?
 
-Ever wanted to check on your AI agents while you're away? Need to monitor that long-running build from your phone? Want to share a terminal session with a colleague without complex SSH setups? VibeTunnel makes it happen with zero friction.
+Ever wanted to check on your AI agents while you're away? Need to monitor that long-running build from your phone? Want to share a terminal session with a colleague without complex SSH setups? TunnelForge makes it happen with zero friction.
 
 ## Installation
 
 ### From npm (Recommended)
 ```bash
-npm install -g vibetunnel
+npm install -g tunnelforge
 ```
 
 ### From Source
 ```bash
-git clone https://github.com/amantus-ai/vibetunnel.git
-cd vibetunnel/web
+git clone https://github.com/amantus-ai/tunnelforge.git
+cd tunnelforge/web
 pnpm install
 pnpm run build
 ```
@@ -28,7 +28,7 @@ pnpm run build
 **npm package**:
 - Pre-built binaries for common platforms (macOS x64/arm64, Linux x64/arm64)
 - Automatic fallback to source compilation if pre-built binaries unavailable
-- Global installation makes `vibetunnel` command available system-wide
+- Global installation makes `tunnelforge` command available system-wide
 - Conditional `vt` command installation (see [VT Installation Guide](docs/VT_INSTALLATION.md))
 - Includes production dependencies only
 
@@ -50,22 +50,22 @@ pnpm run build
 
 ```bash
 # Start with default settings (port 4020)
-vibetunnel
+tunnelforge
 
 # Start with custom port
-vibetunnel --port 8080
+tunnelforge --port 8080
 
 # Start without authentication
-vibetunnel --no-auth
+tunnelforge --no-auth
 
 # Bind to specific interface
-vibetunnel --bind 127.0.0.1 --port 4020
+tunnelforge --bind 127.0.0.1 --port 4020
 
 # Enable SSH key authentication
-vibetunnel --enable-ssh-keys
+tunnelforge --enable-ssh-keys
 
 # SSH keys only (no password auth)
-vibetunnel --disallow-user-password
+tunnelforge --disallow-user-password
 ```
 
 Then open http://localhost:4020 in your browser to access the web interface.
@@ -73,7 +73,7 @@ Then open http://localhost:4020 in your browser to access the web interface.
 ### Command-line Options
 
 ```
-vibetunnel [options]
+tunnelforge [options]
 
 Basic Options:
   --help, -h            Show help message
@@ -121,7 +121,7 @@ The `vt` command allows you to run commands with TTY forwarding:
 vt claude
 vt claude --dangerously-skip-permissions
 
-# Run commands with output visible in VibeTunnel
+# Run commands with output visible in TunnelForge
 vt npm test
 vt python script.py
 vt top
@@ -154,19 +154,19 @@ vt -vvv npm build       # Debug mode
 
 ```bash
 # Basic usage
-vibetunnel fwd <session-id> <command> [args...]
+tunnelforge fwd <session-id> <command> [args...]
 
 # Examples
-vibetunnel fwd --session-id abc123 ls -la
-vibetunnel fwd --session-id abc123 npm test
-vibetunnel fwd --session-id abc123 python script.py
+tunnelforge fwd --session-id abc123 ls -la
+tunnelforge fwd --session-id abc123 npm test
+tunnelforge fwd --session-id abc123 python script.py
 ```
 
-Linux users can install VibeTunnel as a systemd service with `vibetunnel systemd` for automatic startup and process management - see [detailed systemd documentation](docs/systemd.md).
+Linux users can install TunnelForge as a systemd service with `tunnelforge systemd` for automatic startup and process management - see [detailed systemd documentation](docs/systemd.md).
 
 ### Environment Variables
 
-VibeTunnel respects the following environment variables:
+TunnelForge respects the following environment variables:
 
 ```bash
 PORT=8080                           # Default port if --port not specified
@@ -191,7 +191,7 @@ PUSH_CONTACT_EMAIL=admin@example.com # Contact email for VAPID configuration
 
 ### Git Worktree Integration
 
-VibeTunnel provides comprehensive Git worktree support, allowing you to:
+TunnelForge provides comprehensive Git worktree support, allowing you to:
 - Work on multiple branches simultaneously without stashing changes
 - Create new worktrees directly from the session creation dialog
 - Smart branch switching with uncommitted change detection
@@ -203,8 +203,8 @@ For detailed information, see the [Git Worktree Management Guide](docs/worktree.
 ## Package Contents
 
 This npm package includes:
-- Full VibeTunnel server with web UI
-- Command-line tools (vibetunnel, vt)
+- Full TunnelForge server with web UI
+- Command-line tools (tunnelforge, vt)
 - Native PTY support for terminal emulation
 - Web interface with xterm.js
 - Session management and forwarding
@@ -214,7 +214,7 @@ This npm package includes:
 
 - macOS (Intel and Apple Silicon)
 - Linux (x64 and ARM64)
-- Windows: Not yet supported ([#252](https://github.com/amantus-ai/vibetunnel/issues/252))
+- Windows: Not yet supported ([#252](https://github.com/amantus-ai/tunnelforge/issues/252))
 
 ## Troubleshooting
 
@@ -233,7 +233,7 @@ If you encounter issues during installation:
 
 2. **Permission Issues**: Use sudo for global installation
    ```bash
-   sudo npm install -g vibetunnel
+   sudo npm install -g tunnelforge
    ```
 
 3. **Node Version**: Ensure Node.js 20+ is installed
@@ -260,7 +260,7 @@ Modern browsers (Chrome 60+, Firefox 75+) block the Web Crypto API when accessin
 
 1. **Use localhost (Recommended)**
    ```bash
-   # Access VibeTunnel via localhost
+   # Access TunnelForge via localhost
    http://localhost:4020
    
    # If running on a remote server, use SSH tunneling:
@@ -278,7 +278,7 @@ Modern browsers (Chrome 60+, Firefox 75+) block the Web Crypto API when accessin
    - ⚠️ This reduces security - use only for development
 
 #### Why This Happens
-The Web Crypto API is restricted to secure contexts (HTTPS or localhost) to prevent man-in-the-middle attacks on cryptographic operations. This is a browser security feature, not a VibeTunnel limitation.
+The Web Crypto API is restricted to secure contexts (HTTPS or localhost) to prevent man-in-the-middle attacks on cryptographic operations. This is a browser security feature, not a TunnelForge limitation.
 
 ### Development Setup
 
@@ -299,7 +299,7 @@ pnpm run build
 
 ## Documentation
 
-See the main repository for complete documentation: https://github.com/amantus-ai/vibetunnel
+See the main repository for complete documentation: https://github.com/amantus-ai/tunnelforge
 
 ## License
 

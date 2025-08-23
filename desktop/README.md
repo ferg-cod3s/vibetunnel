@@ -1,6 +1,17 @@
-# TunnelForge Desktop Apps
+# 🚀 TunnelForge Desktop App (PRIMARY)
 
-Cross-platform desktop applications for TunnelForge built with Tauri. This unified codebase builds native apps for **Windows**, **Linux**, and **macOS** with exceptional performance and minimal resource usage.
+> **⭐ This is now the PRIMARY desktop application for TunnelForge**  
+> The Mac Swift app has been deprecated in favor of this unified Tauri v2 solution.
+
+**Cross-platform desktop application** for TunnelForge built with **Tauri v2 + Bun**. This unified codebase builds native apps for **Windows**, **Linux**, and **macOS** with exceptional performance and minimal resource usage.
+
+## 🎯 Key Advantages
+
+- **🔄 Replaces separate platform apps**: No more Mac/Linux/Windows silos
+- **⚡ Bun Integration**: Uses Bun for superior performance and smaller bundles 
+- **🏠 Single Source of Truth**: One codebase, consistent behavior everywhere
+- **📦 Tiny Bundles**: ~10-15MB (vs 100MB+ Electron alternatives)
+- **🚀 Native Performance**: Rust backend + system webview
 
 ## Features
 

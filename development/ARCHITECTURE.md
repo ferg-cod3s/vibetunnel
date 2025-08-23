@@ -1,14 +1,14 @@
-# VibeTunnel Development Architecture
+# TunnelForge Development Architecture
 
 ## Overview
 
-This document describes the complete architecture of the VibeTunnel development implementation, which consists of two high-performance server implementations designed to replace the Node.js-based terminal sharing server.
+This document describes the complete architecture of the TunnelForge development implementation, which consists of two high-performance server implementations designed to replace the Node.js-based terminal sharing server.
 
 ## Architecture Components
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    VibeTunnel Architecture                      │
+│                    TunnelForge Architecture                      │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌─────────────────┐         ┌──────────────────────────────┐   │
@@ -425,4 +425,4 @@ curl http://localhost:4023/health  # Go server
 
 ---
 
-This architecture provides a robust, high-performance foundation for VibeTunnel's terminal sharing functionality while maintaining clear separation of concerns and optimal resource utilization.
+This architecture provides a robust, high-performance foundation for TunnelForge's terminal sharing functionality while maintaining clear separation of concerns and optimal resource utilization.

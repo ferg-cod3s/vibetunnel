@@ -1,10 +1,10 @@
-# Terminal Title Management in VibeTunnel
+# Terminal Title Management in TunnelForge
 
-VibeTunnel provides comprehensive terminal title management with four distinct modes to suit different workflows and preferences.
+TunnelForge provides comprehensive terminal title management with four distinct modes to suit different workflows and preferences.
 
 ## Title Modes
 
-VibeTunnel offers four terminal title management modes:
+TunnelForge offers four terminal title management modes:
 
 ### 1. None Mode (Default)
 - **Behavior**: No title management - applications control their own titles
@@ -22,7 +22,7 @@ VibeTunnel offers four terminal title management modes:
 - **Format**: `~/path/to/project — command — session name`
 - **Use case**: Basic session identification
 - **Examples**:
-  - `~/Projects/vibetunnel5 — zsh`
+  - `~/Projects/tunnelforge5 — zsh`
   - `~/Projects/app — npm — Dev Server`
 - **CLI**: `--title-mode static`
 
@@ -64,7 +64,7 @@ pnpm exec tsx src/server/fwd.ts --title-mode dynamic python
 pnpm exec tsx src/server/fwd.ts claude
 
 # Using environment variable
-VIBETUNNEL_TITLE_MODE=static pnpm exec tsx src/server/fwd.ts zsh
+TUNNELFORGE_TITLE_MODE=static pnpm exec tsx src/server/fwd.ts zsh
 ```
 
 ## Implementation Details
@@ -93,7 +93,7 @@ ESC ] 2 ; <title> BEL
 ```
 
 - **Filter mode**: Removes all OSC 0, 1, and 2 sequences
-- **Static/Dynamic modes**: Filter app sequences and inject VibeTunnel titles
+- **Static/Dynamic modes**: Filter app sequences and inject TunnelForge titles
 - **Title injection**: Smart detection of shell prompts for natural updates
 
 ## Use Cases
@@ -123,7 +123,7 @@ If you have your own terminal title system (as described in [Commanding Your Cla
 # Your custom wrapper
 cly() {
     echo -ne "\033]0;${PWD/#$HOME/~} — Claude\007"
-    VIBETUNNEL_TITLE_MODE=filter command claude "$@"
+    TUNNELFORGE_TITLE_MODE=filter command claude "$@"
 }
 ```
 

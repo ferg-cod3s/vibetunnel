@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Design system for the VibeTunnel app.
+/// Design system for the TunnelForge app.
 /// Centralizes all visual styling including colors, typography,
 /// spacing, corner radii, and animations for consistent UI.
 enum Theme {

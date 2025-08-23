@@ -80,5 +80,5 @@ else
     echo ""
     echo "This release includes various improvements and bug fixes."
     echo ""
-    echo "For details, please see the [CHANGELOG](https://github.com/amantus-ai/vibetunnel/blob/main/CHANGELOG.md)."
+    echo "For details, please see the [CHANGELOG](https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md)."
 fi

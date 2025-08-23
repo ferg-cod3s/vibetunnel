@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadType</key>
+            <string>com.apple.system.logging</string>
+            <key>PayloadIdentifier</key>
+            <string>dev.tunnelforge.logging.all</string>
+            <key>PayloadUUID</key>
+            <string>A7B8C9D0-1234-5678-9ABC-DEF012345678</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PayloadDisplayName</key>
+            <string>TunnelForge Logging Configuration</string>
+            <key>PayloadDescription</key>
+            <string>Enables private data in logs for all TunnelForge apps and components</string>
+            <key>Subsystems</key>
+            <dict>
+                <!-- Main macOS app and all its components -->
+                <key>dev.tunnelforge.tunnelforge</key>
+                <dict>
+                    <key>DEFAULT-OPTIONS</key>
+                    <dict>
+                        <key>Level</key>
+                        <dict>
+                            <key>Enable</key>
+                            <string>Debug</string>
+                            <key>Persist</key>
+                            <string>Debug</string>
+                        </dict>
+                    </dict>
+                </dict>
+                <!-- macOS debug build -->
+                <key>dev.tunnelforge.tunnelforge.debug</key>
+                <dict>
+                    <key>DEFAULT-OPTIONS</key>
+                    <dict>
+                        <key>Level</key>
+                        <dict>
+                            <key>Enable</key>
+                            <string>Debug</string>
+                            <key>Persist</key>
+                            <string>Debug</string>
+                        </dict>
+                    </dict>
+                </dict>
+                <!-- macOS tests -->
+                <key>dev.tunnelforge.tunnelforge.tests</key>
+                <dict>
+                    <key>DEFAULT-OPTIONS</key>
+                    <dict>
+                        <key>Level</key>
+                        <dict>
+                            <key>Enable</key>
+                            <string>Debug</string>
+                            <key>Persist</key>
+                            <string>Debug</string>
+                        </dict>
+                    </dict>
+                </dict>
+                <!-- macOS tests debug -->
+                <key>dev.tunnelforge.tunnelforge.tests.debug</key>
+                <dict>
+                    <key>DEFAULT-OPTIONS</key>
+                    <dict>
+                        <key>Level</key>
+                        <dict>
+                            <key>Enable</key>
+                            <string>Debug</string>
+                            <key>Persist</key>
+                            <string>Debug</string>
+                        </dict>
+                    </dict>
+                </dict>
+                <!-- iOS app -->
+                <key>dev.tunnelforge.ios</key>
+                <dict>
+                    <key>DEFAULT-OPTIONS</key>
+                    <dict>
+                        <key>Level</key>
+                        <dict>
+                            <key>Enable</key>
+                            <string>Debug</string>
+                            <key>Persist</key>
+                            <string>Debug</string>
+                        </dict>
+                    </dict>
+                </dict>
+                <!-- iOS tests -->
+                <key>dev.tunnelforge.ios.tests</key>
+                <dict>
+                    <key>DEFAULT-OPTIONS</key>
+                    <dict>
+                        <key>Level</key>
+                        <dict>
+                            <key>Enable</key>
+                            <string>Debug</string>
+                            <key>Persist</key>
+                            <string>Debug</string>
+                        </dict>
+                    </dict>
+                </dict>
+            </dict>
+        </dict>
+    </array>
+    <key>PayloadIdentifier</key>
+    <string>dev.tunnelforge.logging</string>
+    <key>PayloadUUID</key>
+    <string>C9D0E1F2-3456-7890-1CDE-F23456789012</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>PayloadDisplayName</key>
+    <string>TunnelForge Debug Logging</string>
+    <key>PayloadDescription</key>
+    <string>Enables full debug logging with private data visibility for TunnelForge applications. Install this profile to see complete log details instead of &lt;private&gt; tags.</string>
+    <key>PayloadOrganization</key>
+    <string>TunnelForge</string>
+</dict>
+</plist>

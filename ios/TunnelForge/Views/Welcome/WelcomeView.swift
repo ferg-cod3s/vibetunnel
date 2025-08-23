@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Welcome onboarding view for first-time users.
 ///
-/// Presents a multi-page onboarding experience that introduces VibeTunnel's features
+/// Presents a multi-page onboarding experience that introduces TunnelForge's features
 /// on iOS. The view tracks completion state to ensure it's only shown once.
 struct WelcomeView: View {
     @State private var currentPage = 0
@@ -134,7 +134,7 @@ struct WelcomeView: View {
 
 // MARK: - Individual Page Views
 
-/// First welcome page introducing VibeTunnel.
+/// First welcome page introducing TunnelForge.
 /// Displays app icon and brief description of core functionality.
 struct WelcomePageView: View {
     var body: some View {
@@ -160,7 +160,7 @@ struct WelcomePageView: View {
             .padding(.bottom, Theme.Spacing.medium)
 
             VStack(spacing: Theme.Spacing.medium) {
-                Text("Welcome to VibeTunnel")
+                Text("Welcome to TunnelForge")
                     .font(Theme.Typography.largeTitle())
                     .multilineTextAlignment(.center)
 
@@ -179,7 +179,7 @@ struct WelcomePageView: View {
 }
 
 /// Welcome page explaining server connection.
-/// Shows how to connect to a VibeTunnel server from the iOS app.
+/// Shows how to connect to a TunnelForge server from the iOS app.
 struct ConnectServerPageView: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.xlarge) {
@@ -331,7 +331,7 @@ struct GetStartedPageView: View {
                 .multilineTextAlignment(.center)
 
             VStack(spacing: Theme.Spacing.medium) {
-                Text("Start by connecting to your VibeTunnel server")
+                Text("Start by connecting to your TunnelForge server")
                     .font(Theme.Typography.terminalSystem(size: 17))
                     .foregroundColor(Theme.Colors.secondaryText)
                     .multilineTextAlignment(.center)

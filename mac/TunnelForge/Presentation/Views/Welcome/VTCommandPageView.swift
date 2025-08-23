@@ -1,17 +1,17 @@
 import SwiftUI
 
-/// Second page explaining the VT command-line tool and installation.
+/// Second page explaining the TunnelForge command-line tool and installation.
 ///
-/// This view guides users through installing the `vt` command-line tool,
+/// This view guides users through installing the `tunnelforge` command-line tool,
 /// which is essential for capturing terminal applications. It displays
 /// installation status and provides clear examples of usage.
 ///
 /// ## Topics
 ///
 /// ### Overview
-/// The VT command page includes:
+/// The TunnelForge command page includes:
 /// - Explanation of terminal app capturing
-/// - Example usage of the `vt` command
+/// - Example usage of the `tunnelforge` command
 /// - CLI tool installation button with status feedback
 /// - Error handling for installation failures
 ///
@@ -29,7 +29,7 @@ struct VTCommandPageView: View {
                     .fontWeight(.semibold)
 
                 Text(
-                    "TunnelForge can capture any terminal app or terminal.\nJust prefix it with the `vt` command and it will show up on the dashboard."
+                    "TunnelForge can capture any terminal app or terminal.\nJust prefix it with the `tunnelforge` command and it will show up on the dashboard."
                 )
                 .font(.body)
                 .foregroundColor(.secondary)
@@ -42,7 +42,7 @@ struct VTCommandPageView: View {
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
 
-                Text("vt claude  or  vt gemini")
+                Text("tunnelforge claude  or  tunnelforge gemini")
                     .font(.system(.body, design: .monospaced))
                     .foregroundColor(.primary)
                     .padding(.horizontal, 16)
@@ -61,7 +61,7 @@ struct VTCommandPageView: View {
                                     .foregroundColor(.secondary)
                             }
 
-                            Button("Update VT Command Line Tool") {
+                            Button("Update TunnelForge Command Line Tool") {
                                 Task {
                                     await cliInstaller.install()
                                 }
@@ -77,7 +77,7 @@ struct VTCommandPageView: View {
                             }
                         }
                     } else {
-                        Button("Install VT Command Line Tool") {
+                        Button("Install TunnelForge Command Line Tool") {
                             Task {
                                 await cliInstaller.install()
                             }
@@ -111,7 +111,7 @@ struct VTCommandPageView: View {
 
 // MARK: - Preview
 
-#Preview("VT Command Page") {
+#Preview("TunnelForge Command Page") {
     VTCommandPageView(cliInstaller: CLIInstaller())
         .frame(width: 640, height: 480)
         .background(Color(NSColor.windowBackgroundColor))

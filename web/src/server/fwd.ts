@@ -1,10 +1,10 @@
 #!/usr/bin/env pnpm exec tsx --no-deprecation
 
 /**
- * VibeTunnel Forward (fwd.ts)
+ * TunnelForge Forward (fwd.ts)
  *
  * A simple command-line tool that spawns a PTY session and forwards it
- * using the VibeTunnel PTY infrastructure.
+ * using the TunnelForge PTY infrastructure.
  *
  * Usage:
  *   pnpm exec tsx src/fwd.ts <command> [args...]
@@ -19,7 +19,7 @@ import { promisify } from 'util';
 import { type SessionInfo, TitleMode } from '../shared/types.js';
 import { PtyManager } from './pty/index.js';
 import { SessionManager } from './pty/session-manager.js';
-import { VibeTunnelSocketClient } from './pty/socket-client.js';
+import { TunnelForgeSocketClient } from './pty/socket-client.js';
 import { ActivityDetector } from './utils/activity-detector.js';
 import { checkAndPatchClaude } from './utils/claude-patcher.js';
 import { detectGitInfo } from './utils/git-info.js';
@@ -40,7 +40,7 @@ const logger = createLogger('fwd');
 const _execFile = promisify(require('child_process').execFile);
 
 function showUsage() {
-  console.log(chalk.blue(`VibeTunnel Forward v${VERSION}`) + chalk.gray(` (${BUILD_DATE})`));
+  console.log(chalk.blue(`TunnelForge Forward v${VERSION}`) + chalk.gray(` (${BUILD_DATE})`));
   console.log('');
   console.log('Usage:');
   console.log(
@@ -57,7 +57,7 @@ function showUsage() {
   );
   console.log('                        (defaults to error)');
   console.log('  --log-file <path>     Override default log file location');
-  console.log('                        (defaults to ~/.vibetunnel/log.txt)');
+  console.log('                        (defaults to ~/.tunnelforge/log.txt)');
   console.log('');
   console.log('Title Modes:');
   console.log('  none     - No title management (default)');
@@ -78,10 +78,10 @@ function showUsage() {
   );
   console.log('');
   console.log('Environment Variables:');
-  console.log('  VIBETUNNEL_TITLE_MODE=<mode>         Set default title mode');
-  console.log('  VIBETUNNEL_CLAUDE_DYNAMIC_TITLE=1    Force dynamic title for Claude');
-  console.log('  VIBETUNNEL_LOG_LEVEL=<level>         Set default verbosity level');
-  console.log('  VIBETUNNEL_DEBUG=1                   Enable debug mode (legacy)');
+  console.log('  TUNNELFORGE_TITLE_MODE=<mode>         Set default title mode');
+  console.log('  TUNNELFORGE_CLAUDE_DYNAMIC_TITLE=1    Force dynamic title for Claude');
+  console.log('  TUNNELFORGE_LOG_LEVEL=<level>         Set default verbosity level');
+  console.log('  TUNNELFORGE_DEBUG=1                   Enable debug mode (legacy)');
   console.log('');
   console.log('Examples:');
   console.log('  pnpm exec tsx src/fwd.ts claude --resume');
@@ -92,10 +92,10 @@ function showUsage() {
   console.log('  pnpm exec tsx src/fwd.ts --verbosity silent npm test');
   console.log('');
   console.log('The command will be spawned in the current working directory');
-  console.log('and managed through the VibeTunnel PTY infrastructure.');
+  console.log('and managed through the TunnelForge PTY infrastructure.');
 }
 
-export async function startVibeTunnelForward(args: string[]) {
+export async function startTunnelForgeForward(args: string[]) {
   // Parse verbosity from environment variables
   let verbosityLevel = parseVerbosityFromEnv();
 
@@ -111,7 +111,7 @@ export async function startVibeTunnelForward(args: string[]) {
     process.exit(0);
   }
 
-  logger.debug(chalk.blue(`VibeTunnel Forward v${VERSION}`) + chalk.gray(` (${BUILD_DATE})`));
+  logger.debug(chalk.blue(`TunnelForge Forward v${VERSION}`) + chalk.gray(` (${BUILD_DATE})`));
   logger.debug(`Full command: ${args.join(' ')}`);
 
   // Parse command line arguments
@@ -122,8 +122,8 @@ export async function startVibeTunnelForward(args: string[]) {
   let remainingArgs = args;
 
   // Check environment variables for title mode
-  if (process.env.VIBETUNNEL_TITLE_MODE) {
-    const envMode = process.env.VIBETUNNEL_TITLE_MODE.toLowerCase();
+  if (process.env.TUNNELFORGE_TITLE_MODE) {
+    const envMode = process.env.TUNNELFORGE_TITLE_MODE.toLowerCase();
     if (Object.values(TitleMode).includes(envMode as TitleMode)) {
       titleMode = envMode as TitleMode;
       logger.debug(`Title mode set from environment: ${titleMode}`);
@@ -132,8 +132,8 @@ export async function startVibeTunnelForward(args: string[]) {
 
   // Force dynamic mode for Claude via environment variable
   if (
-    process.env.VIBETUNNEL_CLAUDE_DYNAMIC_TITLE === '1' ||
-    process.env.VIBETUNNEL_CLAUDE_DYNAMIC_TITLE === 'true'
+    process.env.TUNNELFORGE_CLAUDE_DYNAMIC_TITLE === '1' ||
+    process.env.TUNNELFORGE_CLAUDE_DYNAMIC_TITLE === 'true'
   ) {
     titleMode = TitleMode.DYNAMIC;
     logger.debug('Forced dynamic title mode for Claude via environment variable');
@@ -207,7 +207,7 @@ export async function startVibeTunnelForward(args: string[]) {
     }
 
     // Initialize session manager
-    const controlPath = path.join(os.homedir(), '.vibetunnel', 'control');
+    const controlPath = path.join(os.homedir(), '.tunnelforge', 'control');
     const sessionManager = new SessionManager(controlPath);
 
     // Validate session ID format for security
@@ -247,7 +247,7 @@ export async function startVibeTunnelForward(args: string[]) {
         logger.debug(`IPC socket found, sending title update via IPC`);
 
         // Connect to IPC socket and send update-title command
-        const socketClient = new VibeTunnelSocketClient(socketPath, {
+        const socketClient = new TunnelForgeSocketClient(socketPath, {
           autoReconnect: false, // One-shot operation
         });
 
@@ -302,7 +302,7 @@ export async function startVibeTunnelForward(args: string[]) {
   }
 
   // Check if this is Claude and patch it if necessary (only in debug mode)
-  if (process.env.VIBETUNNEL_DEBUG === '1' || process.env.VIBETUNNEL_DEBUG === 'true') {
+  if (process.env.TUNNELFORGE_DEBUG === '1' || process.env.TUNNELFORGE_DEBUG === 'true') {
     const patchedCommand = checkAndPatchClaude(command);
     if (patchedCommand !== command) {
       command = patchedCommand;
@@ -324,7 +324,7 @@ export async function startVibeTunnelForward(args: string[]) {
   const cwd = process.cwd();
 
   // Initialize PTY manager with fallback support
-  const controlPath = path.join(os.homedir(), '.vibetunnel', 'control');
+  const controlPath = path.join(os.homedir(), '.tunnelforge', 'control');
   logger.debug(`Control path: ${controlPath}`);
 
   // Initialize PtyManager before creating instance
@@ -338,7 +338,7 @@ export async function startVibeTunnelForward(args: string[]) {
 
   // Store original terminal dimensions
   // For external spawns, wait a moment for terminal to fully initialize
-  const isExternalSpawn = process.env.VIBETUNNEL_SESSION_ID !== undefined;
+  const isExternalSpawn = process.env.TUNNELFORGE_SESSION_ID !== undefined;
 
   let originalCols: number | undefined;
   let originalRows: number | undefined;
@@ -411,7 +411,7 @@ export async function startVibeTunnelForward(args: string[]) {
 
         // Show exit message
         logger.log(
-          chalk.yellow(`\n✓ VibeTunnel session ended`) + chalk.gray(` (exit code: ${exitCode})`)
+          chalk.yellow(`\n✓ TunnelForge session ended`) + chalk.gray(` (exit code: ${exitCode})`)
         );
 
         // Remove resize listener
@@ -476,14 +476,14 @@ export async function startVibeTunnelForward(args: string[]) {
       throw new Error('Session not found after creation');
     }
     // Log session info with version
-    logger.log(chalk.green(`✓ VibeTunnel session started`) + chalk.gray(` (v${VERSION})`));
+    logger.log(chalk.green(`✓ TunnelForge session started`) + chalk.gray(` (v${VERSION})`));
     logger.log(chalk.gray('Command:'), command.join(' '));
     logger.log(chalk.gray('Control directory:'), path.join(controlPath, result.sessionId));
     logger.log(chalk.gray('Build:'), `${BUILD_DATE} | Commit: ${GIT_COMMIT}`);
 
     // Connect to the session's IPC socket
     const socketPath = path.join(controlPath, result.sessionId, 'ipc.sock');
-    const socketClient = new VibeTunnelSocketClient(socketPath, {
+    const socketClient = new TunnelForgeSocketClient(socketPath, {
       autoReconnect: true,
       heartbeatInterval: 30000, // 30 seconds
     });

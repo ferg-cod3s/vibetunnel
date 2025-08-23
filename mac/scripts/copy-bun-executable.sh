@@ -36,15 +36,15 @@ if [ ! -d "$NATIVE_DIR" ]; then
 fi
 
 # Check if executable exists
-if [ ! -f "$NATIVE_DIR/vibetunnel" ]; then
-    echo -e "${YELLOW}Warning: Executable not found at $NATIVE_DIR/vibetunnel${NC}"
+if [ ! -f "$NATIVE_DIR/tunnelforge" ]; then
+    echo -e "${YELLOW}Warning: Executable not found at $NATIVE_DIR/tunnelforge${NC}"
     exit 0
 fi
 
 # Copy executable
 echo "Copying executable..."
-cp "$NATIVE_DIR/vibetunnel" "$DEST_RESOURCES/"
-chmod +x "$DEST_RESOURCES/vibetunnel"
+cp "$NATIVE_DIR/tunnelforge" "$DEST_RESOURCES/"
+chmod +x "$DEST_RESOURCES/tunnelforge"
 
 # Copy native modules
 if [ -f "$NATIVE_DIR/pty.node" ]; then
@@ -62,4 +62,4 @@ echo -e "${GREEN}✓ Executable and native modules copied successfully${NC}"
 
 # Verify the files
 echo "Verifying copied files:"
-ls -la "$DEST_RESOURCES/vibetunnel" "$DEST_RESOURCES/pty.node" "$DEST_RESOURCES/spawn-helper" 2>/dev/null || true
+ls -la "$DEST_RESOURCES/tunnelforge" "$DEST_RESOURCES/pty.node" "$DEST_RESOURCES/spawn-helper" 2>/dev/null || true

@@ -66,9 +66,9 @@ if [ -f "$PACKAGE_JSON" ]; then
 fi
 
 # Test 7: Basic functionality test (help command)
-# Skip if already inside a VibeTunnel session (recursive sessions not supported)
-if [ -n "$VIBETUNNEL_SESSION_ID" ]; then
-    echo "⚠️  Skipping vt --help test (already inside VibeTunnel session)"
+# Skip if already inside a TunnelForge session (recursive sessions not supported)
+if [ -n "$TUNNELFORGE_SESSION_ID" ]; then
+    echo "⚠️  Skipping vt --help test (already inside TunnelForge session)"
 else
     # Use gtimeout if available, otherwise skip timeout
     if command -v gtimeout >/dev/null 2>&1; then

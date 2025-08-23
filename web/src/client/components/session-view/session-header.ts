@@ -64,7 +64,7 @@ export class SessionHeader extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     // Load saved theme preference
-    const saved = localStorage.getItem('vibetunnel-theme');
+    const saved = localStorage.getItem('tunnelforge-theme');
     this.currentTheme = (saved as 'light' | 'dark' | 'system') || 'system';
 
     // Setup resize observer for responsive button switching

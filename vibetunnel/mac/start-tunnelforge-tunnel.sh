@@ -9,7 +9,7 @@ echo "🔥 Starting TunnelForge with Cloudflare Tunnel..."
 if ! pgrep -f "TunnelForge" > /dev/null; then
     echo "🚀 Starting TunnelForge Mac app..."
     open "/Applications/TunnelForge.app" 2>/dev/null || \
-    open "/Users/$USER/Library/Developer/Xcode/DerivedData/VibeTunnel-*/Build/Products/Debug/VibeTunnel.app" 2>/dev/null || \
+    open "/Users/$USER/Library/Developer/Xcode/DerivedData/TunnelForge-*/Build/Products/Debug/TunnelForge.app" 2>/dev/null || \
     echo "⚠️  Please start TunnelForge manually"
     
     # Wait for TunnelForge to start

@@ -290,10 +290,10 @@ export class UIStateManager {
 
     // Save preference
     try {
-      const stored = localStorage.getItem('vibetunnel_app_preferences');
+      const stored = localStorage.getItem('tunnelforge_app_preferences');
       const preferences = stored ? JSON.parse(stored) : {};
       preferences.useDirectKeyboard = this.state.useDirectKeyboard;
-      localStorage.setItem('vibetunnel_app_preferences', JSON.stringify(preferences));
+      localStorage.setItem('tunnelforge_app_preferences', JSON.stringify(preferences));
 
       // Emit preference change event
       window.dispatchEvent(
@@ -318,7 +318,7 @@ export class UIStateManager {
   // Load preferences
   loadDirectKeyboardPreference(): void {
     try {
-      const stored = localStorage.getItem('vibetunnel_app_preferences');
+      const stored = localStorage.getItem('tunnelforge_app_preferences');
       if (stored) {
         const preferences = JSON.parse(stored);
         this.state.useDirectKeyboard = preferences.useDirectKeyboard ?? true; // Default to true

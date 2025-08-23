@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# VibeTunnel Migration Validation Runner
+# TunnelForge Migration Validation Runner
 # Comprehensive test suite for migration readiness
 
 set -euo pipefail
@@ -31,7 +31,7 @@ init_logging() {
     mkdir -p "$LOG_DIR"
     > "$LOG_DIR/validation.log"
     
-    log "${BLUE}🧪 VibeTunnel Migration Validation${NC}"
+    log "${BLUE}🧪 TunnelForge Migration Validation${NC}"
     log "${BLUE}===================================${NC}"
 }
 
@@ -253,7 +253,7 @@ generate_report() {
     
     # Create detailed report
     {
-        echo "# VibeTunnel Migration Validation Report"
+        echo "# TunnelForge Migration Validation Report"
         echo ""
         echo "**Generated:** $(date)"
         echo "**Score:** $VALIDATION_SCORE / $MAX_VALIDATION_SCORE ($pass_percentage%)"
@@ -312,7 +312,7 @@ generate_report() {
         echo ""
         
         echo "---"
-        echo "*VibeTunnel Migration Validation - $(date)*"
+        echo "*TunnelForge Migration Validation - $(date)*"
         
     } > "$REPORT_FILE"
 }

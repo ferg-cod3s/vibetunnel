@@ -1,31 +1,31 @@
 <!-- Generated: 2025-06-21 17:45:00 UTC -->
-# VibeTunnel Project Overview
+# TunnelForge Project Overview
 
-VibeTunnel turns any browser into a terminal for your Mac, enabling remote access to command-line tools and AI agents from any device. Built for developers who need to monitor long-running processes, check on AI coding assistants, or share terminal sessions without complex SSH setups.
+TunnelForge turns any browser into a terminal for your Mac, enabling remote access to command-line tools and AI agents from any device. Built for developers who need to monitor long-running processes, check on AI coding assistants, or share terminal sessions without complex SSH setups.
 
 The project provides a native macOS menu bar application that runs a local HTTP server with WebSocket support for real-time terminal streaming. Users can access their terminals through a responsive web interface at `http://localhost:4020`, with optional secure remote access via Tailscale or ngrok integration.
 
 ## Key Files
 
 **Main Entry Points**
-- `mac/VibeTunnel/VibeTunnelApp.swift` - macOS app entry point with menu bar integration
-- `ios/VibeTunnel/App/VibeTunnelApp.swift` - iOS companion app entry  
+- `mac/TunnelForge/TunnelForgeApp.swift` - macOS app entry point with menu bar integration
+- `ios/TunnelForge/App/TunnelForgeApp.swift` - iOS companion app entry  
 - `web/src/index.ts` - Node.js server entry point for terminal forwarding
-- `mac/VibeTunnel/Utilities/CLIInstaller.swift` - CLI tool (`vt`) installer
+- `mac/TunnelForge/Utilities/CLIInstaller.swift` - CLI tool (`vt`) installer
 
 **Core Configuration**
 - `web/package.json` - Node.js dependencies and build scripts
-- `mac/VibeTunnel.xcodeproj/project.pbxproj` - Xcode project configuration
-- `mac/VibeTunnel/version.xcconfig` - Version management
+- `mac/TunnelForge.xcodeproj/project.pbxproj` - Xcode project configuration
+- `mac/TunnelForge/version.xcconfig` - Version management
 - `apple/Local.xcconfig.template` - Developer configuration template
 
 ## Technology Stack
 
 **macOS Application** - Native Swift/SwiftUI app
-- Menu bar app: `mac/VibeTunnel/Presentation/Views/MenuBarView.swift`
-- Server management: `mac/VibeTunnel/Core/Services/ServerManager.swift` 
-- Session monitoring: `mac/VibeTunnel/Core/Services/SessionMonitor.swift`
-- Terminal operations: `mac/VibeTunnel/Core/Services/TerminalManager.swift`
+- Menu bar app: `mac/TunnelForge/Presentation/Views/MenuBarView.swift`
+- Server management: `mac/TunnelForge/Core/Services/ServerManager.swift` 
+- Session monitoring: `mac/TunnelForge/Core/Services/SessionMonitor.swift`
+- Terminal operations: `mac/TunnelForge/Core/Services/TerminalManager.swift`
 - Sparkle framework for auto-updates
 
 **Web Server** - Node.js/TypeScript with Bun runtime
@@ -41,9 +41,9 @@ The project provides a native macOS menu bar application that runs a local HTTP 
 - Build system: esbuild bundler
 
 **iOS Application** - SwiftUI companion app
-- Connection management: `ios/VibeTunnel/App/VibeTunnelApp.swift` (lines 40-107)
-- Terminal viewer: `ios/VibeTunnel/Views/Terminal/TerminalView.swift`
-- WebSocket client: `ios/VibeTunnel/Services/BufferWebSocketClient.swift`
+- Connection management: `ios/TunnelForge/App/TunnelForgeApp.swift` (lines 40-107)
+- Terminal viewer: `ios/TunnelForge/Views/Terminal/TerminalView.swift`
+- WebSocket client: `ios/TunnelForge/Services/BufferWebSocketClient.swift`
 
 ## Platform Support
 
@@ -57,13 +57,13 @@ The project provides a native macOS menu bar application that runs a local HTTP 
 - Any Linux distribution with Node.js 20+
 - Runs as standalone server via npm package
 - No GUI required - perfect for VPS/cloud deployments
-- Install: `npm install -g vibetunnel`
-- Run: `vibetunnel-server`
+- Install: `npm install -g tunnelforge`
+- Run: `tunnelforge-server`
 
 **iOS Requirements**  
 - iOS 17.0+
 - iPhone or iPad
-- Network access to VibeTunnel server
+- Network access to TunnelForge server
 
 **Browser Support**
 - Modern browsers with WebSocket support
@@ -76,8 +76,8 @@ The project provides a native macOS menu bar application that runs a local HTTP 
 - Supports macOS, Linux, and headless environments
 
 **Key Platform Files**
-- macOS app bundle: `mac/VibeTunnel.xcodeproj`
-- iOS app: `ios/VibeTunnel.xcodeproj`  
+- macOS app bundle: `mac/TunnelForge.xcodeproj`
+- iOS app: `ios/TunnelForge.xcodeproj`  
 - Web server: `web/` directory with TypeScript source
 - CLI tool: Installed to `/usr/local/bin/vt` (macOS only)
-- npm package: `vibetunnel` on npm registry
+- npm package: `tunnelforge` on npm registry

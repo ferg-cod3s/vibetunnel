@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# VibeTunnel Server Cleanup Script
-echo "🧹 Cleaning up VibeTunnel development servers..."
+# TunnelForge Server Cleanup Script
+echo "🧹 Cleaning up TunnelForge development servers..."
 
 # Colors for output
 RED='\033[0;31m'
@@ -50,13 +50,13 @@ kill_processes() {
 kill_processes "go run cmd/server/main.go" "Go server"
 kill_processes "bun run.*dev" "Bun development server"
 kill_processes "bun.*server.ts" "Bun web server"
-kill_processes "vibetunnel-server" "Go server binary"
+kill_processes "tunnelforge-server" "Go server binary"
 
 # Wait a moment for cleanup
 sleep 1
 
 # Check for any remaining processes (excluding Node.js server on port 3000)
-print_status "Checking for remaining VibeTunnel development processes..."
+print_status "Checking for remaining TunnelForge development processes..."
 remaining=$(ps aux | grep -E "(go run cmd/server|bun.*server)" | grep -v grep | grep -v cleanup-servers.sh)
 
 if [ -n "$remaining" ]; then
@@ -65,7 +65,7 @@ if [ -n "$remaining" ]; then
     echo ""
     print_status "You may need to manually kill these processes"
 else
-    print_success "All VibeTunnel development servers have been cleaned up!"
+    print_success "All TunnelForge development servers have been cleaned up!"
 fi
 
 # Show current port usage for common development ports
@@ -83,4 +83,4 @@ done
 
 echo ""
 print_success "Development server cleanup completed!"
-print_status "Node.js VibeTunnel server on port 3000 was preserved"
+print_status "Node.js TunnelForge server on port 3000 was preserved"

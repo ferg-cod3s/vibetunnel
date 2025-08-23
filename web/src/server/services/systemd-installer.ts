@@ -11,8 +11,8 @@ const BLUE = '\x1b[0;34m';
 const NC = '\x1b[0m'; // No Color
 
 // Configuration
-const SERVICE_NAME = 'vibetunnel';
-const SERVICE_FILE = 'vibetunnel.service';
+const SERVICE_NAME = 'tunnelforge';
+const SERVICE_FILE = 'tunnelforge.service';
 
 // Get the current user (regular user only, no sudo/root)
 function getCurrentUser(): { username: string; home: string } {
@@ -35,13 +35,13 @@ function printError(message: string): void {
   console.log(`${RED}[ERROR]${NC} ${message}`);
 }
 
-// Create a stable wrapper script that can find vibetunnel regardless of node version manager
+// Create a stable wrapper script that can find tunnelforge regardless of node version manager
 function createVibetunnelWrapper(): string {
   const { username, home } = getCurrentUser();
-  const wrapperPath = `${home}/.local/bin/vibetunnel-systemd`;
+  const wrapperPath = `${home}/.local/bin/tunnelforge-systemd`;
   const wrapperContent = `#!/bin/bash
-# VibeTunnel Systemd Wrapper Script
-# This script finds and executes vibetunnel for user: ${username}
+# TunnelForge Systemd Wrapper Script
+# This script finds and executes tunnelforge for user: ${username}
 
 # Function to log messages
 log_info() {
@@ -56,12 +56,12 @@ log_error() {
 export HOME="${home}"
 export USER="${username}"
 
-# Try to find vibetunnel in various ways
-find_vibetunnel() {
-    # Method 1: Check if vibetunnel is in PATH
-    if command -v vibetunnel >/dev/null 2>&1; then
-        log_info "Found vibetunnel in PATH"
-        vibetunnel "$@"
+# Try to find tunnelforge in various ways
+find_tunnelforge() {
+    # Method 1: Check if tunnelforge is in PATH
+    if command -v tunnelforge >/dev/null 2>&1; then
+        log_info "Found tunnelforge in PATH"
+        tunnelforge "$@"
         return $?
     fi
     
@@ -70,9 +70,9 @@ find_vibetunnel() {
         log_info "Checking nvm installation for user ${username}"
         export NVM_DIR="${home}/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-        if command -v vibetunnel >/dev/null 2>&1; then
-            log_info "Found vibetunnel via nvm"
-            vibetunnel "$@"
+        if command -v tunnelforge >/dev/null 2>&1; then
+            log_info "Found tunnelforge via nvm"
+            tunnelforge "$@"
             return $?
         fi
     fi
@@ -87,9 +87,9 @@ find_vibetunnel() {
         eval "$("${home}/.local/share/fnm/fnm" env --shell bash)" 2>/dev/null || true
         # Try to use the default node version or current version
         "${home}/.local/share/fnm/fnm" use default >/dev/null 2>&1 || "${home}/.local/share/fnm/fnm" use current >/dev/null 2>&1 || true
-        if command -v vibetunnel >/dev/null 2>&1; then
-            log_info "Found vibetunnel via fnm"
-            vibetunnel "$@"
+        if command -v tunnelforge >/dev/null 2>&1; then
+            log_info "Found tunnelforge via fnm"
+            tunnelforge "$@"
             return $?
         fi
     fi
@@ -99,9 +99,9 @@ find_vibetunnel() {
         if [ -x "$npm_bin" ]; then
             log_info "Trying npm global with $npm_bin"
             NPM_PREFIX=$("$npm_bin" config get prefix 2>/dev/null)
-            if [ -n "$NPM_PREFIX" ] && [ -x "$NPM_PREFIX/bin/vibetunnel" ]; then
-                log_info "Found vibetunnel via npm global: $NPM_PREFIX/bin/vibetunnel"
-                "$NPM_PREFIX/bin/vibetunnel" "$@"
+            if [ -n "$NPM_PREFIX" ] && [ -x "$NPM_PREFIX/bin/tunnelforge" ]; then
+                log_info "Found tunnelforge via npm global: $NPM_PREFIX/bin/tunnelforge"
+                "$NPM_PREFIX/bin/tunnelforge" "$@"
                 return $?
             fi
         fi
@@ -110,9 +110,9 @@ find_vibetunnel() {
     # Method 5: Try to run with node directly using global npm package
     for node_bin in "/usr/local/bin/node" "/usr/bin/node" "/opt/homebrew/bin/node"; do
         if [ -x "$node_bin" ]; then
-            for script_path in "/usr/local/lib/node_modules/vibetunnel/dist/cli.js" "/usr/lib/node_modules/vibetunnel/dist/cli.js"; do
+            for script_path in "/usr/local/lib/node_modules/tunnelforge/dist/cli.js" "/usr/lib/node_modules/tunnelforge/dist/cli.js"; do
                 if [ -f "$script_path" ]; then
-                    log_info "Running vibetunnel via node: $node_bin $script_path"
+                    log_info "Running tunnelforge via node: $node_bin $script_path"
                     "$node_bin" "$script_path" "$@"
                     return $?
                 fi
@@ -120,13 +120,13 @@ find_vibetunnel() {
         fi
     done
     
-    log_error "Could not find vibetunnel installation for user ${username}"
-    log_error "Please ensure vibetunnel is installed globally: npm install -g vibetunnel"
+    log_error "Could not find tunnelforge installation for user ${username}"
+    log_error "Please ensure tunnelforge is installed globally: npm install -g tunnelforge"
     return 1
 }
 
 # Execute the function with all arguments
-find_vibetunnel "$@"
+find_tunnelforge "$@"
 `;
 
   try {
@@ -149,15 +149,15 @@ find_vibetunnel "$@"
   }
 }
 
-// Verify that vibetunnel is accessible and return wrapper path
+// Verify that tunnelforge is accessible and return wrapper path
 function checkVibetunnelAndCreateWrapper(): string {
-  // First, verify that vibetunnel is actually installed somewhere
+  // First, verify that tunnelforge is actually installed somewhere
   try {
-    const vibetunnelPath = execSync('which vibetunnel', { encoding: 'utf8', stdio: 'pipe' }).trim();
-    printInfo(`Found VibeTunnel at: ${vibetunnelPath}`);
+    const tunnelforgePath = execSync('which tunnelforge', { encoding: 'utf8', stdio: 'pipe' }).trim();
+    printInfo(`Found TunnelForge at: ${tunnelforgePath}`);
   } catch (_error) {
-    printError('VibeTunnel is not installed or not accessible. Please install it first:');
-    console.log('  npm install -g vibetunnel');
+    printError('TunnelForge is not installed or not accessible. Please install it first:');
+    console.log('  npm install -g tunnelforge');
     process.exit(1);
   }
 
@@ -168,7 +168,7 @@ function checkVibetunnelAndCreateWrapper(): string {
 // Remove wrapper script during uninstall
 function removeVibetunnelWrapper(): void {
   const { home } = getCurrentUser();
-  const wrapperPath = `${home}/.local/bin/vibetunnel-systemd`;
+  const wrapperPath = `${home}/.local/bin/tunnelforge-systemd`;
   try {
     if (existsSync(wrapperPath)) {
       unlinkSync(wrapperPath);
@@ -182,19 +182,19 @@ function removeVibetunnelWrapper(): void {
 // No need to create users or directories - using current user
 
 // Get the systemd service template
-function getServiceTemplate(vibetunnelPath: string): string {
+function getServiceTemplate(tunnelforgePath: string): string {
   const { home } = getCurrentUser();
 
   return `[Unit]
-Description=VibeTunnel - Terminal sharing server with web interface
-Documentation=https://github.com/amantus-ai/vibetunnel
+Description=TunnelForge - Terminal sharing server with web interface
+Documentation=https://github.com/amantus-ai/tunnelforge
 After=network.target
 Wants=network.target
 
 [Service]
 Type=simple
 WorkingDirectory=${home}
-ExecStart=${vibetunnelPath} --port 4020 --bind 0.0.0.0
+ExecStart=${tunnelforgePath} --port 4020 --bind 0.0.0.0
 Restart=always
 RestartSec=10
 StandardOutput=journal
@@ -203,7 +203,7 @@ SyslogIdentifier=${SERVICE_NAME}
 
 # Environment - preserve user environment for node version managers
 Environment=NODE_ENV=production
-Environment=VIBETUNNEL_LOG_LEVEL=info
+Environment=TUNNELFORGE_LOG_LEVEL=info
 Environment=HOME=%h
 Environment=USER=%i
 
@@ -217,12 +217,12 @@ WantedBy=default.target`;
 }
 
 // Install systemd service
-function installService(vibetunnelPath: string): void {
+function installService(tunnelforgePath: string): void {
   printInfo('Installing user systemd service...');
 
   const { home } = getCurrentUser();
   const systemdDir = `${home}/.config/systemd/user`;
-  const serviceContent = getServiceTemplate(vibetunnelPath);
+  const serviceContent = getServiceTemplate(tunnelforgePath);
   const servicePath = join(systemdDir, SERVICE_FILE);
 
   try {
@@ -269,7 +269,7 @@ function configureService(): void {
 function showUsage(): void {
   const { username, home } = getCurrentUser();
 
-  printSuccess('VibeTunnel systemd service installation completed!');
+  printSuccess('TunnelForge systemd service installation completed!');
   console.log('');
   console.log('Usage:');
   console.log(`  systemctl --user start ${SERVICE_NAME}     # Start the service`);
@@ -288,7 +288,7 @@ function showUsage(): void {
   console.log('  Web interface: http://localhost:4020');
   console.log(`  Service runs as user: ${username}`);
   console.log(`  Working directory: ${home}`);
-  console.log(`  Wrapper script: ${home}/.local/bin/vibetunnel-systemd`);
+  console.log(`  Wrapper script: ${home}/.local/bin/tunnelforge-systemd`);
   console.log('');
   console.log(`To customize the service, edit: ${home}/.config/systemd/user/${SERVICE_FILE}`);
   console.log(
@@ -298,7 +298,7 @@ function showUsage(): void {
 
 // Uninstall function
 function uninstallService(): void {
-  printInfo('Uninstalling VibeTunnel user systemd service...');
+  printInfo('Uninstalling TunnelForge user systemd service...');
 
   try {
     // Stop and disable user service
@@ -338,7 +338,7 @@ function uninstallService(): void {
     printInfo('Note: User lingering is still enabled. To disable:');
     console.log(`  loginctl disable-linger ${username}`);
 
-    printSuccess('VibeTunnel user systemd service uninstalled');
+    printSuccess('TunnelForge user systemd service uninstalled');
   } catch (error) {
     printError(`Failed to uninstall service: ${error}`);
     process.exit(1);
@@ -364,7 +364,7 @@ function checkServiceStatus(): void {
 function checkNotRoot(): void {
   if (process.getuid && process.getuid() === 0) {
     printError('This installer must NOT be run as root!');
-    printError('VibeTunnel systemd service should run as a regular user for security.');
+    printError('TunnelForge systemd service should run as a regular user for security.');
     printError('Please run this command as a regular user (without sudo).');
     process.exit(1);
   }
@@ -377,7 +377,7 @@ export function installSystemdService(action: string = 'install'): void {
 
   switch (action) {
     case 'install': {
-      printInfo('Installing VibeTunnel user systemd service...');
+      printInfo('Installing TunnelForge user systemd service...');
 
       const wrapperPath = checkVibetunnelAndCreateWrapper();
       installService(wrapperPath);
@@ -396,9 +396,9 @@ export function installSystemdService(action: string = 'install'): void {
       break;
 
     default:
-      console.log('Usage: vibetunnel systemd [install|uninstall|status]');
-      console.log('  install   - Install VibeTunnel user systemd service (default)');
-      console.log('  uninstall - Remove VibeTunnel user systemd service');
+      console.log('Usage: tunnelforge systemd [install|uninstall|status]');
+      console.log('  install   - Install TunnelForge user systemd service (default)');
+      console.log('  uninstall - Remove TunnelForge user systemd service');
       console.log('  status    - Check service status');
       process.exit(1);
   }

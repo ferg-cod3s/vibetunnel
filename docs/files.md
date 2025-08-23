@@ -1,10 +1,10 @@
 <!-- Generated: 2025-06-21 00:00:00 UTC -->
 
-# VibeTunnel Files Catalog
+# TunnelForge Files Catalog
 
 ## Overview
 
-VibeTunnel is a cross-platform terminal sharing application organized into distinct platform modules: macOS native app, iOS companion app, and a TypeScript web server. The codebase follows a clear separation of concerns with platform-specific implementations sharing common protocols and interfaces.
+TunnelForge is a cross-platform terminal sharing application organized into distinct platform modules: macOS native app, iOS companion app, and a TypeScript web server. The codebase follows a clear separation of concerns with platform-specific implementations sharing common protocols and interfaces.
 
 The project structure emphasizes modularity with separate build systems for each platform - Xcode projects for Apple platforms and Node.js/TypeScript tooling for the web server. Configuration is managed through xcconfig files, Package.swift manifests, and package.json files.
 
@@ -13,53 +13,53 @@ The project structure emphasizes modularity with separate build systems for each
 ### macOS Application (mac/)
 
 **Main Entry Points**
-- `VibeTunnel/VibeTunnelApp.swift` - macOS app entry point with lifecycle management
-- `VibeTunnel/Core/Protocols/VibeTunnelServer.swift` - Server protocol definition
-- `VibeTunnel/Core/Services/ServerManager.swift` - Central server orchestration
+- `TunnelForge/TunnelForgeApp.swift` - macOS app entry point with lifecycle management
+- `TunnelForge/Core/Protocols/TunnelForgeServer.swift` - Server protocol definition
+- `TunnelForge/Core/Services/ServerManager.swift` - Central server orchestration
 
 **Core Services**
-- `VibeTunnel/Core/Services/BunServer.swift` - Bun runtime server implementation
-- `VibeTunnel/Core/Services/BaseProcessServer.swift` - Base server process management
-- `VibeTunnel/Core/Services/TTYForwardManager.swift` - Terminal forwarding coordinator
-- `VibeTunnel/Core/Services/TerminalManager.swift` - Terminal app integration
-- `VibeTunnel/Core/Services/SessionMonitor.swift` - Session lifecycle tracking
-- `VibeTunnel/Core/Services/NgrokService.swift` - Tunnel service integration
-- `VibeTunnel/Core/Services/WindowTracker.swift` - Window state management
+- `TunnelForge/Core/Services/BunServer.swift` - Bun runtime server implementation
+- `TunnelForge/Core/Services/BaseProcessServer.swift` - Base server process management
+- `TunnelForge/Core/Services/TTYForwardManager.swift` - Terminal forwarding coordinator
+- `TunnelForge/Core/Services/TerminalManager.swift` - Terminal app integration
+- `TunnelForge/Core/Services/SessionMonitor.swift` - Session lifecycle tracking
+- `TunnelForge/Core/Services/NgrokService.swift` - Tunnel service integration
+- `TunnelForge/Core/Services/WindowTracker.swift` - Window state management
 
 **Security & Permissions**
-- `VibeTunnel/Core/Services/DashboardKeychain.swift` - Secure credential storage
-- `VibeTunnel/Core/Services/AccessibilityPermissionManager.swift` - Accessibility permissions
-- `VibeTunnel/Core/Services/ScreenRecordingPermissionManager.swift` - Screen recording permissions
-- `VibeTunnel/Core/Services/AppleScriptPermissionManager.swift` - AppleScript permissions
+- `TunnelForge/Core/Services/DashboardKeychain.swift` - Secure credential storage
+- `TunnelForge/Core/Services/AccessibilityPermissionManager.swift` - Accessibility permissions
+- `TunnelForge/Core/Services/ScreenRecordingPermissionManager.swift` - Screen recording permissions
+- `TunnelForge/Core/Services/AppleScriptPermissionManager.swift` - AppleScript permissions
 
 **UI Components**
-- `VibeTunnel/Presentation/Views/MenuBarView.swift` - Menu bar interface
-- `VibeTunnel/Presentation/Views/WelcomeView.swift` - Onboarding flow
-- `VibeTunnel/Presentation/Views/SettingsView.swift` - Settings window
-- `VibeTunnel/Presentation/Views/SessionDetailView.swift` - Session detail view
+- `TunnelForge/Presentation/Views/MenuBarView.swift` - Menu bar interface
+- `TunnelForge/Presentation/Views/WelcomeView.swift` - Onboarding flow
+- `TunnelForge/Presentation/Views/SettingsView.swift` - Settings window
+- `TunnelForge/Presentation/Views/SessionDetailView.swift` - Session detail view
 
 ### iOS Application (ios/)
 
 **Main Entry Points**
-- `VibeTunnel/App/VibeTunnelApp.swift` - iOS app entry point
-- `VibeTunnel/App/ContentView.swift` - Root content view
+- `TunnelForge/App/TunnelForgeApp.swift` - iOS app entry point
+- `TunnelForge/App/ContentView.swift` - Root content view
 
 **Services**
-- `VibeTunnel/Services/APIClient.swift` - HTTP API client
-- `VibeTunnel/Services/BufferWebSocketClient.swift` - WebSocket terminal client
-- `VibeTunnel/Services/SessionService.swift` - Session management
-- `VibeTunnel/Services/NetworkMonitor.swift` - Network connectivity
+- `TunnelForge/Services/APIClient.swift` - HTTP API client
+- `TunnelForge/Services/BufferWebSocketClient.swift` - WebSocket terminal client
+- `TunnelForge/Services/SessionService.swift` - Session management
+- `TunnelForge/Services/NetworkMonitor.swift` - Network connectivity
 
 **Terminal Views**
-- `VibeTunnel/Views/Terminal/TerminalView.swift` - Main terminal view
-- `VibeTunnel/Views/Terminal/TerminalHostingView.swift` - SwiftTerm hosting
-- `VibeTunnel/Views/Terminal/TerminalToolbar.swift` - Terminal controls
-- `VibeTunnel/Views/Terminal/CastPlayerView.swift` - Recording playback
+- `TunnelForge/Views/Terminal/TerminalView.swift` - Main terminal view
+- `TunnelForge/Views/Terminal/TerminalHostingView.swift` - SwiftTerm hosting
+- `TunnelForge/Views/Terminal/TerminalToolbar.swift` - Terminal controls
+- `TunnelForge/Views/Terminal/CastPlayerView.swift` - Recording playback
 
 **Data Models**
-- `VibeTunnel/Models/Session.swift` - Terminal session model
-- `VibeTunnel/Models/TerminalData.swift` - Terminal buffer data
-- `VibeTunnel/Models/ServerConfig.swift` - Server configuration
+- `TunnelForge/Models/Session.swift` - Terminal session model
+- `TunnelForge/Models/TerminalData.swift` - Terminal buffer data
+- `TunnelForge/Models/ServerConfig.swift` - Server configuration
 
 ### Web Server (web/)
 
@@ -89,15 +89,15 @@ The project structure emphasizes modularity with separate build systems for each
 
 ### macOS Platform Files
 - `apple/Local.xcconfig` - Local build configuration
-- `mac/VibeTunnel/Shared.xcconfig` - Shared build settings
-- `mac/VibeTunnel/version.xcconfig` - Version configuration
-- `mac/VibeTunnel.entitlements` - App entitlements
-- `mac/VibeTunnel-Info.plist` - App metadata
+- `mac/TunnelForge/Shared.xcconfig` - Shared build settings
+- `mac/TunnelForge/version.xcconfig` - Version configuration
+- `mac/TunnelForge.entitlements` - App entitlements
+- `mac/TunnelForge-Info.plist` - App metadata
 
 ### iOS Platform Files
 - `ios/Package.swift` - Swift package manifest
 - `ios/project.yml` - XcodeGen configuration
-- `ios/VibeTunnel/Resources/Info.plist` - iOS app metadata
+- `ios/TunnelForge/Resources/Info.plist` - iOS app metadata
 
 ### Web Platform Files
 - `web/package.json` - Node.js dependencies
@@ -123,22 +123,22 @@ The project structure emphasizes modularity with separate build systems for each
 - `web/build-native.js` - Native binary builder
 
 ### Configuration Files
-- `mac/VibeTunnel.xcodeproj/project.pbxproj` - Xcode project
-- `ios/VibeTunnel.xcodeproj/project.pbxproj` - iOS Xcode project
+- `mac/TunnelForge.xcodeproj/project.pbxproj` - Xcode project
+- `ios/TunnelForge.xcodeproj/project.pbxproj` - iOS Xcode project
 - `web/eslint.config.js` - ESLint configuration
 - `web/vitest.config.ts` - Test configuration
 
 ## Configuration
 
 ### App Configuration
-- `mac/VibeTunnel/Core/Models/AppConstants.swift` - App constants
-- `mac/VibeTunnel/Core/Models/UpdateChannel.swift` - Update channels
-- `ios/VibeTunnel/Models/ServerConfig.swift` - Server settings
+- `mac/TunnelForge/Core/Models/AppConstants.swift` - App constants
+- `mac/TunnelForge/Core/Models/UpdateChannel.swift` - Update channels
+- `ios/TunnelForge/Models/ServerConfig.swift` - Server settings
 
 ### Assets & Resources
 - `assets/AppIcon.icon/` - App icon assets
-- `mac/VibeTunnel/Assets.xcassets/` - macOS asset catalog
-- `ios/VibeTunnel/Resources/Assets.xcassets/` - iOS asset catalog
+- `mac/TunnelForge/Assets.xcassets/` - macOS asset catalog
+- `ios/TunnelForge/Resources/Assets.xcassets/` - iOS asset catalog
 - `web/public/` - Web static assets
 
 ### Documentation

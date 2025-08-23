@@ -1,4 +1,4 @@
-# VibeTunnel Logging Style Guide
+# TunnelForge Logging Style Guide
 
 ## Logging style
 

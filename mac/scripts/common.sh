@@ -238,12 +238,12 @@ version_compare() {
 
 # Safe temporary file/directory creation
 create_temp_file() {
-    local prefix="${1:-vibetunnel}"
+    local prefix="${1:-tunnelforge}"
     mktemp -t "${prefix}.XXXXXX"
 }
 
 create_temp_dir() {
-    local prefix="${1:-vibetunnel}"
+    local prefix="${1:-tunnelforge}"
     mktemp -d -t "${prefix}.XXXXXX"
 }
 

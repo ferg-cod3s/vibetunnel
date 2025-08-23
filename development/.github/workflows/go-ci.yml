@@ -133,13 +133,13 @@ jobs:
         GOARCH: ${{ matrix.goarch }}
       run: |
         VERSION=$(git describe --tags --always --dirty 2>/dev/null || echo 'dev')
-        BINARY_NAME="vibetunnel-${{ matrix.goos }}-${{ matrix.goarch }}"
+        BINARY_NAME="tunnelforge-${{ matrix.goos }}-${{ matrix.goarch }}"
         if [ "${{ matrix.goos }}" = "windows" ]; then
           BINARY_NAME="${BINARY_NAME}.exe"
         fi
         
         echo "Building ${BINARY_NAME} for ${GOOS}/${GOARCH}"
-        go build -ldflags="-X main.Version=${VERSION}" -o "bin/${BINARY_NAME}" cmd/vibetunnel/main.go
+        go build -ldflags="-X main.Version=${VERSION}" -o "bin/${BINARY_NAME}" cmd/tunnelforge/main.go
         
         # Verify binary was created
         ls -la bin/
@@ -151,7 +151,7 @@ jobs:
         GOARCH: ${{ matrix.goarch }}
       run: |
         VERSION=$(git describe --tags --always --dirty 2>/dev/null || echo 'dev')
-        BINARY_NAME="vibetunnel-server-${{ matrix.goos }}-${{ matrix.goarch }}"
+        BINARY_NAME="tunnelforge-server-${{ matrix.goos }}-${{ matrix.goarch }}"
         if [ "${{ matrix.goos }}" = "windows" ]; then
           BINARY_NAME="${BINARY_NAME}.exe"
         fi
@@ -189,7 +189,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: vibetunnel/go-server
+        images: tunnelforge/go-server
         tags: |
           type=ref,event=branch
           type=ref,event=pr
@@ -242,7 +242,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: vibetunnel_test
+          POSTGRES_DB: tunnelforge_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -265,7 +265,7 @@ jobs:
 
     - name: Run integration tests
       env:
-        DATABASE_URL: postgres://postgres:postgres@localhost:5432/vibetunnel_test?sslmode=disable
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/tunnelforge_test?sslmode=disable
         INTEGRATION_TEST: "true"
       run: |
         # Run specific integration tests if they exist
@@ -300,9 +300,9 @@ jobs:
         
         # Create GitHub release
         gh release create "go-server-${VERSION}" \
-          --title "VibeTunnel Go Server ${VERSION}" \
-          --notes "Automated release of VibeTunnel Go Server" \
+          --title "TunnelForge Go Server ${VERSION}" \
+          --notes "Automated release of TunnelForge Go Server" \
           --draft
         
         # Upload all binary artifacts
-        find artifacts -name "vibetunnel*" -type f -exec gh release upload "go-server-${VERSION}" {} \;
+        find artifacts -name "tunnelforge*" -type f -exec gh release upload "go-server-${VERSION}" {} \;

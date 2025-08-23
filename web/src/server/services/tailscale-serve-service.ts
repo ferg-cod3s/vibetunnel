@@ -233,10 +233,10 @@ export class TailscaleServeServiceImpl implements TailscaleServeService {
     const isRunning = this.isRunning();
 
     // Debug mode: simulate errors based on environment variable
-    if (process.env.VIBETUNNEL_TAILSCALE_ERROR) {
+    if (process.env.TUNNELFORGE_TAILSCALE_ERROR) {
       return {
         isRunning: false,
-        lastError: process.env.VIBETUNNEL_TAILSCALE_ERROR,
+        lastError: process.env.TUNNELFORGE_TAILSCALE_ERROR,
       };
     }
 

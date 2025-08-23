@@ -4,7 +4,7 @@
 
 ### In Progress
 - [ ] **Add local bypass authentication to Go server for Mac app compatibility**
-  - Implement `X-VibeTunnel-Local` header support in Go server
+  - Implement `X-TunnelForge-Local` header support in Go server
   - Add configuration for local bypass mode
   - Test with Mac app's current authentication flow
 
@@ -44,7 +44,7 @@
   - Load testing with multiple concurrent sessions
 
 ## Completed ✅
-- [x] **Rebrand app from VibeTunnel to TunnelForge**
+- [x] **Rebrand app from TunnelForge to TunnelForge**
   - [x] Update app bundle identifiers (Mac/iOS: `dev.tunnelforge.*`)
   - [x] Update app display names and info plists
   - [x] Update Swift constants and configuration files

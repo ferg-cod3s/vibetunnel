@@ -60,6 +60,7 @@ struct TunnelForgeApp: App {
                 .environment(configManager)
                 .environment(worktreeService)
                 .environment(notificationService)
+                .tint(AppColors.forgeFire)
         }
         .windowResizability(.contentSize)
         .defaultSize(width: 580, height: 480)
@@ -87,6 +88,7 @@ struct TunnelForgeApp: App {
                     ))
                     .environment(worktreeService)
                     .environment(notificationService)
+                    .tint(AppColors.forgeFire)
             } else {
                 Text("Session not found")
                     .frame(width: 400, height: 300)
@@ -115,6 +117,7 @@ struct TunnelForgeApp: App {
                 .environment(worktreeService)
                 .environment(notificationService)
                 .environment(tailscaleServeStatusService)
+                .tint(AppColors.forgeFire)
         }
         .commands {
             CommandGroup(after: .appInfo) {
@@ -286,6 +289,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             let serverManager = app.serverManager
             logger.info("Attempting to start HTTP server using ServerManager...")
+            
+            // Set up auto-restart on crash
+            serverManager.onCrash = { [weak serverManager] exitCode in
+                guard let serverManager = serverManager else { return }
+                self.logger.warning("Server crashed with exit code \(exitCode), attempting restart...")
+                
+                Task { @MainActor in
+                    // Wait a moment before restarting
+                    try? await Task.sleep(for: .seconds(2))
+                    
+                    // Attempt to restart the server
+                    do {
+                        try await serverManager.start()
+                        self.logger.info("Server successfully restarted after crash")
+                    } catch {
+                        self.logger.error("Failed to restart server after crash: \(error)")
+                    }
+                }
+            }
+            
             try? await serverManager.start()
 
             // Check if server actually started

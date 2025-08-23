@@ -105,26 +105,30 @@ export async function ensureExitedSessionsHidden(page: Page): Promise<void> {
  * This is useful when tests need to verify sessions that might have exited
  */
 export async function ensureAllSessionsVisible(page: Page): Promise<void> {
-  // First check if there's a "Show Exited" button, which indicates exited sessions are hidden
-  const showExitedButton = page
-    .locator('button')
-    .filter({ hasText: /Show Exited/i })
-    .first();
+  // Check if there's a "Show" checkbox for exited sessions
+  const showExitedCheckbox = page.locator('[data-testid="show-exited-toggle"]');
 
-  if (await showExitedButton.isVisible({ timeout: 1000 })) {
-    console.log('Found "Show Exited" button, clicking to reveal all sessions');
-    await showExitedButton.click();
+  if (await showExitedCheckbox.isVisible({ timeout: 1000 })) {
+    // Check if the checkbox is unchecked (exited sessions hidden)
+    const isChecked = await showExitedCheckbox.isChecked();
 
-    // Wait for the button to change to "Hide Exited"
-    await page.waitForFunction(
-      () => {
-        const buttons = Array.from(document.querySelectorAll('button'));
-        return buttons.some((btn) => btn.textContent?.match(/Hide Exited/i));
-      },
-      { timeout: TIMEOUTS.UI_UPDATE }
-    );
+    if (!isChecked) {
+      console.log('Found unchecked "Show" checkbox, clicking to reveal all sessions');
+      await showExitedCheckbox.click();
 
-    // Additional wait for UI to update
-    await page.waitForTimeout(500);
+      // Wait for the checkbox to be checked
+      await page.waitForFunction(
+        () => {
+          const checkbox = document.querySelector(
+            '[data-testid="show-exited-toggle"]'
+          ) as HTMLInputElement;
+          return checkbox?.checked === true;
+        },
+        { timeout: TIMEOUTS.UI_UPDATE }
+      );
+
+      // Additional wait for UI to update
+      await page.waitForTimeout(500);
+    }
   }
 }

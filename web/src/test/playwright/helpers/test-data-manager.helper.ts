@@ -151,10 +151,24 @@ export class TestSessionManager {
         { timeout: 5000 }
       );
 
-      // Check if session exists
-      const sessionCard = this.page.locator(`session-card:has-text("${sessionName}")`);
-      if (await sessionCard.isVisible({ timeout: 1000 })) {
-        await sessionListPage.killSession(sessionName);
+      // Get session ID for more reliable cleanup
+      const sessionData = this.sessions.get(sessionName);
+      if (sessionData && sessionData.id) {
+        // Use sessionId for more precise targeting to avoid strict mode violations
+        const sessionCard = this.page.locator(`session-card[data-session-id="${sessionData.id}"]`);
+
+        // Fallback to name-based search if ID-based doesn't work
+        if (!(await sessionCard.isVisible({ timeout: 1000 }))) {
+          const nameBasedCard = this.page
+            .locator(`session-card:has-text("${sessionName}")`)
+            .first();
+          if (await nameBasedCard.isVisible({ timeout: 1000 })) {
+            await sessionListPage.killSession(sessionName);
+          }
+        } else {
+          // Use ID-based kill method
+          await sessionListPage.killSessionById(sessionData.id);
+        }
       }
 
       // Remove from tracking
@@ -170,7 +184,7 @@ export class TestSessionManager {
   /**
    * Cleans up all tracked sessions
    * IMPORTANT: This only cleans up sessions that were explicitly tracked by this manager
-   * It will NOT kill sessions created outside of tests (like the VibeTunnel session running Claude Code)
+   * It will NOT kill sessions created outside of tests (like the TunnelForge session running Claude Code)
    */
   async cleanupAllSessions(): Promise<void> {
     if (this.sessions.size === 0) return;
@@ -183,7 +197,7 @@ export class TestSessionManager {
     }
 
     // IMPORTANT: NEVER use Kill All button as it would kill ALL sessions including
-    // the VibeTunnel session that Claude Code is running in!
+    // the TunnelForge session that Claude Code is running in!
     // Always use individual cleanup to only kill sessions we created
     const sessionNames = Array.from(this.sessions.keys());
     for (const sessionName of sessionNames) {

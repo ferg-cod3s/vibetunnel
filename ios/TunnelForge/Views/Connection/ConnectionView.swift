@@ -1,7 +1,7 @@
 import Observation
 import SwiftUI
 
-/// View for establishing connection to a VibeTunnel server.
+/// View for establishing connection to a TunnelForge server.
 ///
 /// Displays the app branding and provides interface for entering
 /// server connection details with saved server management.
@@ -42,7 +42,7 @@ struct ConnectionView: View {
                         }
 
                         VStack(spacing: Theme.Spacing.small) {
-                            Text("VibeTunnel")
+                            Text("TunnelForge")
                                 .font(.system(size: 42, weight: .bold, design: .rounded))
                                 .foregroundColor(Theme.Colors.terminalForeground)
 

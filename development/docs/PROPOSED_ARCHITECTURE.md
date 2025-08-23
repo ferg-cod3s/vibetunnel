@@ -1,7 +1,7 @@
-# VibeTunnel Go Server - Proposed Event-Driven Architecture
+# TunnelForge Go Server - Proposed Event-Driven Architecture
 
 ## Overview
-The proposed architecture transforms VibeTunnel from a direct-coupled system to a fully event-driven architecture using an event bus pattern with optional external event streaming for horizontal scaling.
+The proposed architecture transforms TunnelForge from a direct-coupled system to a fully event-driven architecture using an event bus pattern with optional external event streaming for horizontal scaling.
 
 ## Proposed Architecture Diagram
 
@@ -10,7 +10,7 @@ The proposed architecture transforms VibeTunnel from a direct-coupled system to 
 │                                   CLIENT LAYER                                      │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
 │  Web Frontend     │  macOS App      │  CLI Tools        │  External Clients        │
-│  (JavaScript)     │  (Swift)        │  (vibetunnel)     │  (curl, etc.)            │
+│  (JavaScript)     │  (Swift)        │  (tunnelforge)     │  (curl, etc.)            │
 └─────────────┬─────────────┬─────────────────┬─────────────────────┬─────────────────┘
               │             │                 │                     │
          ┌────▼─────┐  ┌────▼─────┐     ┌────▼─────┐         ┌────▼─────┐
@@ -128,8 +128,8 @@ The proposed architecture transforms VibeTunnel from a direct-coupled system to 
 │              │  │   Leader    │  │  Routing    │  │   Store     │      │             │
 │              │  └─────────────┘  └─────────────┘  └─────────────┘      │             │
 │              │                                                         │             │
-│              │  vibetunnel.session.*     vibetunnel.git.*              │             │
-│              │  vibetunnel.system.*      vibetunnel.notifications.*    │             │
+│              │  tunnelforge.session.*     tunnelforge.git.*              │             │
+│              │  tunnelforge.system.*      tunnelforge.notifications.*    │             │
 │              └─────────────────────────────────────────────────────────┘             │
 │                                        │                                           │
 │              ┌────────────────────────────────────────────────────────────┐          │
@@ -184,7 +184,7 @@ Single Event → Event Bus → Multiple Subscribers (Parallel Processing)
 
 ### Core Event Structure
 ```go
-type VibeTunnelEvent struct {
+type TunnelForgeEvent struct {
     ID        string                 `json:"id"`        // UUID for deduplication
     Type      EventType              `json:"type"`      // Enum for type safety
     Timestamp time.Time             `json:"timestamp"` // RFC3339 format
@@ -245,15 +245,15 @@ type EventMetadata struct {
 ```go
 // NATS subject patterns for external streaming
 const (
-    SubjectSession      = "vibetunnel.session.*"
-    SubjectGit          = "vibetunnel.git.*"  
-    SubjectSystem       = "vibetunnel.system.*"
-    SubjectNotification = "vibetunnel.notification.*"
+    SubjectSession      = "tunnelforge.session.*"
+    SubjectGit          = "tunnelforge.git.*"  
+    SubjectSystem       = "tunnelforge.system.*"
+    SubjectNotification = "tunnelforge.notification.*"
     
     // Specific subjects
-    SubjectSessionCreated    = "vibetunnel.session.created"
-    SubjectGitBranchSwitch   = "vibetunnel.git.branch-switch"
-    SubjectSystemHealth      = "vibetunnel.system.health-check"
+    SubjectSessionCreated    = "tunnelforge.session.created"
+    SubjectGitBranchSwitch   = "tunnelforge.git.branch-switch"
+    SubjectSystemHealth      = "tunnelforge.system.health-check"
 )
 ```
 
@@ -262,14 +262,14 @@ const (
 ### Phase 1: Internal Event Bus (Foundation)
 ```go
 type EventBus interface {
-    Publish(ctx context.Context, event *VibeTunnelEvent) error
+    Publish(ctx context.Context, event *TunnelForgeEvent) error
     Subscribe(pattern string, handler EventHandler) (Subscription, error)
     Start() error
     Stop() error
     Metrics() EventMetrics
 }
 
-type EventHandler func(ctx context.Context, event *VibeTunnelEvent) error
+type EventHandler func(ctx context.Context, event *TunnelForgeEvent) error
 
 type Subscription interface {
     Unsubscribe() error
@@ -294,7 +294,7 @@ type SSEConsumer struct {
 }
 
 func (s *SSEConsumer) Start() error {
-    return s.eventBus.Subscribe("vibetunnel.*", s.handleEvent)
+    return s.eventBus.Subscribe("tunnelforge.*", s.handleEvent)
 }
 
 // Push Notification Consumer  
@@ -384,47 +384,47 @@ type MetricsConsumer struct {
 ## Configuration Example
 
 ```yaml
-# vibetunnel.yaml
+# tunnelforge.yaml
 eventBus:
   type: "memory"  # memory, nats
   bufferSize: 1000
   workers: 10
   persistence:
     enabled: true
-    journalPath: "/var/lib/vibetunnel/events"
+    journalPath: "/var/lib/tunnelforge/events"
     retention: "7d"
   
 consumers:
   sse:
     enabled: true
-    patterns: ["vibetunnel.*"]
+    patterns: ["tunnelforge.*"]
     buffer: 100
     
   push:
     enabled: true  
-    patterns: ["vibetunnel.session.*", "vibetunnel.git.*"]
-    vapidKeys: "/etc/vibetunnel/vapid"
+    patterns: ["tunnelforge.session.*", "tunnelforge.git.*"]
+    vapidKeys: "/etc/tunnelforge/vapid"
     
   metrics:
     enabled: true
-    patterns: ["vibetunnel.*"]
+    patterns: ["tunnelforge.*"]
     prometheus: true
     
   audit:
     enabled: true
-    patterns: ["vibetunnel.system.*", "vibetunnel.auth.*"]
-    logPath: "/var/log/vibetunnel/audit.log"
+    patterns: ["tunnelforge.system.*", "tunnelforge.auth.*"]
+    logPath: "/var/log/tunnelforge/audit.log"
 
 # NATS configuration (Phase 4)
 nats:
   enabled: false
   urls: ["nats://localhost:4222"]
-  cluster: "vibetunnel"
+  cluster: "tunnelforge"
   subjects:
-    prefix: "vibetunnel"
+    prefix: "tunnelforge"
     mapping:
-      "session.*": "vibetunnel.session.>"
-      "git.*": "vibetunnel.git.>"
+      "session.*": "tunnelforge.session.>"
+      "git.*": "tunnelforge.git.>"
 ```
 
-This event-driven architecture provides a solid foundation for scaling VibeTunnel while maintaining clean separation of concerns and enabling powerful new features like distributed push notifications and comprehensive monitoring.
+This event-driven architecture provides a solid foundation for scaling TunnelForge while maintaining clean separation of concerns and enabling powerful new features like distributed push notifications and comprehensive monitoring.

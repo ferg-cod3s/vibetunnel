@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# VibeTunnel Docker Build Script
-# Builds and optionally runs the VibeTunnel Docker stack
+# TunnelForge Docker Build Script
+# Builds and optionally runs the TunnelForge Docker stack
 
 set -euo pipefail
 
@@ -22,7 +22,7 @@ CLEAN_BUILD=false
 
 # Help function
 show_help() {
-    echo "VibeTunnel Docker Build Script"
+    echo "TunnelForge Docker Build Script"
     echo
     echo "Usage: $0 [OPTIONS]"
     echo
@@ -92,7 +92,7 @@ if [[ ! -f "$DOCKER_COMPOSE_FILE" ]]; then
     exit 1
 fi
 
-echo -e "${BLUE}🐳 VibeTunnel Docker Build${NC}"
+echo -e "${BLUE}🐳 TunnelForge Docker Build${NC}"
 echo -e "${BLUE}========================${NC}"
 echo "Build Version: $BUILD_VERSION"
 echo "Environment: $BUILD_ENV"
@@ -135,18 +135,18 @@ fi
 
 # Show built images
 echo -e "${BLUE}📦 Built images:${NC}"
-docker images | grep -E "(vibetunnel|otel|jaeger|prometheus)" || echo "No VibeTunnel images found"
+docker images | grep -E "(tunnelforge|otel|jaeger|prometheus)" || echo "No TunnelForge images found"
 
 # Run if requested
 if [[ "$RUN_AFTER_BUILD" == "true" ]]; then
-    echo -e "${YELLOW}🚀 Starting VibeTunnel stack...${NC}"
+    echo -e "${YELLOW}🚀 Starting TunnelForge stack...${NC}"
     
     if docker-compose -f "$DOCKER_COMPOSE_FILE" up -d; then
-        echo -e "${GREEN}✅ VibeTunnel stack started successfully${NC}"
+        echo -e "${GREEN}✅ TunnelForge stack started successfully${NC}"
         echo
         echo -e "${BLUE}🌐 Service URLs:${NC}"
-        echo "  • VibeTunnel Go Server:  http://localhost:4021"
-        echo "  • VibeTunnel Web Server: http://localhost:3000"
+        echo "  • TunnelForge Go Server:  http://localhost:4021"
+        echo "  • TunnelForge Web Server: http://localhost:3000"
         echo "  • Jaeger UI:             http://localhost:16686"
         echo "  • Prometheus:            http://localhost:9090"
         echo
@@ -161,7 +161,7 @@ if [[ "$RUN_AFTER_BUILD" == "true" ]]; then
         echo "  docker-compose -f $DOCKER_COMPOSE_FILE down"
         
     else
-        echo -e "${RED}❌ Failed to start VibeTunnel stack${NC}"
+        echo -e "${RED}❌ Failed to start TunnelForge stack${NC}"
         exit 1
     fi
 fi

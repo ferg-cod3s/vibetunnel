@@ -30,8 +30,8 @@ final class CLIInstaller {
     private let logger = Logger(subsystem: BundleIdentifiers.main, category: "CLIInstaller")
     private let binDirectory: String
 
-    private var vtTargetPath: String {
-        URL(fileURLWithPath: binDirectory).appendingPathComponent("vt").path
+    private var tunnelforgeTargetPath: String {
+        URL(fileURLWithPath: binDirectory).appendingPathComponent("tunnelforge").path
     }
 
     var isInstalled = false
@@ -54,13 +54,13 @@ final class CLIInstaller {
     /// Checks if the CLI tool is installed
     func checkInstallationStatus() {
         Task { @MainActor in
-            // Check if vt script exists and is configured correctly
+            // Check if tunnelforge script exists and is configured correctly
             var isCorrectlyInstalled = false
 
             // Check both /usr/local/bin and Apple Silicon Homebrew path
             let pathsToCheck = [
-                vtTargetPath,
-                "\(FilePathConstants.optHomebrewBin)/vt"
+                tunnelforgeTargetPath,
+                "\(FilePathConstants.optHomebrewBin)/tunnelforge"
             ]
 
             for path in pathsToCheck where FileManager.default.fileExists(atPath: path) {
@@ -68,18 +68,18 @@ final class CLIInstaller {
                 if let content = try? String(contentsOfFile: path, encoding: .utf8) {
                     // Verify it's our wrapper script with all expected components
                     // Check for the exec command with flexible quoting and optional arguments
-                    // Allow for optional variables or arguments between $VIBETUNNEL_BIN and fwd
+                    // Allow for optional variables or arguments between $TUNNELFORGE_BIN and fwd
                     let hasValidExecCommand = content.range(
-                        of: #"exec\s+["']?\$VIBETUNNEL_BIN["']?\s+fwd"#,
+                        of: #"exec\s+["']?\$TUNNELFORGE_BIN["']?\s+fwd"#,
                         options: .regularExpression
                     ) != nil
 
                     if content.contains("TunnelForge CLI wrapper") &&
-                        content.contains("$TRY_PATH/Contents/Resources/vibetunnel") &&
+                        content.contains("$TRY_PATH/Contents/Resources/tunnelforge") &&
                         hasValidExecCommand
                     {
                         isCorrectlyInstalled = true
-                        logger.info("CLIInstaller: Found valid vt script at \(path)")
+                        logger.info("CLIInstaller: Found valid tunnelforge script at \(path)")
                         break
                     }
                 }
@@ -88,7 +88,7 @@ final class CLIInstaller {
             // Update state
             isInstalled = isCorrectlyInstalled
 
-            logger.info("CLIInstaller: vt script installed: \(self.isInstalled)")
+            logger.info("CLIInstaller: tunnelforge script installed: \(self.isInstalled)")
 
             // If installed, check if it's outdated
             if isInstalled {
@@ -106,27 +106,27 @@ final class CLIInstaller {
         }
     }
 
-    /// Installs the vt CLI tool to /usr/local/bin
+    /// Installs the TunnelForge CLI tool to /usr/local/bin
     func installCLITool() {
         logger.info("CLIInstaller: Starting CLI tool installation...")
         isInstalling = true
         lastError = nil
 
-        // Verify that vt script exists in the app bundle
-        guard Bundle.main.path(forResource: "vt", ofType: nil) != nil else {
-            logger.error("CLIInstaller: Could not find vt script in app bundle")
-            lastError = "The vt script could not be found in the application bundle."
-            showError("The vt script could not be found in the application bundle.")
+        // Verify that tunnelforge-cli script exists in the app bundle
+        guard Bundle.main.path(forResource: "tunnelforge-cli", ofType: nil) != nil else {
+            logger.error("CLIInstaller: Could not find tunnelforge-cli script in app bundle")
+            lastError = "The tunnelforge-cli script could not be found in the application bundle."
+            showError("The tunnelforge-cli script could not be found in the application bundle.")
             isInstalling = false
             return
         }
 
         // Show confirmation dialog
         let confirmAlert = NSAlert()
-        confirmAlert.messageText = "Install VT Command Line Tool"
+        confirmAlert.messageText = "Install TunnelForge Command Line Tool"
         confirmAlert
             .informativeText =
-            "This will install the 'vt' command that runs TunnelForge from your Applications folder. Administrator privileges are required."
+            "This will install the 'tunnelforge' command that runs TunnelForge from your Applications folder. Administrator privileges are required."
         confirmAlert.addButton(withTitle: "Install")
         confirmAlert.addButton(withTitle: "Cancel")
         confirmAlert.alertStyle = .informational
@@ -150,7 +150,7 @@ final class CLIInstaller {
         }
     }
 
-    /// Uninstalls the vt CLI tool from /usr/local/bin and /opt/homebrew/bin
+    /// Uninstalls the TunnelForge CLI tool from /usr/local/bin and /opt/homebrew/bin
     func uninstallCLITool() {
         logger.info("CLIInstaller: Starting CLI tool uninstallation...")
         isInstalling = true
@@ -159,10 +159,10 @@ final class CLIInstaller {
 
         // Show confirmation dialog
         let confirmAlert = NSAlert()
-        confirmAlert.messageText = "Uninstall VT Command Line Tool"
+        confirmAlert.messageText = "Uninstall TunnelForge Command Line Tool"
         confirmAlert
             .informativeText =
-            "This will remove the 'vt' command from your system. Administrator privileges are required."
+            "This will remove the 'tunnelforge' command from your system. Administrator privileges are required."
         confirmAlert.addButton(withTitle: "Uninstall")
         confirmAlert.addButton(withTitle: "Cancel")
         confirmAlert.alertStyle = .informational
@@ -184,12 +184,12 @@ final class CLIInstaller {
 
     /// Performs the actual installation with sudo privileges
     private func performInstallation() {
-        logger.info("CLIInstaller: Installing vt script")
+        logger.info("CLIInstaller: Installing tunnelforge script")
 
-        guard let vtScriptPath = Bundle.main.path(forResource: "vt", ofType: nil) else {
-            logger.error("CLIInstaller: Could not find vt script in app bundle")
-            lastError = "The vt script could not be found in the application bundle."
-            showError("The vt script could not be found in the application bundle.")
+        guard let tunnelforgeScriptPath = Bundle.main.path(forResource: "tunnelforge-cli", ofType: nil) else {
+            logger.error("CLIInstaller: Could not find tunnelforge-cli script in app bundle")
+            lastError = "The tunnelforge-cli script could not be found in the application bundle."
+            showError("The tunnelforge-cli script could not be found in the application bundle.")
             isInstalling = false
             return
         }
@@ -205,18 +205,22 @@ final class CLIInstaller {
             echo "Created directory \(binDirectory)"
         fi
 
-        # Remove existing vt if it exists
-        if [ -L "\(vtTargetPath)" ] || [ -f "\(vtTargetPath)" ]; then
-            rm -f "\(vtTargetPath)"
-            echo "Removed existing file at \(vtTargetPath)"
+        # Remove existing tunnelforge if it exists
+        if [ -L "\(tunnelforgeTargetPath)" ] || [ -f "\(tunnelforgeTargetPath)" ]; then
+            rm -f "\(tunnelforgeTargetPath)"
+            echo "Removed existing file at \(tunnelforgeTargetPath)"
         fi
 
-        # Copy vt script from app bundle
-        cp "\(vtScriptPath)" "\(vtTargetPath)"
-        chmod +x "\(vtTargetPath)"
-        echo "Installed vt script at \(vtTargetPath)"
+        # Copy tunnelforge-cli script from app bundle
+        cp "\(tunnelforgeScriptPath)" "\(tunnelforgeTargetPath)"
+        chmod +x "\(tunnelforgeTargetPath)"
+        echo "Installed tunnelforge script at \(tunnelforgeTargetPath)"
 
-        # Clean up old vibetunnel binary if it exists
+        # Clean up old vt and vibetunnel binaries if they exist
+        if [ -f "/usr/local/bin/vt" ]; then
+            rm -f "/usr/local/bin/vt"
+            echo "Removed old vt script"
+        fi
         if [ -f "/usr/local/bin/vibetunnel" ]; then
             rm -f "/usr/local/bin/vibetunnel"
             echo "Removed old vibetunnel binary"
@@ -225,7 +229,7 @@ final class CLIInstaller {
 
         // Write the script to a temporary file
         let tempDir = FileManager.default.temporaryDirectory
-        let scriptURL = tempDir.appendingPathComponent("install_vt_cli.sh")
+        let scriptURL = tempDir.appendingPathComponent("install_tunnelforge_cli.sh")
 
         do {
             try script.write(to: scriptURL, atomically: true, encoding: .utf8)
@@ -290,26 +294,30 @@ final class CLIInstaller {
 
     /// Performs the actual uninstallation with sudo privileges
     private func performUninstallation() {
-        logger.info("CLIInstaller: Uninstalling vt script")
+        logger.info("CLIInstaller: Uninstalling tunnelforge script")
 
         // Create the uninstallation script
         let script = """
         #!/bin/bash
         set -e
 
-        # Remove vt script from /usr/local/bin
-        if [ -L "/usr/local/bin/vt" ] || [ -f "/usr/local/bin/vt" ]; then
+        # Remove tunnelforge script from /usr/local/bin
+        if [ -L "/usr/local/bin/tunnelforge" ] || [ -f "/usr/local/bin/tunnelforge" ]; then
+            rm -f "/usr/local/bin/tunnelforge"
+            echo "Removed tunnelforge from /usr/local/bin"
+        fi
+
+        # Remove tunnelforge script from /opt/homebrew/bin (Apple Silicon Homebrew path)
+        if [ -L "/opt/homebrew/bin/tunnelforge" ] || [ -f "/opt/homebrew/bin/tunnelforge" ]; then
+            rm -f "/opt/homebrew/bin/tunnelforge"
+            echo "Removed tunnelforge from /opt/homebrew/bin"
+        fi
+
+        # Clean up old vt and vibetunnel binaries if they exist
+        if [ -f "/usr/local/bin/vt" ]; then
             rm -f "/usr/local/bin/vt"
-            echo "Removed vt from /usr/local/bin"
+            echo "Removed old vt script"
         fi
-
-        # Remove vt script from /opt/homebrew/bin (Apple Silicon Homebrew path)
-        if [ -L "/opt/homebrew/bin/vt" ] || [ -f "/opt/homebrew/bin/vt" ]; then
-            rm -f "/opt/homebrew/bin/vt"
-            echo "Removed vt from /opt/homebrew/bin"
-        fi
-
-        # Clean up old vibetunnel binary if it exists
         if [ -f "/usr/local/bin/vibetunnel" ]; then
             rm -f "/usr/local/bin/vibetunnel"
             echo "Removed old vibetunnel binary"
@@ -318,7 +326,7 @@ final class CLIInstaller {
 
         // Write the script to a temporary file
         let tempDir = FileManager.default.temporaryDirectory
-        let scriptURL = tempDir.appendingPathComponent("uninstall_vt_cli.sh")
+        let scriptURL = tempDir.appendingPathComponent("uninstall_tunnelforge_cli.sh")
 
         do {
             try script.write(to: scriptURL, atomically: true, encoding: .utf8)
@@ -391,7 +399,7 @@ final class CLIInstaller {
         alert.messageText = "CLI Tools Installed Successfully"
         alert
             .informativeText =
-            "The 'vt' command has been installed. You can now use 'vt' from the terminal to run TunnelForge."
+            "The 'tunnelforge' command has been installed. You can now use 'tunnelforge' from the terminal to run TunnelForge."
         alert.addButton(withTitle: "OK")
         alert.alertStyle = .informational
         alert.icon = NSApp.applicationIconImage
@@ -402,7 +410,7 @@ final class CLIInstaller {
     private func showUninstallSuccess() {
         let alert = NSAlert()
         alert.messageText = "CLI Tools Uninstalled Successfully"
-        alert.informativeText = "The 'vt' command has been removed from your system."
+        alert.informativeText = "The 'tunnelforge' command has been removed from your system."
         alert.addButton(withTitle: "OK")
         alert.alertStyle = .informational
         alert.icon = NSApp.applicationIconImage
@@ -431,10 +439,10 @@ final class CLIInstaller {
         return hash.compactMap { String(format: "%02x", $0) }.joined()
     }
 
-    /// Gets the hash of the bundled vt script
+    /// Gets the hash of the bundled tunnelforge-cli script
     private func getBundledScriptHash() -> String? {
-        guard let scriptPath = Bundle.main.path(forResource: "vt", ofType: nil) else {
-            logger.error("CLIInstaller: Bundled vt script not found")
+        guard let scriptPath = Bundle.main.path(forResource: "tunnelforge-cli", ofType: nil) else {
+            logger.error("CLIInstaller: Bundled tunnelforge-cli script not found")
             return nil
         }
 
@@ -451,8 +459,8 @@ final class CLIInstaller {
 
             // Check both possible installation paths
             let pathsToCheck = [
-                vtTargetPath,
-                "\(FilePathConstants.optHomebrewBin)/vt"
+                tunnelforgeTargetPath,
+                "\(FilePathConstants.optHomebrewBin)/tunnelforge"
             ]
 
             var installedHash: String?

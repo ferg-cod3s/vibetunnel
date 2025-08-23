@@ -40,7 +40,7 @@ build_current_arch() {
     cd "$WEB_DIR"
     
     # Build if native directory doesn't exist
-    if [ ! -f "native/vibetunnel" ]; then
+    if [ ! -f "native/tunnelforge" ]; then
         echo "Building executable..."
         if command -v node &> /dev/null; then
             node build-native.js
@@ -56,12 +56,12 @@ build_current_arch() {
     
     # Copy binaries
     echo "Copying binaries to prebuilts directory..."
-    cp -f native/vibetunnel "$PREBUILTS_DIR/$ARCH_DIR/"
+    cp -f native/tunnelforge "$PREBUILTS_DIR/$ARCH_DIR/"
     cp -f native/pty.node "$PREBUILTS_DIR/$ARCH_DIR/"
     cp -f native/spawn-helper "$PREBUILTS_DIR/$ARCH_DIR/"
     
     # Make executables executable
-    chmod +x "$PREBUILTS_DIR/$ARCH_DIR/vibetunnel"
+    chmod +x "$PREBUILTS_DIR/$ARCH_DIR/tunnelforge"
     chmod +x "$PREBUILTS_DIR/$ARCH_DIR/spawn-helper"
     
     echo -e "${GREEN}✓ Copied $CURRENT_ARCH binaries to prebuilts${NC}"
@@ -73,11 +73,11 @@ check_status() {
     
     for arch in arm64; do
         echo -n "  $arch: "
-        if [ -f "$PREBUILTS_DIR/$arch/vibetunnel" ] && \
+        if [ -f "$PREBUILTS_DIR/$arch/tunnelforge" ] && \
            [ -f "$PREBUILTS_DIR/$arch/pty.node" ] && \
            [ -f "$PREBUILTS_DIR/$arch/spawn-helper" ]; then
             echo -e "${GREEN}✓ Complete${NC}"
-            ls -lh "$PREBUILTS_DIR/$arch/" | grep -E "vibetunnel|pty.node|spawn-helper"
+            ls -lh "$PREBUILTS_DIR/$arch/" | grep -E "tunnelforge|pty.node|spawn-helper"
         else
             echo -e "${YELLOW}⚠ Missing${NC}"
             if [ -d "$PREBUILTS_DIR/$arch" ]; then

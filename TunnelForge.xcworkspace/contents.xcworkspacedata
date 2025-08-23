@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:mac/TunnelForge.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:ios/TunnelForge-iOS.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:mac/TunnelForge/TunnelForge-Mac.xctestplan">
+   </FileRef>
+</Workspace>

@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import { existsSync } from 'fs';
 
-console.log('Full test of VibeTunnel beta 15 package...\n');
+console.log('Full test of TunnelForge beta 15 package...\n');
 
 // First install missing dependencies
 console.log('Installing missing dependencies...');
@@ -13,10 +13,10 @@ npmInstall.on('close', (code) => {
     process.exit(1);
   }
   
-  console.log('\nDependencies installed. Testing VibeTunnel...\n');
+  console.log('\nDependencies installed. Testing TunnelForge...\n');
   
   // Test the CLI command
-  const vt = spawn('./node_modules/.bin/vibetunnel', ['--version']);
+  const vt = spawn('./node_modules/.bin/tunnelforge', ['--version']);
   
   vt.stdout.on('data', (data) => {
     console.log(`Version output: ${data}`);
@@ -31,9 +31,9 @@ npmInstall.on('close', (code) => {
       console.log('✅ Version command works!\n');
       
       // Now try to start the server
-      console.log('Starting VibeTunnel server...');
-      const server = spawn('./node_modules/.bin/vibetunnel', ['--port', '4021', '--no-auth'], {
-        env: { ...process.env, VIBETUNNEL_NO_AUTH: 'true' }
+      console.log('Starting TunnelForge server...');
+      const server = spawn('./node_modules/.bin/tunnelforge', ['--port', '4021', '--no-auth'], {
+        env: { ...process.env, TUNNELFORGE_NO_AUTH: 'true' }
       });
       
       let serverStarted = false;

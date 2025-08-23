@@ -69,7 +69,7 @@ export class PushNotificationService {
 
   constructor(vapidManager: VapidManager) {
     this.vapidManager = vapidManager;
-    const storageDir = path.join(os.homedir(), '.vibetunnel/notifications');
+    const storageDir = path.join(os.homedir(), '.tunnelforge/notifications');
     this.subscriptionsFile = path.join(storageDir, 'subscriptions.json');
   }
 
@@ -163,7 +163,7 @@ export class PushNotificationService {
       body: payload.body,
       icon: payload.icon || '/apple-touch-icon.png',
       badge: payload.badge || '/favicon-32.png',
-      tag: payload.tag || `vibetunnel-${payload.type}`,
+      tag: payload.tag || `tunnelforge-${payload.type}`,
       requireInteraction: payload.requireInteraction || false,
       actions: payload.actions || [],
       data: {

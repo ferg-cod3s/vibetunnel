@@ -61,7 +61,7 @@ export function suppressXtermErrors(): void {
   };
 
   // Log suppression activation in debug mode
-  if (isNode && process.env.VIBETUNNEL_DEBUG === '1') {
+  if (isNode && process.env.TUNNELFORGE_DEBUG === '1') {
     originalWarn.call(console, '[suppress-xterm-errors] xterm.js error suppression activated');
   }
 }

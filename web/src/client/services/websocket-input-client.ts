@@ -1,5 +1,5 @@
 /**
- * WebSocket Input Client for VibeTunnel
+ * WebSocket Input Client for TunnelForge
  *
  * Provides low-latency input transmission via WebSocket connection
  * with automatic reconnection and fallback to HTTP.
@@ -73,22 +73,18 @@ export class WebSocketInputClient {
 
     this.isConnecting = true;
 
-    const protocol =
-      typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = typeof window !== 'undefined' ? window.location.host : 'localhost:4020';
     const sessionId = this.session.id;
 
     // Get auth token from localStorage or use a development token
     const authToken =
       typeof window !== 'undefined'
-        ? localStorage.getItem('vibetunnel_auth_token') ||
+        ? localStorage.getItem('tunnelforge_auth_token') ||
           localStorage.getItem('auth_token') ||
           `dev-token-${Date.now()}`
         : `dev-token-${Date.now()}`;
 
-    const wsUrl = `${protocol}//${host}/ws/input?sessionId=${sessionId}&token=${encodeURIComponent(authToken)}`;
-
     try {
+      const wsUrl = await this.getWebSocketUrl(sessionId, authToken);
       logger.log(`Connecting to WebSocket: ${wsUrl}`);
       this.ws = new WebSocket(wsUrl);
 
@@ -164,6 +160,26 @@ export class WebSocketInputClient {
       logger.error('Failed to send via WebSocket:', error);
       return false; // Fallback to HTTP
     }
+  }
+
+  private async getWebSocketUrl(sessionId: string, token: string): Promise<string> {
+    try {
+      const response = await fetch('/api/config');
+      if (response.ok) {
+        const config = await response.json();
+        // Go server uses /ws endpoint, not /ws/input
+        return `${config.websocketUrl}/ws?sessionId=${sessionId}&token=${encodeURIComponent(token)}`;
+      }
+    } catch (error) {
+      logger.warn('Failed to get config, falling back to relative URL:', error);
+    }
+
+    // Fallback to direct Go server connection (bypassing proxy)
+    const protocol =
+      typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    // Go server runs on port 4021, bun-web proxy runs on 4022 for tests
+    const goServerPort = '4021';
+    return `${protocol}//localhost:${goServerPort}/ws?sessionId=${sessionId}&token=${encodeURIComponent(token)}`;
   }
 
   private scheduleReconnect(): void {

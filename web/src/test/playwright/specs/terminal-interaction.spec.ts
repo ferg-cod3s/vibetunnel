@@ -28,8 +28,8 @@ test.describe('Terminal Interaction', () => {
       console.error(`Request failed: ${request.url()} - ${request.failure()?.errorText}`);
     });
 
-    // Create a session for all tests using the session manager to ensure proper tracking
-    const sessionData = await sessionManager.createTrackedSession('terminal-test');
+    // Create a session for each test using unique names to avoid conflicts
+    const sessionData = await sessionManager.createTrackedSession();
 
     // Navigate to the created session with increased timeout for CI
     await page.goto(`/session/${sessionData.sessionId}`, {
@@ -54,7 +54,7 @@ test.describe('Terminal Interaction', () => {
     await page.waitForTimeout(1000);
 
     // Execute echo command with retry
-    await executeCommandWithRetry(page, 'echo "Hello VibeTunnel"', 'Hello VibeTunnel', 3);
+    await executeCommandWithRetry(page, 'echo "Hello TunnelForge"', 'Hello TunnelForge', 3);
   });
 
   test('should handle command with special characters', async ({ page }) => {
@@ -147,7 +147,7 @@ test.describe('Terminal Interaction', () => {
     await expect(terminal).toContainText('More test content');
 
     // Clear terminal using the clear command
-    // Note: Ctrl+L is intercepted as a browser shortcut in VibeTunnel
+    // Note: Ctrl+L is intercepted as a browser shortcut in TunnelForge
     await page.keyboard.type('clear');
     await page.keyboard.press('Enter');
 
@@ -220,7 +220,7 @@ test.describe('Terminal Interaction', () => {
 
   test('should handle environment variables', async ({ page }) => {
     const varName = 'TEST_VAR';
-    const varValue = 'VibeTunnel123'; // Simplified value without special chars
+    const varValue = 'TunnelForge123'; // Simplified value without special chars
 
     // Wait for terminal to be properly ready - check for prompt
     await page.waitForFunction(

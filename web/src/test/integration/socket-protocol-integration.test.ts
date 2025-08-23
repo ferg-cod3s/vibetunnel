@@ -14,7 +14,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { PtyManager } from '../../server/pty/pty-manager.js';
-import { VibeTunnelSocketClient } from '../../server/pty/socket-client.js';
+import { TunnelForgeSocketClient } from '../../server/pty/socket-client.js';
 import { TitleMode } from '../../shared/types.js';
 import { SessionTestHelper } from '../helpers/session-test-helper.js';
 
@@ -42,7 +42,7 @@ describe('Socket Protocol Integration', () => {
   afterEach(async () => {
     await sessionHelper.killTrackedSessions();
     // NEVER call ptyManager.shutdown() as it would kill ALL sessions
-    // including the VibeTunnel session running Claude Code
+    // including the TunnelForge session running Claude Code
     try {
       fs.rmSync(testDir, { recursive: true, force: true });
     } catch {
@@ -61,7 +61,7 @@ describe('Socket Protocol Integration', () => {
 
       // Connect socket client
       const socketPath = path.join(testDir, sessionId, 'ipc.sock');
-      const client = new VibeTunnelSocketClient(socketPath);
+      const client = new TunnelForgeSocketClient(socketPath);
 
       // Wait for socket file to exist
       let attempts = 0;
@@ -122,7 +122,7 @@ describe('Socket Protocol Integration', () => {
 
       // Connect socket client
       const socketPath = path.join(testDir, sessionId, 'ipc.sock');
-      const client = new VibeTunnelSocketClient(socketPath);
+      const client = new TunnelForgeSocketClient(socketPath);
 
       // Wait for socket file to exist
       let attempts = 0;
@@ -171,7 +171,7 @@ describe('Socket Protocol Integration', () => {
 
       // Connect socket client
       const socketPath = path.join(testDir, sessionId, 'ipc.sock');
-      const client = new VibeTunnelSocketClient(socketPath);
+      const client = new TunnelForgeSocketClient(socketPath);
 
       // Wait for socket file to exist
       let attempts = 0;
@@ -207,7 +207,7 @@ describe('Socket Protocol Integration', () => {
 
       // Connect socket client
       const socketPath = path.join(testDir, sessionId, 'ipc.sock');
-      const client = new VibeTunnelSocketClient(socketPath);
+      const client = new TunnelForgeSocketClient(socketPath);
 
       // Wait for socket file to exist
       let attempts = 0;
@@ -252,8 +252,8 @@ describe('Socket Protocol Integration', () => {
       }
 
       // Connect two clients
-      const client1 = new VibeTunnelSocketClient(socketPath);
-      const client2 = new VibeTunnelSocketClient(socketPath);
+      const client1 = new TunnelForgeSocketClient(socketPath);
+      const client2 = new TunnelForgeSocketClient(socketPath);
 
       await client1.connect();
       await client2.connect();
@@ -286,7 +286,7 @@ describe('Socket Protocol Integration', () => {
       const fakeSessionId = 'non-existent-session';
       const socketPath = path.join(testDir, fakeSessionId, 'ipc.sock');
 
-      const client = new VibeTunnelSocketClient(socketPath);
+      const client = new TunnelForgeSocketClient(socketPath);
 
       // Should fail to connect
       await expect(client.connect()).rejects.toThrow();
@@ -299,7 +299,7 @@ describe('Socket Protocol Integration', () => {
       });
 
       const socketPath = path.join(testDir, sessionId, 'ipc.sock');
-      const client = new VibeTunnelSocketClient(socketPath);
+      const client = new TunnelForgeSocketClient(socketPath);
 
       // Wait for socket file to exist
       let attempts = 0;
@@ -332,7 +332,7 @@ describe('Socket Protocol Integration', () => {
       });
 
       const socketPath = path.join(testDir, sessionId, 'ipc.sock');
-      const client = new VibeTunnelSocketClient(socketPath);
+      const client = new TunnelForgeSocketClient(socketPath);
 
       // Wait for socket file to exist
       let attempts = 0;
@@ -366,7 +366,7 @@ describe('Socket Protocol Integration', () => {
       });
 
       const socketPath = path.join(testDir, sessionId, 'ipc.sock');
-      const client = new VibeTunnelSocketClient(socketPath);
+      const client = new TunnelForgeSocketClient(socketPath);
 
       // Wait for socket file to exist
       let attempts = 0;
@@ -424,8 +424,8 @@ describe('Socket Protocol Integration', () => {
       }
 
       // Connect to both
-      const client1 = new VibeTunnelSocketClient(socketPath1);
-      const client2 = new VibeTunnelSocketClient(socketPath2);
+      const client1 = new TunnelForgeSocketClient(socketPath1);
+      const client2 = new TunnelForgeSocketClient(socketPath2);
 
       await client1.connect();
       await client2.connect();

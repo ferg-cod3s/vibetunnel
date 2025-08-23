@@ -24,7 +24,7 @@ export async function waitForSessionCards(
   const { timeout = process.env.CI ? 15000 : 5000 } = options || {};
 
   // First ensure the app is loaded
-  await page.waitForSelector('vibetunnel-app', { state: 'attached', timeout: 5000 });
+  await page.waitForSelector('tunnelforge-app', { state: 'attached', timeout: 5000 });
 
   // Wait for either session cards or "no sessions" message
   await page.waitForFunction(
@@ -170,9 +170,9 @@ export async function waitForPageReady(page: Page): Promise<void> {
 
   // Wait for the main app component to be attached
   try {
-    await page.waitForSelector('vibetunnel-app', { state: 'attached', timeout: 5000 });
+    await page.waitForSelector('tunnelforge-app', { state: 'attached', timeout: 5000 });
   } catch (_error) {
-    console.warn('vibetunnel-app selector not found, continuing...');
+    console.warn('tunnelforge-app selector not found, continuing...');
   }
 
   // Also wait for app-specific ready state if available
@@ -187,8 +187,8 @@ export async function waitForPageReady(page: Page): Promise<void> {
 export async function navigateToHome(page: Page): Promise<void> {
   // Try multiple methods to navigate home
   const backButton = page.locator('button:has-text("Back")');
-  const vibeTunnelLogo = page.locator('button:has(h1:has-text("VibeTunnel"))').first();
-  const homeButton = page.locator('button').filter({ hasText: 'VibeTunnel' }).first();
+  const vibeTunnelLogo = page.locator('button:has(h1:has-text("TunnelForge"))').first();
+  const homeButton = page.locator('button').filter({ hasText: 'TunnelForge' }).first();
 
   try {
     if (await backButton.isVisible({ timeout: 1000 })) {
@@ -332,7 +332,7 @@ export async function waitForSessionListReady(page: Page, timeout = 10000): Prom
     await page.waitForFunction(
       () => {
         // Check if the page has the main app component
-        const app = document.querySelector('vibetunnel-app');
+        const app = document.querySelector('tunnelforge-app');
         if (!app) return false;
 
         // Check for session cards or "no sessions" message
@@ -354,7 +354,7 @@ export async function waitForSessionListReady(page: Page, timeout = 10000): Prom
     // Log current page state for debugging
     const pageContent = await page.evaluate(() => {
       return {
-        hasApp: !!document.querySelector('vibetunnel-app'),
+        hasApp: !!document.querySelector('tunnelforge-app'),
         sessionCards: document.querySelectorAll('session-card').length,
         bodyText: document.body.innerText.substring(0, 200),
       };

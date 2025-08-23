@@ -1,0 +1,111 @@
+<svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="backgroundGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2A2A2A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A1A1A;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Hammer gradient -->
+    <linearGradient id="hammerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6A6A6A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4A4A4A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2A2A2A;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Text gradient -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF8C00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6B35;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Terminal glow -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Text shadow -->
+    <filter id="textShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="200" rx="20" fill="url(#backgroundGrad)"/>
+  
+  <!-- Icon section background -->
+  <rect x="10" y="10" width="180" height="180" rx="15" fill="#333333" opacity="0.3"/>
+  
+  <!-- Imposing hammer in icon area -->
+  <g transform="translate(100, 100) rotate(-35) scale(0.4)">
+    <!-- Hammer handle -->
+    <rect x="-22" y="-200" width="44" height="400" rx="22" fill="#8B4513"/>
+    <!-- Handle grip texture -->
+    <rect x="-14" y="-150" width="28" height="280" rx="14" fill="#654321" opacity="0.7"/>
+    <!-- Handle end cap -->
+    <rect x="-27" y="190" width="54" height="20" rx="10" fill="#5A3A1A"/>
+    
+    <!-- Main hammer head -->
+    <rect x="-82" y="-220" width="164" height="80" rx="12" fill="url(#hammerGrad)"/>
+    <!-- Hammer head detail -->
+    <rect x="-62" y="-205" width="124" height="50" rx="8" fill="#7A7A7A"/>
+    <!-- Hammer head highlight -->
+    <rect x="-52" y="-195" width="104" height="12" rx="6" fill="#9A9A9A"/>
+    
+    <!-- Hammer claw -->
+    <path d="M-82 -180 L-132 -200 L-127 -160 Z" fill="url(#hammerGrad)"/>
+    
+    <!-- Metal band -->
+    <rect x="-27" y="-150" width="54" height="16" rx="8" fill="#666666"/>
+  </g>
+  
+  <!-- Mini terminal in icon area -->
+  <rect x="120" y="130" width="60" height="45" rx="4" fill="none" stroke="#00FF41" stroke-width="2" filter="url(#glow)"/>
+  <rect x="120" y="130" width="60" height="12" rx="4" fill="#00FF41" opacity="0.3"/>
+  <circle cx="127" cy="136" r="2" fill="#FF6B60"/>
+  <circle cx="135" cy="136" r="2" fill="#FFD700"/>
+  <circle cx="143" cy="136" r="2" fill="#00FF41"/>
+  <text x="125" y="155" font-family="Monaco, monospace" font-size="8" fill="#00FF41" opacity="0.8">&gt; tunnel</text>
+  <text x="125" y="166" font-family="Monaco, monospace" font-size="8" fill="#00FF41" opacity="0.6">&gt; forge</text>
+  
+  <!-- Sparks around icon -->
+  <circle cx="80" cy="80" r="2" fill="#FFD700" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="140" cy="60" r="1.5" fill="#FF8C00" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="160" cy="110" r="1.5" fill="#FF6B35" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.1;0.6" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Main logo text -->
+  <text x="220" y="130" font-family="SF Pro Display, -apple-system, system-ui, sans-serif" font-size="72" font-weight="700" fill="url(#textGrad)" filter="url(#textShadow)">TunnelForge</text>
+  
+  <!-- Tagline -->
+  <text x="225" y="160" font-family="SF Pro Text, -apple-system, system-ui, sans-serif" font-size="18" font-weight="400" fill="#CCCCCC" opacity="0.8">Developer Terminal Session Management</text>
+  
+  <!-- Terminal cursor animation after text -->
+  <rect x="720" y="110" width="3" height="25" fill="#00FF41" filter="url(#glow)">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Subtle connecting line from icon to text -->
+  <line x1="190" y1="100" x2="220" y2="100" stroke="url(#textGrad)" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Corner accent sparks -->
+  <circle cx="750" cy="50" r="2" fill="#FFD700" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="770" cy="40" r="1" fill="#FF8C00" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Subtle border -->
+  <rect width="800" height="200" rx="20" fill="none" stroke="url(#textGrad)" stroke-width="1" opacity="0.2"/>
+</svg>

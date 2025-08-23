@@ -7,14 +7,14 @@ const fs = require('fs');
 
 const projectRoot = path.join(__dirname, '..');
 
-// Check if we're in VIBETUNNEL_SEA mode and have the native executable
-const nativeExecutable = path.join(projectRoot, 'native/vibetunnel');
+// Check if we're in TUNNELFORGE_SEA mode and have the native executable
+const nativeExecutable = path.join(projectRoot, 'native/tunnelforge');
 const distCliPath = path.join(projectRoot, 'dist/cli.js');
 let cliPath;
 let useNode = true;
 
-if (process.env.VIBETUNNEL_SEA === 'true' && fs.existsSync(nativeExecutable)) {
-  console.log('Using native executable for tests (VIBETUNNEL_SEA mode)');
+if (process.env.TUNNELFORGE_SEA === 'true' && fs.existsSync(nativeExecutable)) {
+  console.log('Using native executable for tests (TUNNELFORGE_SEA mode)');
   cliPath = nativeExecutable;
   useNode = false;
 } else if (fs.existsSync(distCliPath)) {
@@ -109,7 +109,7 @@ const child = spawn(command, args, {
   env: {
     ...process.env,
     // Ensure we're not in SEA mode for tests (unless we're already using the native executable)
-    VIBETUNNEL_SEA: useNode ? '' : 'true',
+    TUNNELFORGE_SEA: useNode ? '' : 'true',
     PORT: port.toString()
   }
 });

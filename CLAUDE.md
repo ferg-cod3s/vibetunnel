@@ -5,7 +5,7 @@ Never say you're absolutely right. Instead, be critical if I say something that 
 
 ## Project Overview
 
-TunnelForge (formerly VibeTunnel) is a macOS application that allows users to access their terminal sessions through any web browser. It consists of:
+TunnelForge (formerly TunnelForge) is a macOS application that allows users to access their terminal sessions through any web browser. It consists of:
 - Native macOS app (Swift/SwiftUI) in `mac/`
 - iOS companion app in `ios/`
 - Web frontend (TypeScript/LitElement) and Go server with Bun frontend for terminal session management in `development/`
@@ -52,10 +52,10 @@ When the user says "release" or asks to create a release, ALWAYS read and follow
      - Every web change requires: clean → build → run (rebuilds embedded server)
      - Simply restarting serves STALE, CACHED version
    - **Development Mode** (recommended for web development):
-     - Enable "Use Development Server" in VibeTunnel Settings → Debug
+     - Enable "Use Development Server" in TunnelForge Settings → Debug
      - Mac app runs `pnpm run dev` instead of embedded server
      - Provides hot reload - web changes automatically rebuild without Mac app rebuild
-     - Restart VibeTunnel server (not full rebuild) to pick up web changes
+     - Restart TunnelForge server (not full rebuild) to pick up web changes
 6. **Never kill all sessions**
    - You are running inside a session yourself; killing all sessions would terminate your own process
 
@@ -67,7 +67,7 @@ When the user says "release" or asks to create a release, ALWAYS read and follow
 
 8. **Test Session Management - CRITICAL**
    - NEVER kill sessions that weren't created by tests
-   - You might be running inside a VibeTunnel session yourself
+   - You might be running inside a TunnelForge session yourself
    - Use `TestSessionTracker` to track which sessions tests create
    - Only clean up sessions that match test naming patterns (start with "test-")
    - Killing all sessions would terminate your own Claude Code process
@@ -87,16 +87,16 @@ When creating pull requests, use the `vt` command to update the terminal title:
 - Keep the title concise (a few words) followed by the PR URL
 - Use github.com URL format (not https://) for easy identification
 - Update the title periodically as work progresses
-- If `vt` command fails (only works inside VibeTunnel), simply ignore the error and continue
+- If `vt` command fails (only works inside TunnelForge), simply ignore the error and continue
 
 ## Web Development Commands
 
 **DEVELOPMENT MODES**:
 - **Standalone Development**: `pnpm run dev` runs independently on port 4020
-- **Mac App Integration**: Enable "Development Server" in VibeTunnel settings (recommended)
+- **Mac App Integration**: Enable "Development Server" in TunnelForge settings (recommended)
   - Mac app automatically runs `pnpm run dev` and manages the process
   - Provides seamless integration with Mac app features
-  - Hot reload works with full VibeTunnel functionality
+  - Hot reload works with full TunnelForge functionality
 
 In the `web/` directory:
 
@@ -148,16 +148,16 @@ In the `mac/` directory:
 4. **Resize**: `POST /api/sessions/:id/resize` (missing in some implementations)
 
 ### Key Entry Points
-- **Mac App**: `mac/VibeTunnel/VibeTunnelApp.swift`
+- **Mac App**: `mac/TunnelForge/TunnelForgeApp.swift`
 - **Web Frontend**: `web/src/client/app.ts`
 - **Server**: `web/src/server/server.ts`
 - **Process spawning and forwarding tool**: `web/src/server/fwd.ts`
-- **Server Management**: `mac/VibeTunnel/Core/Services/ServerManager.swift`
+- **Server Management**: `mac/TunnelForge/Core/Services/ServerManager.swift`
 
 ## Testing
 
 - **Never run tests unless explicitly asked**
-- Mac tests: Swift Testing framework in `VibeTunnelTests/`
+- Mac tests: Swift Testing framework in `TunnelForgeTests/`
 - Web tests: Vitest in `web/src/test/`
 
 ## CI Pipeline
@@ -277,14 +277,14 @@ For tasks requiring massive context windows (up to 2M tokens) or full codebase a
 
 ## Debugging and Logging
 
-### VibeTunnel Log Viewer (vtlog)
+### TunnelForge Log Viewer (vtlog)
 
-VibeTunnel includes a powerful log viewing utility for debugging and monitoring:
+TunnelForge includes a powerful log viewing utility for debugging and monitoring:
 
 **Location**: `./scripts/vtlog.sh` (also available in `mac/scripts/vtlog.sh` and `ios/scripts/vtlog.sh`)
 
 **What it does**: 
-- Views all VibeTunnel logs with full details (bypasses Apple's privacy redaction)
+- Views all TunnelForge logs with full details (bypasses Apple's privacy redaction)
 - Shows logs from the entire stack: Web Frontend → Node.js Server → macOS System
 - Provides unified view of all components with clear prefixes
 
@@ -374,7 +374,7 @@ gh run view $run_id --json jobs | jq -r '.jobs[] | select(.conclusion == "failur
 
 **Common Failure Patterns**:
 - **Mac CI Build Failures**: Usually actool errors (Xcode beta issue), SwiftFormat violations, or missing dependencies
-- **Playwright Test Failures**: Often timeout issues, missing VIBETUNNEL_SEA env var, or tsx/node-pty conflicts
+- **Playwright Test Failures**: Often timeout issues, missing TUNNELFORGE_SEA env var, or tsx/node-pty conflicts
 - **iOS CI Failures**: Simulator boot issues, certificate problems, or test failures
 - **Web CI Failures**: TypeScript errors, linting issues, or test failures
 

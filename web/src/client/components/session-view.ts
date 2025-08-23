@@ -425,7 +425,7 @@ export class SessionView extends LitElement {
 
     // Load direct keyboard preference (needed before lifecycle setup)
     try {
-      const stored = localStorage.getItem('vibetunnel_app_preferences');
+      const stored = localStorage.getItem('tunnelforge_app_preferences');
       if (stored) {
         const preferences = JSON.parse(stored);
         this.uiStateManager.setUseDirectKeyboard(preferences.useDirectKeyboard ?? true); // Default to true for new users

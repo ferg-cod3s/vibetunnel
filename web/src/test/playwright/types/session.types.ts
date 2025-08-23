@@ -1,5 +1,5 @@
 /**
- * Type definitions for VibeTunnel sessions
+ * Type definitions for TunnelForge sessions
  */
 
 export interface SessionInfo {

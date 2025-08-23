@@ -8,7 +8,7 @@ import {
   DEFAULT_CONFIG,
   DEFAULT_NOTIFICATION_PREFERENCES,
   type NotificationPreferences,
-  type VibeTunnelConfig,
+  type TunnelForgeConfig,
 } from '../../types/config.js';
 import { createLogger } from '../utils/logger.js';
 
@@ -80,10 +80,10 @@ const ConfigSchema = z.object({
 });
 
 /**
- * Service for managing VibeTunnel configuration with file persistence and live reloading.
+ * Service for managing TunnelForge configuration with file persistence and live reloading.
  *
- * The ConfigService handles loading, saving, and watching the VibeTunnel configuration file
- * stored in the user's home directory at `~/.vibetunnel/config.json`. It provides validation
+ * The ConfigService handles loading, saving, and watching the TunnelForge configuration file
+ * stored in the user's home directory at `~/.tunnelforge/config.json`. It provides validation
  * using Zod schemas, automatic file watching for live reloading, and event-based notifications
  * when configuration changes occur.
  *
@@ -123,12 +123,12 @@ const ConfigSchema = z.object({
 export class ConfigService {
   private configDir: string;
   private configPath: string;
-  private config: VibeTunnelConfig = DEFAULT_CONFIG;
+  private config: TunnelForgeConfig = DEFAULT_CONFIG;
   private watcher?: FSWatcher;
-  private configChangeCallbacks: Set<(config: VibeTunnelConfig) => void> = new Set();
+  private configChangeCallbacks: Set<(config: TunnelForgeConfig) => void> = new Set();
 
   constructor() {
-    this.configDir = path.join(os.homedir(), '.vibetunnel');
+    this.configDir = path.join(os.homedir(), '.tunnelforge');
     this.configPath = path.join(this.configDir, 'config.json');
     this.loadConfig();
   }
@@ -144,7 +144,7 @@ export class ConfigService {
     }
   }
 
-  private validateConfig(data: unknown): VibeTunnelConfig {
+  private validateConfig(data: unknown): TunnelForgeConfig {
     try {
       return ConfigSchema.parse(data);
     } catch (error) {
@@ -252,7 +252,7 @@ export class ConfigService {
     }
   }
 
-  public onConfigChange(callback: (config: VibeTunnelConfig) => void): () => void {
+  public onConfigChange(callback: (config: TunnelForgeConfig) => void): () => void {
     this.configChangeCallbacks.add(callback);
     // Return unsubscribe function
     return () => {
@@ -260,18 +260,18 @@ export class ConfigService {
     };
   }
 
-  public getConfig(): VibeTunnelConfig {
+  public getConfig(): TunnelForgeConfig {
     return this.config;
   }
 
-  public updateConfig(config: VibeTunnelConfig): void {
+  public updateConfig(config: TunnelForgeConfig): void {
     // Validate the config before updating
     this.config = this.validateConfig(config);
     this.saveConfig();
     this.notifyConfigChange();
   }
 
-  public updateQuickStartCommands(commands: VibeTunnelConfig['quickStartCommands']): void {
+  public updateQuickStartCommands(commands: TunnelForgeConfig['quickStartCommands']): void {
     // Validate the entire config with updated commands
     const updatedConfig = { ...this.config, quickStartCommands: commands };
     this.config = this.validateConfig(updatedConfig);

@@ -9,7 +9,7 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="${PROJECT_DIR}/build/Build/Products/Debug"
 APP_PATH="${BUILD_DIR}/TunnelForge.app"
 VT_PATH="${APP_PATH}/Contents/Resources/vt"
-VIBETUNNEL_BIN="${APP_PATH}/Contents/Resources/vibetunnel"
+TUNNELFORGE_BIN="${APP_PATH}/Contents/Resources/tunnelforge"
 
 # Colors for output
 RED='\033[0;31m'
@@ -138,12 +138,12 @@ run_test "Command not found" \
 # Test 11: Test interactive shell launch
 run_test "Interactive shell (-i)" \
     "echo 'exit' | $VT_PATH -i 2>&1 | head -1" \
-    "vibetunnel"
+    "tunnelforge"
 
 # Test 12: Test --shell flag
 run_test "Shell flag (--shell)" \
     "echo 'exit' | $VT_PATH --shell 2>&1 | head -1" \
-    "vibetunnel"
+    "tunnelforge"
 
 # Cleanup
 rm -rf "$TEMP_ZSH_DIR" "$TEMP_BASH_DIR" "$TEMP_FUNC_DIR"

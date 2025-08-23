@@ -179,7 +179,7 @@ export class SessionCleanupHelper {
 
   /**
    * Safe cleanup - only removes sessions created by tests
-   * NEVER uses Kill All button to avoid killing the VibeTunnel session running Claude Code
+   * NEVER uses Kill All button to avoid killing the TunnelForge session running Claude Code
    */
   async cleanupTestSessions(): Promise<void> {
     try {

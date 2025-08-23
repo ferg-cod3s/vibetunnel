@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# VibeTunnel Migration Testing Script
+# TunnelForge Migration Testing Script
 # Tests feature parity between Node.js and Go servers
 
 set -euo pipefail
@@ -17,7 +17,7 @@ GO_SERVER_PORT=4021
 NODE_SERVER_PORT=4020
 BUN_WEB_PORT=3000
 TEST_TIMEOUT=30
-LOG_FILE="/tmp/vibetunnel-migration-test.log"
+LOG_FILE="/tmp/tunnelforge-migration-test.log"
 
 # Test Results
 TESTS_PASSED=0
@@ -49,7 +49,7 @@ cleanup() {
     fi
     
     # Kill any remaining processes
-    pkill -f "vibetunnel-server" || true
+    pkill -f "tunnelforge-server" || true
     pkill -f "go run.*server" || true
     pkill -f "pnpm run dev" || true
     pkill -f "bun run dev" || true
@@ -99,13 +99,13 @@ start_go_server() {
     cd go-server
     
     # Build the server first
-    if ! go build -o vibetunnel-server cmd/server/main.go; then
+    if ! go build -o tunnelforge-server cmd/server/main.go; then
         log "${RED}Failed to build Go server${NC}"
         return 1
     fi
     
     # Start the server in background
-    ./vibetunnel-server --port="$GO_SERVER_PORT" >> "$LOG_FILE" 2>&1 &
+    ./tunnelforge-server --port="$GO_SERVER_PORT" >> "$LOG_FILE" 2>&1 &
     GO_SERVER_PID=$!
     
     cd ..
@@ -371,7 +371,7 @@ generate_report() {
     
     # Save detailed report
     {
-        echo "# VibeTunnel Migration Test Report"
+        echo "# TunnelForge Migration Test Report"
         echo "Generated: $(date)"
         echo ""
         echo "## Summary"
@@ -387,18 +387,18 @@ generate_report() {
         echo ""
         echo "## Logs"
         echo "See: $LOG_FILE"
-    } > "/tmp/vibetunnel-migration-report.md"
+    } > "/tmp/tunnelforge-migration-report.md"
     
-    log "\n${BLUE}Report saved to: /tmp/vibetunnel-migration-report.md${NC}"
+    log "\n${BLUE}Report saved to: /tmp/tunnelforge-migration-report.md${NC}"
     log "${BLUE}Logs saved to: $LOG_FILE${NC}"
 }
 
 main() {
-    log "${BLUE}🚀 Starting VibeTunnel Migration Testing${NC}"
+    log "${BLUE}🚀 Starting TunnelForge Migration Testing${NC}"
     log "${BLUE}=======================================${NC}\n"
     
     # Initialize log file
-    echo "VibeTunnel Migration Test Log - $(date)" > "$LOG_FILE"
+    echo "TunnelForge Migration Test Log - $(date)" > "$LOG_FILE"
     
     # Start servers
     if ! start_go_server; then

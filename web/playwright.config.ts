@@ -35,9 +35,9 @@ export default defineConfig({
       }
       console.warn(`Invalid PLAYWRIGHT_WORKERS value: "${process.env.PLAYWRIGHT_WORKERS}". Using default.`);
     }
-    // Default: 1 worker in CI to prevent race conditions, auto-detect locally
-    // This ensures test groups run sequentially, preventing session conflicts
-    return process.env.CI ? 1 : undefined;
+    // ALWAYS use 1 worker to prevent resource exhaustion and session conflicts
+    // Multiple workers create too many concurrent sessions leading to EAGAIN errors
+    return 1;
   })(),
   /* Test timeout - reduced for faster failure detection */
   timeout: process.env.CI ? 20 * 1000 : 10 * 1000, // 20s on CI, 10s locally
@@ -149,12 +149,12 @@ export default defineConfig({
     cwd: process.cwd(), // Ensure we're in the right directory
     env: (() => {
       const env = { ...process.env };
-      // Keep VIBETUNNEL_SEA if it's set in CI, as we now use the native executable for tests
+      // Keep TUNNELFORGE_SEA if it's set in CI, as we now use the native executable for tests
       // In local development, it will be undefined and tests will use TypeScript compilation
       return {
         ...env,
         NODE_ENV: 'test',
-        VIBETUNNEL_DISABLE_PUSH_NOTIFICATIONS: 'true',
+        TUNNELFORGE_DISABLE_PUSH_NOTIFICATIONS: 'true',
         SUPPRESS_CLIENT_ERRORS: 'true',
         SHELL: '/bin/bash',
         TERM: 'xterm',

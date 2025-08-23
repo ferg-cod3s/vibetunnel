@@ -54,7 +54,7 @@ describe('postinstall vt installation', () => {
 
       expect(result).toBe(false);
       expect(consoleWarnSpy).toHaveBeenCalledWith('⚠️  vt command script not found in package');
-      expect(consoleLogSpy).toHaveBeenCalledWith('   Use "vibetunnel" command instead');
+      expect(consoleLogSpy).toHaveBeenCalledWith('   Use "tunnelforge" command instead');
 
       consoleWarnSpy.mockRestore();
       consoleLogSpy.mockRestore();

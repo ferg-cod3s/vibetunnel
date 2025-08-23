@@ -112,7 +112,7 @@ temp/
 release-check/
 
 # Terminal session data (don't commit user sessions)
-~/.vibetunnel/
+~/.tunnelforge/
 
 # Lint output files
 lint_output.txt
@@ -162,4 +162,4 @@ temp-spawn-helper/
 package/
 
 # Docker test files (moved to scripts/)
-test-vibetunnel*.dockerfile
+test-tunnelforge*.dockerfile

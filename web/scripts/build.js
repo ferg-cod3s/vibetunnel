@@ -70,7 +70,7 @@ async function build() {
       platform: 'node',
       target: 'node18',
       format: 'cjs',
-      outfile: 'dist/vibetunnel-cli',
+      outfile: 'dist/tunnelforge-cli',
       plugins: [nodePtyPlugin],
       external: [
         // 'node-pty', // Removed - handled by plugin
@@ -97,7 +97,7 @@ async function build() {
     });
     
     // Read the file and ensure it has exactly one shebang
-    let content = fs.readFileSync('dist/vibetunnel-cli', 'utf8');
+    let content = fs.readFileSync('dist/tunnelforge-cli', 'utf8');
     
     // Remove any existing shebangs
     content = content.replace(/^#!.*\n/gm, '');
@@ -106,10 +106,10 @@ async function build() {
     content = '#!/usr/bin/env node\n' + content;
     
     // Write the fixed content back
-    fs.writeFileSync('dist/vibetunnel-cli', content);
+    fs.writeFileSync('dist/tunnelforge-cli', content);
     
     // Make the CLI executable
-    fs.chmodSync('dist/vibetunnel-cli', '755');
+    fs.chmodSync('dist/tunnelforge-cli', '755');
     console.log('CLI bundle created successfully');
   } catch (error) {
     console.error('CLI bundling failed:', error);
@@ -122,13 +122,13 @@ async function build() {
 
   // Check if native binaries already exist (skip build for development)
   const nativeDir = path.join(__dirname, '..', 'native');
-  const vibetunnelPath = path.join(nativeDir, 'vibetunnel');
+  const tunnelforgePath = path.join(nativeDir, 'tunnelforge');
   const ptyNodePath = path.join(nativeDir, 'pty.node');
   const spawnHelperPath = path.join(nativeDir, 'spawn-helper');
 
-  if (fs.existsSync(vibetunnelPath) && fs.existsSync(ptyNodePath) && fs.existsSync(spawnHelperPath)) {
+  if (fs.existsSync(tunnelforgePath) && fs.existsSync(ptyNodePath) && fs.existsSync(spawnHelperPath)) {
     console.log('✅ Native binaries already exist, skipping build...');
-    console.log('  - vibetunnel executable: ✓');
+    console.log('  - tunnelforge executable: ✓');
     console.log('  - pty.node: ✓');
     console.log('  - spawn-helper: ✓');
   } else {

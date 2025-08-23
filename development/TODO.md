@@ -1,12 +1,12 @@
-# VibeTunnel Go Server - Development Roadmap
+# TunnelForge Go Server - Development Roadmap
 
 ## 🎯 Project Status (Current Snapshot)
 
-**Current state**: **FULLY FUNCTIONAL VibeTunnel replacement** with production-ready Go server + modern Bun web frontend. Complete end-to-end terminal functionality with professional xterm.js integration, working authentication, session management, and real-time WebSocket streaming. System is fully operational and ready for production use.
+**Current state**: **FULLY FUNCTIONAL TunnelForge replacement** with production-ready Go server + modern Bun web frontend. Complete end-to-end terminal functionality with professional xterm.js integration, working authentication, session management, and real-time WebSocket streaming. System is fully operational and ready for production use.
 
-**Goal**: High-performance Go+Bun replacement for the Node.js VibeTunnel server with 100% functional parity and modern web architecture.
+**Goal**: High-performance Go+Bun replacement for the Node.js TunnelForge server with 100% functional parity and modern web architecture.
 
-**Progress**: **~98% functional parity achieved** - Complete working system with professional terminal interface, full session lifecycle, authentication, and mobile-responsive design. Core VibeTunnel functionality fully operational.
+**Progress**: **~98% functional parity achieved** - Complete working system with professional terminal interface, full session lifecycle, authentication, and mobile-responsive design. Core TunnelForge functionality fully operational.
 
 ---
 
@@ -14,7 +14,7 @@
 
 ### ✅ Web Frontend Development (Bun + Modern JavaScript) — COMPLETED ✅
 - [x] Complete Bun-based web server with API proxying
-- [x] Professional VibeTunnel web interface with authentication
+- [x] Professional TunnelForge web interface with authentication
 - [x] xterm.js integration for real terminal rendering
 - [x] WebSocket terminal streaming with bidirectional communication  
 - [x] Session management UI (create, list, connect, delete)
@@ -92,25 +92,25 @@ Status: Full authentication system and security middleware implemented and integ
 ## ✅ Phase 8: CLI Interface & Command System ✅
 
 - CLI Command Parser
-  - [x] Create `cmd/vibetunnel/main.go` CLI entry point
+  - [x] Create `cmd/tunnelforge/main.go` CLI entry point
   - [x] Command parsing with subcommands (help, version, fwd, status, etc.)
   - [x] Flag parsing and validation
   - [x] Error handling and help text
 
 - Core CLI Commands
-  - [x] `vibetunnel` - Start server (default)
-  - [x] `vibetunnel fwd <session-id> <command>` - Forward commands to sessions
-  - [x] `vibetunnel status` - Show server and follow mode status
-  - [x] `vibetunnel version` - Show version information
-  - [x] `vibetunnel help` - Show usage information
+  - [x] `tunnelforge` - Start server (default)
+  - [x] `tunnelforge fwd <session-id> <command>` - Forward commands to sessions
+  - [x] `tunnelforge status` - Show server and follow mode status
+  - [x] `tunnelforge version` - Show version information
+  - [x] `tunnelforge help` - Show usage information
 
 - Git Integration Commands (Placeholder implementations)
-  - [x] `vibetunnel follow [branch]` - Enable Git follow mode (TODO: Full implementation)
-  - [x] `vibetunnel unfollow` - Disable Git follow mode (TODO: Full implementation)  
-  - [x] `vibetunnel git-event` - Notify server of Git events (TODO: Full implementation)
+  - [x] `tunnelforge follow [branch]` - Enable Git follow mode (TODO: Full implementation)
+  - [x] `tunnelforge unfollow` - Disable Git follow mode (TODO: Full implementation)  
+  - [x] `tunnelforge git-event` - Notify server of Git events (TODO: Full implementation)
 
 - Service Management (Placeholder implementations)
-  - [x] `vibetunnel systemd [action]` - Manage systemd service (Linux) (TODO: Full implementation)
+  - [x] `tunnelforge systemd [action]` - Manage systemd service (Linux) (TODO: Full implementation)
   - [x] Service install/uninstall/status operations (TODO: Full implementation)
   - [x] Configuration file generation (TODO: Full implementation)
 
@@ -126,7 +126,7 @@ Status: Full authentication system and security middleware implemented and integ
   - [x] Event types: session-start, session-exit, command-finished, heartbeat, test-notification, etc.
   - [x] Broadcaster and connection management with client lifecycle
   - [x] Heartbeat mechanism with automatic cleanup of stale clients
-  - [x] Compatible event schema with original VibeTunnel TypeScript implementation
+  - [x] Compatible event schema with original TunnelForge TypeScript implementation
   - [x] Test endpoint for development: `POST /api/events/test`
 
 ## ✅ Phase 10: Production Readiness & CI/CD — COMPLETED ✅
@@ -180,7 +180,7 @@ Status: Full authentication system and security middleware implemented and integ
   - [x] Client-side logging endpoint (`/api/logs/client`) with comprehensive validation and testing
   - [x] Control event stream (`/api/control/stream`) with SSE streaming and client management
   - [x] Tmux session management (`/api/tmux/*`) with full session, window, and pane control
-  - [x] Tmux integration with VibeTunnel sessions for seamless terminal multiplexing
+  - [x] Tmux integration with TunnelForge sessions for seamless terminal multiplexing
   - [x] JSON API compatibility with Node.js implementation
   - [x] Error handling and validation matching original behavior
 
@@ -254,7 +254,7 @@ Status: Full authentication system and security middleware implemented and integ
 
 **Phase 3: Complete Web Frontend System ✅ COMPLETED**
 - [x] Bun web server with Go server API proxying
-- [x] Complete VibeTunnel web interface with authentication
+- [x] Complete TunnelForge web interface with authentication
 - [x] Professional xterm.js terminal implementation
 - [x] Real-time WebSocket terminal streaming
 - [x] Session management and dashboard
@@ -318,8 +318,8 @@ Current Focus: Node.js Route Parity ✅ COMPLETED → Enhanced Authentication & 
 
 ## 📊 Latest Achievements (August 10, 2025)
 
-**MAJOR MILESTONE: Complete VibeTunnel System Operational ✅**
-- ✅ Complete end-to-end VibeTunnel replacement system deployed and functional
+**MAJOR MILESTONE: Complete TunnelForge System Operational ✅**
+- ✅ Complete end-to-end TunnelForge replacement system deployed and functional
 - ✅ Professional xterm.js terminal integration with full ANSI support
 - ✅ Real-time WebSocket terminal streaming with bidirectional communication
 - ✅ Complete session management system (create, connect, list, delete)
@@ -338,13 +338,13 @@ Current Focus: Node.js Route Parity ✅ COMPLETED → Enhanced Authentication & 
 **Current System Status:**
 - Go Server: Production-ready with 30+ comprehensive test suites
 - Bun Frontend: Complete with professional xterm.js integration
-- **98%+ functional parity with original VibeTunnel achieved**
+- **98%+ functional parity with original TunnelForge achieved**
 - **Full working system ready for production deployment**
-- All core VibeTunnel functionality operational and tested
+- All core TunnelForge functionality operational and tested
 
 ## 🎯 **SYSTEM STATUS: MISSION ACCOMPLISHED**
 
-The VibeTunnel replacement system is **fully functional** and provides a **complete, modern alternative** to the original Node.js implementation. The system includes:
+The TunnelForge replacement system is **fully functional** and provides a **complete, modern alternative** to the original Node.js implementation. The system includes:
 
 - **High-Performance Go Backend** (Port 4021)
 - **Modern Bun Web Server** (Port 3001) 

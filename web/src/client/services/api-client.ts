@@ -16,7 +16,7 @@ interface ErrorResponse {
 }
 
 /**
- * HTTP client for making authenticated API requests to the VibeTunnel backend.
+ * HTTP client for making authenticated API requests to the TunnelForge backend.
  * Automatically includes authentication headers and handles error responses.
  */
 class ApiClient {

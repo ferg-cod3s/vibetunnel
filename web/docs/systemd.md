@@ -1,25 +1,25 @@
-# VibeTunnel Systemd Service Guide
+# TunnelForge Systemd Service Guide
 
-This guide covers installing and managing VibeTunnel as a systemd service on Linux systems.
+This guide covers installing and managing TunnelForge as a systemd service on Linux systems.
 
 ## Overview
 
-VibeTunnel includes built-in systemd integration that allows you to run it as a persistent service on Linux. The service runs as a **user-level systemd service** under your account (not system-wide), providing automatic startup, restart on failure, and proper resource management.
+TunnelForge includes built-in systemd integration that allows you to run it as a persistent service on Linux. The service runs as a **user-level systemd service** under your account (not system-wide), providing automatic startup, restart on failure, and proper resource management.
 
 ## Quick Start
 
 ```bash
 # Install the systemd service (run as regular user, NOT root)
-vibetunnel systemd
+tunnelforge systemd
 
 # Start the service
-systemctl --user start vibetunnel
+systemctl --user start tunnelforge
 
 # Enable auto-start on boot
-systemctl --user enable vibetunnel
+systemctl --user enable tunnelforge
 
 # Check status
-systemctl --user status vibetunnel
+systemctl --user status tunnelforge
 ```
 
 ## Installation
@@ -27,19 +27,19 @@ systemctl --user status vibetunnel
 ### Prerequisites
 
 - Linux system with systemd (most modern distributions)
-- VibeTunnel installed globally via npm (`npm install -g vibetunnel`)
+- TunnelForge installed globally via npm (`npm install -g tunnelforge`)
 - Regular user account (do not run as root)
 
 ### Install Command
 
 ```bash
-vibetunnel systemd
+tunnelforge systemd
 ```
 
 This command will:
-1. Verify VibeTunnel is installed and accessible
-2. Create a wrapper script at `~/.local/bin/vibetunnel-systemd`
-3. Install the service file at `~/.config/systemd/user/vibetunnel.service`
+1. Verify TunnelForge is installed and accessible
+2. Create a wrapper script at `~/.local/bin/tunnelforge-systemd`
+3. Install the service file at `~/.config/systemd/user/tunnelforge.service`
 4. Enable the service for automatic startup
 5. Configure user lingering for boot startup
 
@@ -49,41 +49,41 @@ This command will:
 
 ```bash
 # Start the service
-systemctl --user start vibetunnel
+systemctl --user start tunnelforge
 
 # Stop the service
-systemctl --user stop vibetunnel
+systemctl --user stop tunnelforge
 
 # Restart the service
-systemctl --user restart vibetunnel
+systemctl --user restart tunnelforge
 
 # Check service status
-systemctl --user status vibetunnel
+systemctl --user status tunnelforge
 
 # Enable auto-start
-systemctl --user enable vibetunnel
+systemctl --user enable tunnelforge
 
 # Disable auto-start
-systemctl --user disable vibetunnel
+systemctl --user disable tunnelforge
 
-# Check VibeTunnel's systemd status
-vibetunnel systemd status
+# Check TunnelForge's systemd status
+tunnelforge systemd status
 ```
 
 ### Viewing Logs
 
 ```bash
 # Follow logs in real-time
-journalctl --user -u vibetunnel -f
+journalctl --user -u tunnelforge -f
 
 # View all logs
-journalctl --user -u vibetunnel
+journalctl --user -u tunnelforge
 
 # View logs from the last hour
-journalctl --user -u vibetunnel --since "1 hour ago"
+journalctl --user -u tunnelforge --since "1 hour ago"
 
 # View only error messages
-journalctl --user -u vibetunnel -p err
+journalctl --user -u tunnelforge -p err
 ```
 
 ## Configuration
@@ -98,13 +98,13 @@ The service runs with these defaults:
 - **Restart Delay**: 10 seconds
 - **Memory Limit**: 512MB soft, 1GB hard
 - **File Descriptor Limit**: 65536
-- **Environment**: `NODE_ENV=production`, `VIBETUNNEL_LOG_LEVEL=info`
+- **Environment**: `NODE_ENV=production`, `TUNNELFORGE_LOG_LEVEL=info`
 
 ### Service File Location
 
 The service configuration is stored at:
 ```
-~/.config/systemd/user/vibetunnel.service
+~/.config/systemd/user/tunnelforge.service
 ```
 
 ### Customizing the Service
@@ -113,19 +113,19 @@ To modify service settings:
 
 1. Edit the service file:
    ```bash
-   nano ~/.config/systemd/user/vibetunnel.service
+   nano ~/.config/systemd/user/tunnelforge.service
    ```
 
 2. Common customizations:
    ```ini
    # Change port
-   ExecStart=/home/user/.local/bin/vibetunnel-systemd --port 8080 --bind 0.0.0.0
+   ExecStart=/home/user/.local/bin/tunnelforge-systemd --port 8080 --bind 0.0.0.0
 
    # Add authentication
-   ExecStart=/home/user/.local/bin/vibetunnel-systemd --port 4020 --bind 0.0.0.0 --auth system
+   ExecStart=/home/user/.local/bin/tunnelforge-systemd --port 4020 --bind 0.0.0.0 --auth system
 
    # Change log level
-   Environment=VIBETUNNEL_LOG_LEVEL=debug
+   Environment=TUNNELFORGE_LOG_LEVEL=debug
 
    # Adjust memory limits
    MemoryHigh=1G
@@ -138,14 +138,14 @@ To modify service settings:
 3. Reload and restart:
    ```bash
    systemctl --user daemon-reload
-   systemctl --user restart vibetunnel
+   systemctl --user restart tunnelforge
    ```
 
 ## Architecture
 
 ### Why User-Level Service?
 
-VibeTunnel uses user-level systemd services for several reasons:
+TunnelForge uses user-level systemd services for several reasons:
 
 1. **Security**: Runs with user privileges, not root
 2. **Node.js Compatibility**: Works with user-installed Node.js version managers (nvm, fnm)
@@ -155,8 +155,8 @@ VibeTunnel uses user-level systemd services for several reasons:
 
 ### The Wrapper Script
 
-The installer creates a wrapper script at `~/.local/bin/vibetunnel-systemd` that:
-- Searches for VibeTunnel in multiple locations
+The installer creates a wrapper script at `~/.local/bin/tunnelforge-systemd` that:
+- Searches for TunnelForge in multiple locations
 - Handles nvm and fnm installations
 - Falls back to system-wide Node.js if needed
 - Provides detailed logging for troubleshooting
@@ -180,24 +180,24 @@ loginctl disable-linger $USER
 
 ### Service Won't Start
 
-1. Check if VibeTunnel is installed:
+1. Check if TunnelForge is installed:
    ```bash
-   which vibetunnel
+   which tunnelforge
    ```
 
 2. Check service logs:
    ```bash
-   journalctl --user -u vibetunnel -n 50
+   journalctl --user -u tunnelforge -n 50
    ```
 
 3. Verify the wrapper script exists:
    ```bash
-   ls -la ~/.local/bin/vibetunnel-systemd
+   ls -la ~/.local/bin/tunnelforge-systemd
    ```
 
 4. Test the wrapper script directly:
    ```bash
-   ~/.local/bin/vibetunnel-systemd --version
+   ~/.local/bin/tunnelforge-systemd --version
    ```
 
 ### Port Already in Use
@@ -209,7 +209,7 @@ If port 4020 is already in use:
    lsof -i :4020
    ```
 
-2. Either stop the conflicting service or change VibeTunnel's port in the service file
+2. Either stop the conflicting service or change TunnelForge's port in the service file
 
 ### Node.js Version Manager Issues
 
@@ -237,13 +237,13 @@ If you get permission errors:
 2. Check file permissions:
    ```bash
    ls -la ~/.config/systemd/user/
-   ls -la ~/.local/bin/vibetunnel-systemd
+   ls -la ~/.local/bin/tunnelforge-systemd
    ```
 
 3. Fix permissions if needed:
    ```bash
-   chmod 755 ~/.local/bin/vibetunnel-systemd
-   chmod 644 ~/.config/systemd/user/vibetunnel.service
+   chmod 755 ~/.local/bin/tunnelforge-systemd
+   chmod 644 ~/.config/systemd/user/tunnelforge.service
    ```
 
 ## Uninstallation
@@ -252,11 +252,11 @@ To completely remove the systemd service:
 
 ```bash
 # Stop and disable the service
-systemctl --user stop vibetunnel
-systemctl --user disable vibetunnel
+systemctl --user stop tunnelforge
+systemctl --user disable tunnelforge
 
 # Remove service files
-vibetunnel systemd uninstall
+tunnelforge systemd uninstall
 
 # Optional: Disable user lingering
 loginctl disable-linger $USER
@@ -273,22 +273,22 @@ This will:
 
 ### Multiple Instances
 
-To run multiple VibeTunnel instances:
+To run multiple TunnelForge instances:
 
 1. Copy the service file with a new name:
    ```bash
-   cp ~/.config/systemd/user/vibetunnel.service ~/.config/systemd/user/vibetunnel-dev.service
+   cp ~/.config/systemd/user/tunnelforge.service ~/.config/systemd/user/tunnelforge-dev.service
    ```
 
 2. Edit the new service file to use a different port:
    ```ini
-   ExecStart=/home/user/.local/bin/vibetunnel-systemd --port 4021 --bind 0.0.0.0
+   ExecStart=/home/user/.local/bin/tunnelforge-systemd --port 4021 --bind 0.0.0.0
    ```
 
 3. Manage the new instance:
    ```bash
    systemctl --user daemon-reload
-   systemctl --user start vibetunnel-dev
+   systemctl --user start tunnelforge-dev
    ```
 
 ### Environment-Specific Configuration
@@ -297,25 +297,25 @@ Create environment-specific service overrides:
 
 ```bash
 # Create override directory
-mkdir -p ~/.config/systemd/user/vibetunnel.service.d/
+mkdir -p ~/.config/systemd/user/tunnelforge.service.d/
 
 # Create override file
-cat > ~/.config/systemd/user/vibetunnel.service.d/override.conf << EOF
+cat > ~/.config/systemd/user/tunnelforge.service.d/override.conf << EOF
 [Service]
 Environment=NODE_ENV=development
-Environment=VIBETUNNEL_LOG_LEVEL=debug
+Environment=TUNNELFORGE_LOG_LEVEL=debug
 ExecStart=
-ExecStart=/home/user/.local/bin/vibetunnel-systemd --port 4020 --bind 127.0.0.1
+ExecStart=/home/user/.local/bin/tunnelforge-systemd --port 4020 --bind 127.0.0.1
 EOF
 
 # Reload and restart
 systemctl --user daemon-reload
-systemctl --user restart vibetunnel
+systemctl --user restart tunnelforge
 ```
 
 ### Integration with Other Services
 
-To make VibeTunnel depend on other services:
+To make TunnelForge depend on other services:
 
 ```ini
 [Unit]
@@ -346,7 +346,7 @@ sudo firewall-cmd --reload
 To limit access to localhost only, modify the service:
 
 ```ini
-ExecStart=/home/user/.local/bin/vibetunnel-systemd --port 4020 --bind 127.0.0.1
+ExecStart=/home/user/.local/bin/tunnelforge-systemd --port 4020 --bind 127.0.0.1
 ```
 
 ### Resource Limits
@@ -361,23 +361,23 @@ Adjust these based on your needs and system resources.
 ## FAQ
 
 **Q: Why doesn't the service run as root?**
-A: VibeTunnel doesn't require root privileges and running as a regular user is more secure. It also ensures compatibility with user-installed Node.js version managers.
+A: TunnelForge doesn't require root privileges and running as a regular user is more secure. It also ensures compatibility with user-installed Node.js version managers.
 
 **Q: Can I run this on a server without a GUI?**
 A: Yes, the systemd service works perfectly on headless servers. User lingering ensures it starts at boot.
 
-**Q: How do I run VibeTunnel on a different port?**
+**Q: How do I run TunnelForge on a different port?**
 A: Edit the service file and change the `--port` parameter in the `ExecStart` line, then reload and restart.
 
 **Q: What if I use a custom Node.js installation?**
-A: The wrapper script searches common locations. If your installation isn't found, you can modify the wrapper script at `~/.local/bin/vibetunnel-systemd`.
+A: The wrapper script searches common locations. If your installation isn't found, you can modify the wrapper script at `~/.local/bin/tunnelforge-systemd`.
 
-**Q: Can multiple users run VibeTunnel on the same system?**
+**Q: Can multiple users run TunnelForge on the same system?**
 A: Yes, each user can install their own service. Just ensure they use different ports.
 
 ## Support
 
 For issues specific to the systemd service:
-1. Check the logs with `journalctl --user -u vibetunnel`
-2. Verify the installation with `vibetunnel systemd status`
-3. Report issues at https://github.com/amantus-ai/vibetunnel/issues
+1. Check the logs with `journalctl --user -u tunnelforge`
+2. Verify the installation with `tunnelforge systemd status`
+3. Report issues at https://github.com/amantus-ai/tunnelforge/issues

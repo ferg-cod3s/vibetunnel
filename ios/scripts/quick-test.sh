@@ -6,7 +6,7 @@ set -euo pipefail
 echo "🧪 Running iOS tests..."
 
 # Check if we're in the right directory
-if [ ! -f "VibeTunnel-iOS.xcodeproj/project.pbxproj" ]; then
+if [ ! -f "TunnelForge-iOS.xcodeproj/project.pbxproj" ]; then
     echo "❌ Error: Must run from ios/ directory"
     exit 1
 fi
@@ -21,8 +21,8 @@ fi
 
 # Run tests with minimal output
 xcodebuild test \
-    -scheme VibeTunnel-iOS \
-    -project VibeTunnel-iOS.xcodeproj \
+    -scheme TunnelForge-iOS \
+    -project TunnelForge-iOS.xcodeproj \
     -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
     -enableCodeCoverage YES \
     -quiet \

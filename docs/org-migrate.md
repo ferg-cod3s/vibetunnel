@@ -1,6 +1,6 @@
 # GitHub Organization Migration Plan
 
-This document outlines the migration process for moving VibeTunnel from `amantus-ai/vibetunnel` to `vibetunnel/vibetunnel`.
+This document outlines the migration process for moving TunnelForge from `amantus-ai/tunnelforge` to `tunnelforge/tunnelforge`.
 
 **Status: TODO** - This migration has not been completed yet.
 
@@ -51,7 +51,7 @@ The simplest approach using GitHub's native transfer feature.
 
 ### Option 2: Migration with History Cleanup
 
-Since `https://github.com/vibetunnel/vibetunnel` may already exist, we can perform a clean migration that:
+Since `https://github.com/tunnelforge/tunnelforge` may already exist, we can perform a clean migration that:
 1. Removes large files from history
 2. Cleans up accidental commits
 3. Preserves important history
@@ -64,7 +64,7 @@ Use BFG Repo-Cleaner or git-filter-repo to create a cleaned version of the repos
 ### Preparation (1-2 days before)
 
 - [ ] **Prepare Target Organization**
-  - Create `vibetunnel` organization if not exists
+  - Create `tunnelforge` organization if not exists
   - Set up teams and permissions structure
   - Configure organization-level settings
   - Review default branch protection rules
@@ -95,7 +95,7 @@ Use BFG Repo-Cleaner or git-filter-repo to create a cleaned version of the repos
 ### Option 1: Simple Transfer Steps
 
 1. Navigate to **Settings → General → Danger Zone → Transfer**
-2. Enter the new owner: `vibetunnel`
+2. Enter the new owner: `tunnelforge`
 3. Type the repository name to confirm
 4. Accept the invite from the destination org
 5. Done! ✅
@@ -109,12 +109,12 @@ Save this as `migrate-clean.sh`:
 set -euo pipefail
 
 # Configuration
-OLD_REPO="git@github.com:amantus-ai/vibetunnel.git"
-NEW_REPO="git@github.com:vibetunnel/vibetunnel.git"
-TEMP_DIR="vibetunnel-migration-$(date +%Y%m%d-%H%M%S)"
+OLD_REPO="git@github.com:amantus-ai/tunnelforge.git"
+NEW_REPO="git@github.com:tunnelforge/tunnelforge.git"
+TEMP_DIR="tunnelforge-migration-$(date +%Y%m%d-%H%M%S)"
 SIZE_THRESHOLD="10M"  # Files larger than this will be removed
 
-echo "🚀 Starting VibeTunnel repository migration with cleanup..."
+echo "🚀 Starting TunnelForge repository migration with cleanup..."
 
 # Create temporary directory
 mkdir -p "$TEMP_DIR"
@@ -122,12 +122,12 @@ cd "$TEMP_DIR"
 
 # Clone the repository (all branches and tags)
 echo "📥 Cloning repository with all history..."
-git clone --mirror "$OLD_REPO" vibetunnel-mirror
-cd vibetunnel-mirror
+git clone --mirror "$OLD_REPO" tunnelforge-mirror
+cd tunnelforge-mirror
 
 # Create a backup first
 echo "💾 Creating backup..."
-cp -r . ../vibetunnel-backup
+cp -r . ../tunnelforge-backup
 
 # Analyze repository for large files
 echo "🔍 Analyzing repository for large files..."
@@ -165,13 +165,13 @@ git gc --prune=now --aggressive
 # Show size comparison
 echo "📏 Size comparison:"
 cd ..
-ORIGINAL_SIZE=$(du -sh vibetunnel-backup | cut -f1)
-CLEANED_SIZE=$(du -sh vibetunnel-mirror | cut -f1)
+ORIGINAL_SIZE=$(du -sh tunnelforge-backup | cut -f1)
+CLEANED_SIZE=$(du -sh tunnelforge-mirror | cut -f1)
 echo "  Original: $ORIGINAL_SIZE"
 echo "  Cleaned:  $CLEANED_SIZE"
 
 # Update remote URL and push
-cd vibetunnel-mirror
+cd tunnelforge-mirror
 git remote set-url origin "$NEW_REPO"
 
 # Interactive confirmation
@@ -195,26 +195,26 @@ echo "✅ Migration complete!"
 ### Update Git Remotes
 ```bash
 # For all local clones
-git remote set-url origin git@github.com:vibetunnel/vibetunnel.git
+git remote set-url origin git@github.com:tunnelforge/tunnelforge.git
 
 # Verify the change
 git remote -v
 ```
 
-### Update VibeTunnel Code
+### Update TunnelForge Code
 
-- [ ] Update `GITHUB_URL` in `mac/VibeTunnel/version.xcconfig`
+- [ ] Update `GITHUB_URL` in `mac/TunnelForge/version.xcconfig`
 - [ ] Update repository URLs in all `package.json` files:
   ```json
   {
     "repository": {
       "type": "git",
-      "url": "git+https://github.com/vibetunnel/vibetunnel.git"
+      "url": "git+https://github.com/tunnelforge/tunnelforge.git"
     },
     "bugs": {
-      "url": "https://github.com/vibetunnel/vibetunnel/issues"
+      "url": "https://github.com/tunnelforge/tunnelforge/issues"
     },
-    "homepage": "https://github.com/vibetunnel/vibetunnel#readme"
+    "homepage": "https://github.com/tunnelforge/tunnelforge#readme"
   }
   ```
 - [ ] Update any hardcoded GitHub URLs in documentation
@@ -242,12 +242,12 @@ git remote -v
 ## Redirect Behavior
 
 GitHub automatically sets up redirects:
-- `https://github.com/amantus-ai/vibetunnel` → `https://github.com/vibetunnel/vibetunnel`
-- Git operations: `git clone git@github.com:amantus-ai/vibetunnel.git` still works
+- `https://github.com/amantus-ai/tunnelforge` → `https://github.com/tunnelforge/tunnelforge`
+- Git operations: `git clone git@github.com:amantus-ai/tunnelforge.git` still works
 - API calls to old URL redirect automatically
 
 ⚠️ **Redirect Limitations**:
-- Redirects break if someone creates a new repo at `amantus-ai/vibetunnel`
+- Redirects break if someone creates a new repo at `amantus-ai/tunnelforge`
 - Some tools may not follow redirects properly
 - Best practice: Update all references ASAP
 

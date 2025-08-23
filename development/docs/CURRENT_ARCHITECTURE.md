@@ -1,7 +1,7 @@
-# VibeTunnel Go Server - Current Architecture
+# TunnelForge Go Server - Current Architecture
 
 ## Overview
-The current VibeTunnel Go server follows a modular, layered architecture with direct component coupling and synchronous event broadcasting.
+The current TunnelForge Go server follows a modular, layered architecture with direct component coupling and synchronous event broadcasting.
 
 ## Architecture Diagram
 
@@ -10,7 +10,7 @@ The current VibeTunnel Go server follows a modular, layered architecture with di
 │                                   CLIENT LAYER                                      │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
 │  Web Frontend     │  macOS App      │  CLI Tools        │  External Clients        │
-│  (JavaScript)     │  (Swift)        │  (vibetunnel)     │  (curl, etc.)            │
+│  (JavaScript)     │  (Swift)        │  (tunnelforge)     │  (curl, etc.)            │
 └─────────────┬─────────────┬─────────────────┬─────────────────────┬─────────────────┘
               │             │                 │                     │
          ┌────▼─────┐  ┌────▼─────┐     ┌────▼─────┐         ┌────▼─────┐

@@ -1,4 +1,4 @@
-# VibeTunnel Migration Validation Report
+# TunnelForge Migration Validation Report
 
 **Generated:** Thu Aug 14 07:43:10 MDT 2025
 **Score:** 5 / 8 (62%)
@@ -26,11 +26,11 @@
 
 ## Log Files
 
-- **Main Log:** /Users/johnferguson/Github/vibetunnel/development/logs/validation.log
-- **Go Tests:** /Users/johnferguson/Github/vibetunnel/development/logs/go-tests.log
-- **Migration Tests:** /Users/johnferguson/Github/vibetunnel/development/logs/migration-test.log
-- **Frontend Tests:** /Users/johnferguson/Github/vibetunnel/development/logs/frontend-test.log
-- **Security Tests:** /Users/johnferguson/Github/vibetunnel/development/logs/security-tests.log
+- **Main Log:** /Users/johnferguson/Github/tunnelforge/development/logs/validation.log
+- **Go Tests:** /Users/johnferguson/Github/tunnelforge/development/logs/go-tests.log
+- **Migration Tests:** /Users/johnferguson/Github/tunnelforge/development/logs/migration-test.log
+- **Frontend Tests:** /Users/johnferguson/Github/tunnelforge/development/logs/frontend-test.log
+- **Security Tests:** /Users/johnferguson/Github/tunnelforge/development/logs/security-tests.log
 
 ---
-*VibeTunnel Migration Validation - Thu Aug 14 07:43:10 MDT 2025*
+*TunnelForge Migration Validation - Thu Aug 14 07:43:10 MDT 2025*

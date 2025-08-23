@@ -1,8 +1,8 @@
-# VibeTunnel CJK IME Input Implementation
+# TunnelForge CJK IME Input Implementation
 
 ## Overview
 
-VibeTunnel provides comprehensive Chinese, Japanese, and Korean (CJK) Input Method Editor (IME) support across both desktop and mobile platforms. The implementation uses platform-specific approaches to ensure optimal user experience:
+TunnelForge provides comprehensive Chinese, Japanese, and Korean (CJK) Input Method Editor (IME) support across both desktop and mobile platforms. The implementation uses platform-specific approaches to ensure optimal user experience:
 
 - **Desktop**: Invisible input element with native browser IME integration
 - **Mobile**: Native virtual keyboard with direct input handling
@@ -37,7 +37,7 @@ SessionView
 ### Platform Detection
 **File**: `mobile-utils.ts`
 
-VibeTunnel automatically detects the platform and chooses the appropriate IME strategy:
+TunnelForge automatically detects the platform and chooses the appropriate IME strategy:
 ```typescript
 export function detectMobile(): boolean {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -311,5 +311,5 @@ Comprehensive logging available in browser console:
 
 **Status**: ✅ Production Ready  
 **Platforms**: Desktop (Windows, macOS, Linux) and Mobile (iOS, Android)  
-**Version**: VibeTunnel Web v1.0.0-beta.15+  
+**Version**: TunnelForge Web v1.0.0-beta.15+  
 **Last Updated**: 2025-01-22

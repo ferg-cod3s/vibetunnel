@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const nativeExe = path.join(__dirname, '..', 'native', 'vibetunnel');
+const nativeExe = path.join(__dirname, '..', 'native', 'tunnelforge');
 
 console.log('Verifying native executable...');
 console.log(`Path: ${nativeExe}`);

@@ -1,0 +1,53 @@
+"use strict";
+// Version information for VibeTunnel Server
+// This file is updated during the build process
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ARCH = exports.PLATFORM = exports.NODE_VERSION = exports.GIT_COMMIT = exports.BUILD_TIMESTAMP = exports.BUILD_DATE = exports.VERSION = void 0;
+exports.getVersionInfo = getVersionInfo;
+exports.printVersionBanner = printVersionBanner;
+const chalk_1 = __importDefault(require("chalk"));
+const package_json_1 = __importDefault(require("../../package.json"));
+const logger_js_1 = require("./utils/logger.js");
+const logger = (0, logger_js_1.createLogger)('version');
+exports.VERSION = package_json_1.default.version;
+// BUILD_DATE will be replaced by build script, fallback to current time in dev
+exports.BUILD_DATE = process.env.BUILD_DATE || new Date().toISOString();
+exports.BUILD_TIMESTAMP = process.env.BUILD_TIMESTAMP || Date.now();
+// This will be replaced during build
+exports.GIT_COMMIT = process.env.GIT_COMMIT || 'development';
+exports.NODE_VERSION = process.version;
+exports.PLATFORM = process.platform;
+exports.ARCH = process.arch;
+function getVersionInfo() {
+    logger.debug('gathering version information');
+    const info = {
+        version: exports.VERSION,
+        buildDate: exports.BUILD_DATE,
+        buildTimestamp: exports.BUILD_TIMESTAMP,
+        gitCommit: exports.GIT_COMMIT,
+        nodeVersion: exports.NODE_VERSION,
+        platform: exports.PLATFORM,
+        arch: exports.ARCH,
+        uptime: process.uptime(),
+        pid: process.pid,
+    };
+    logger.debug(`version info: ${JSON.stringify(info)}`);
+    return info;
+}
+function printVersionBanner() {
+    logger.log(chalk_1.default.green(`VibeTunnel Server v${exports.VERSION}`));
+    logger.log(chalk_1.default.gray(`Built: ${exports.BUILD_DATE}`));
+    logger.log(chalk_1.default.gray(`Platform: ${exports.PLATFORM}/${exports.ARCH} Node ${exports.NODE_VERSION}`));
+    logger.log(chalk_1.default.gray(`PID: ${process.pid}`));
+    if (exports.GIT_COMMIT !== 'development') {
+        logger.log(chalk_1.default.gray(`Commit: ${exports.GIT_COMMIT}`));
+    }
+    // Log development mode warning
+    if (exports.GIT_COMMIT === 'development' || !process.env.BUILD_DATE) {
+        logger.log(chalk_1.default.yellow('running in development mode'));
+    }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidmVyc2lvbi5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9zZXJ2ZXIvdmVyc2lvbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUEsNENBQTRDO0FBQzVDLGdEQUFnRDs7Ozs7O0FBbUJoRCx3Q0FpQkM7QUFFRCxnREFjQztBQWxERCxrREFBMEI7QUFDMUIsc0VBQTZDO0FBQzdDLGlEQUFpRDtBQUVqRCxNQUFNLE1BQU0sR0FBRyxJQUFBLHdCQUFZLEVBQUMsU0FBUyxDQUFDLENBQUM7QUFFMUIsUUFBQSxPQUFPLEdBQUcsc0JBQVcsQ0FBQyxPQUFPLENBQUM7QUFDM0MsK0VBQStFO0FBQ2xFLFFBQUEsVUFBVSxHQUFHLE9BQU8sQ0FBQyxHQUFHLENBQUMsVUFBVSxJQUFJLElBQUksSUFBSSxFQUFFLENBQUMsV0FBVyxFQUFFLENBQUM7QUFDaEUsUUFBQSxlQUFlLEdBQUcsT0FBTyxDQUFDLEdBQUcsQ0FBQyxlQUFlLElBQUksSUFBSSxDQUFDLEdBQUcsRUFBRSxDQUFDO0FBRXpFLHFDQUFxQztBQUN4QixRQUFBLFVBQVUsR0FBRyxPQUFPLENBQUMsR0FBRyxDQUFDLFVBQVUsSUFBSSxhQUFhLENBQUM7QUFDckQsUUFBQSxZQUFZLEdBQUcsT0FBTyxDQUFDLE9BQU8sQ0FBQztBQUMvQixRQUFBLFFBQVEsR0FBRyxPQUFPLENBQUMsUUFBUSxDQUFDO0FBQzVCLFFBQUEsSUFBSSxHQUFHLE9BQU8sQ0FBQyxJQUFJLENBQUM7QUFFakMsU0FBZ0IsY0FBYztJQUM1QixNQUFNLENBQUMsS0FBSyxDQUFDLCtCQUErQixDQUFDLENBQUM7SUFFOUMsTUFBTSxJQUFJLEdBQUc7UUFDWCxPQUFPLEVBQUUsZUFBTztRQUNoQixTQUFTLEVBQUUsa0JBQVU7UUFDckIsY0FBYyxFQUFFLHVCQUFlO1FBQy9CLFNBQVMsRUFBRSxrQkFBVTtRQUNyQixXQUFXLEVBQUUsb0JBQVk7UUFDekIsUUFBUSxFQUFFLGdCQUFRO1FBQ2xCLElBQUksRUFBRSxZQUFJO1FBQ1YsTUFBTSxFQUFFLE9BQU8sQ0FBQyxNQUFNLEVBQUU7UUFDeEIsR0FBRyxFQUFFLE9BQU8sQ0FBQyxHQUFHO0tBQ2pCLENBQUM7SUFFRixNQUFNLENBQUMsS0FBSyxDQUFDLGlCQUFpQixJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFFLENBQUMsQ0FBQztJQUN0RCxPQUFPLElBQUksQ0FBQztBQUNkLENBQUM7QUFFRCxTQUFnQixrQkFBa0I7SUFDaEMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxlQUFLLENBQUMsS0FBSyxDQUFDLHNCQUFzQixlQUFPLEVBQUUsQ0FBQyxDQUFDLENBQUM7SUFDekQsTUFBTSxDQUFDLEdBQUcsQ0FBQyxlQUFLLENBQUMsSUFBSSxDQUFDLFVBQVUsa0JBQVUsRUFBRSxDQUFDLENBQUMsQ0FBQztJQUMvQyxNQUFNLENBQUMsR0FBRyxDQUFDLGVBQUssQ0FBQyxJQUFJLENBQUMsYUFBYSxnQkFBUSxJQUFJLFlBQUksU0FBUyxvQkFBWSxFQUFFLENBQUMsQ0FBQyxDQUFDO0lBQzdFLE1BQU0sQ0FBQyxHQUFHLENBQUMsZUFBSyxDQUFDLElBQUksQ0FBQyxRQUFRLE9BQU8sQ0FBQyxHQUFHLEVBQUUsQ0FBQyxDQUFDLENBQUM7SUFFOUMsSUFBSSxrQkFBVSxLQUFLLGFBQWEsRUFBRSxDQUFDO1FBQ2pDLE1BQU0sQ0FBQyxHQUFHLENBQUMsZUFBSyxDQUFDLElBQUksQ0FBQyxXQUFXLGtCQUFVLEVBQUUsQ0FBQyxDQUFDLENBQUM7SUFDbEQsQ0FBQztJQUVELCtCQUErQjtJQUMvQixJQUFJLGtCQUFVLEtBQUssYUFBYSxJQUFJLENBQUMsT0FBTyxDQUFDLEdBQUcsQ0FBQyxVQUFVLEVBQUUsQ0FBQztRQUM1RCxNQUFNLENBQUMsR0FBRyxDQUFDLGVBQUssQ0FBQyxNQUFNLENBQUMsNkJBQTZCLENBQUMsQ0FBQyxDQUFDO0lBQzFELENBQUM7QUFDSCxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLy8gVmVyc2lvbiBpbmZvcm1hdGlvbiBmb3IgVmliZVR1bm5lbCBTZXJ2ZXJcbi8vIFRoaXMgZmlsZSBpcyB1cGRhdGVkIGR1cmluZyB0aGUgYnVpbGQgcHJvY2Vzc1xuXG5pbXBvcnQgY2hhbGsgZnJvbSAnY2hhbGsnO1xuaW1wb3J0IHBhY2thZ2VKc29uIGZyb20gJy4uLy4uL3BhY2thZ2UuanNvbic7XG5pbXBvcnQgeyBjcmVhdGVMb2dnZXIgfSBmcm9tICcuL3V0aWxzL2xvZ2dlci5qcyc7XG5cbmNvbnN0IGxvZ2dlciA9IGNyZWF0ZUxvZ2dlcigndmVyc2lvbicpO1xuXG5leHBvcnQgY29uc3QgVkVSU0lPTiA9IHBhY2thZ2VKc29uLnZlcnNpb247XG4vLyBCVUlMRF9EQVRFIHdpbGwgYmUgcmVwbGFjZWQgYnkgYnVpbGQgc2NyaXB0LCBmYWxsYmFjayB0byBjdXJyZW50IHRpbWUgaW4gZGV2XG5leHBvcnQgY29uc3QgQlVJTERfREFURSA9IHByb2Nlc3MuZW52LkJVSUxEX0RBVEUgfHwgbmV3IERhdGUoKS50b0lTT1N0cmluZygpO1xuZXhwb3J0IGNvbnN0IEJVSUxEX1RJTUVTVEFNUCA9IHByb2Nlc3MuZW52LkJVSUxEX1RJTUVTVEFNUCB8fCBEYXRlLm5vdygpO1xuXG4vLyBUaGlzIHdpbGwgYmUgcmVwbGFjZWQgZHVyaW5nIGJ1aWxkXG5leHBvcnQgY29uc3QgR0lUX0NPTU1JVCA9IHByb2Nlc3MuZW52LkdJVF9DT01NSVQgfHwgJ2RldmVsb3BtZW50JztcbmV4cG9ydCBjb25zdCBOT0RFX1ZFUlNJT04gPSBwcm9jZXNzLnZlcnNpb247XG5leHBvcnQgY29uc3QgUExBVEZPUk0gPSBwcm9jZXNzLnBsYXRmb3JtO1xuZXhwb3J0IGNvbnN0IEFSQ0ggPSBwcm9jZXNzLmFyY2g7XG5cbmV4cG9ydCBmdW5jdGlvbiBnZXRWZXJzaW9uSW5mbygpIHtcbiAgbG9nZ2VyLmRlYnVnKCdnYXRoZXJpbmcgdmVyc2lvbiBpbmZvcm1hdGlvbicpO1xuXG4gIGNvbnN0IGluZm8gPSB7XG4gICAgdmVyc2lvbjogVkVSU0lPTixcbiAgICBidWlsZERhdGU6IEJVSUxEX0RBVEUsXG4gICAgYnVpbGRUaW1lc3RhbXA6IEJVSUxEX1RJTUVTVEFNUCxcbiAgICBnaXRDb21taXQ6IEdJVF9DT01NSVQsXG4gICAgbm9kZVZlcnNpb246IE5PREVfVkVSU0lPTixcbiAgICBwbGF0Zm9ybTogUExBVEZPUk0sXG4gICAgYXJjaDogQVJDSCxcbiAgICB1cHRpbWU6IHByb2Nlc3MudXB0aW1lKCksXG4gICAgcGlkOiBwcm9jZXNzLnBpZCxcbiAgfTtcblxuICBsb2dnZXIuZGVidWcoYHZlcnNpb24gaW5mbzogJHtKU09OLnN0cmluZ2lmeShpbmZvKX1gKTtcbiAgcmV0dXJuIGluZm87XG59XG5cbmV4cG9ydCBmdW5jdGlvbiBwcmludFZlcnNpb25CYW5uZXIoKSB7XG4gIGxvZ2dlci5sb2coY2hhbGsuZ3JlZW4oYFZpYmVUdW5uZWwgU2VydmVyIHYke1ZFUlNJT059YCkpO1xuICBsb2dnZXIubG9nKGNoYWxrLmdyYXkoYEJ1aWx0OiAke0JVSUxEX0RBVEV9YCkpO1xuICBsb2dnZXIubG9nKGNoYWxrLmdyYXkoYFBsYXRmb3JtOiAke1BMQVRGT1JNfS8ke0FSQ0h9IE5vZGUgJHtOT0RFX1ZFUlNJT059YCkpO1xuICBsb2dnZXIubG9nKGNoYWxrLmdyYXkoYFBJRDogJHtwcm9jZXNzLnBpZH1gKSk7XG5cbiAgaWYgKEdJVF9DT01NSVQgIT09ICdkZXZlbG9wbWVudCcpIHtcbiAgICBsb2dnZXIubG9nKGNoYWxrLmdyYXkoYENvbW1pdDogJHtHSVRfQ09NTUlUfWApKTtcbiAgfVxuXG4gIC8vIExvZyBkZXZlbG9wbWVudCBtb2RlIHdhcm5pbmdcbiAgaWYgKEdJVF9DT01NSVQgPT09ICdkZXZlbG9wbWVudCcgfHwgIXByb2Nlc3MuZW52LkJVSUxEX0RBVEUpIHtcbiAgICBsb2dnZXIubG9nKGNoYWxrLnllbGxvdygncnVubmluZyBpbiBkZXZlbG9wbWVudCBtb2RlJykpO1xuICB9XG59XG4iXX0=

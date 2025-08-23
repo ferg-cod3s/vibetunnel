@@ -210,16 +210,44 @@ export class BufferSubscriptionService {
     }
 
     this.isConnecting = true;
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-    // Build WebSocket URL with token as query parameter
-    let wsUrl = `${protocol}//${window.location.host}/buffers`;
+    // Get WebSocket URL from server config
+    this.getWebSocketUrl(token)
+      .then((wsUrl) => {
+        logger.log(`connecting to ${wsUrl}`);
+        this.connectWithUrl(wsUrl);
+      })
+      .catch((error) => {
+        logger.error('Failed to get WebSocket URL:', error);
+        this.isConnecting = false;
+      });
+  }
+
+  private async getWebSocketUrl(token?: string): Promise<string> {
+    try {
+      const response = await fetch('/api/config');
+      if (response.ok) {
+        const config = await response.json();
+        let wsUrl = `${config.websocketUrl}/buffers`;
+        if (token) {
+          wsUrl += `?token=${encodeURIComponent(token)}`;
+        }
+        return wsUrl;
+      }
+    } catch (error) {
+      logger.warn('Failed to get config, falling back to relative URL:', error);
+    }
+
+    // Fallback to Go server URL (direct connection)
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    let wsUrl = `${protocol}//localhost:4021/buffers`;
     if (token) {
       wsUrl += `?token=${encodeURIComponent(token)}`;
     }
+    return wsUrl;
+  }
 
-    logger.log(`connecting to ${wsUrl}`);
-
+  private connectWithUrl(wsUrl: string) {
     try {
       this.ws = new WebSocket(wsUrl);
       this.ws.binaryType = 'arraybuffer';

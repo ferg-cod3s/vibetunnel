@@ -69,7 +69,7 @@ enum AppConstants {
         static let useDevServer = false
         static let devServerPath = ""
         static let logLevel = "info"
-        static let useExternalGoServer = true
+        static let useExternalGoServer = false
 
         // Application Preferences
         static let showInDock = false

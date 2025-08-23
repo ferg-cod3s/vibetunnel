@@ -1,5 +1,5 @@
 /**
- * Centralized title management for VibeTunnel
+ * Centralized title management for TunnelForge
  */
 
 export class TitleManager {
@@ -20,7 +20,7 @@ export class TitleManager {
    * Set title for session view
    */
   setSessionTitle(sessionName: string): void {
-    document.title = `VibeTunnel - ${sessionName}`;
+    document.title = `TunnelForge - ${sessionName}`;
   }
 
   /**
@@ -29,15 +29,15 @@ export class TitleManager {
   setListTitle(sessionCount: number): void {
     document.title =
       sessionCount > 0
-        ? `VibeTunnel - ${sessionCount} Session${sessionCount !== 1 ? 's' : ''}`
-        : 'VibeTunnel';
+        ? `TunnelForge - ${sessionCount} Session${sessionCount !== 1 ? 's' : ''}`
+        : 'TunnelForge';
   }
 
   /**
    * Set title for file browser
    */
   setFileBrowserTitle(): void {
-    document.title = 'VibeTunnel - File Browser';
+    document.title = 'TunnelForge - File Browser';
   }
 
   /**

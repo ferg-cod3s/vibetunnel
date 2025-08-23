@@ -417,7 +417,7 @@ struct AboutSettingsView: View {
                     .shadow(color: Theme.Colors.primaryAccent.opacity(0.3), radius: 10, y: 5)
 
                 VStack(spacing: Theme.Spacing.small) {
-                    Text("VibeTunnel")
+                    Text("TunnelForge")
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
@@ -433,40 +433,40 @@ struct AboutSettingsView: View {
                 LinkRow(
                     icon: "globe",
                     title: "Website",
-                    subtitle: "vibetunnel.sh",
-                    url: URL(string: "https://vibetunnel.sh")
+                    subtitle: "tunnelforge.sh",
+                    url: URL(string: "https://tunnelforge.sh")
                 )
 
                 LinkRow(
                     icon: "doc.text",
                     title: "Documentation",
-                    subtitle: "Learn how to use VibeTunnel",
-                    url: URL(string: "https://docs.vibetunnel.sh")
+                    subtitle: "Learn how to use TunnelForge",
+                    url: URL(string: "https://docs.tunnelforge.sh")
                 )
 
                 LinkRow(
                     icon: "exclamationmark.bubble",
                     title: "Report an Issue",
                     subtitle: "Help us improve",
-                    url: URL(string: "https://github.com/vibetunnel/vibetunnel/issues")
+                    url: URL(string: "https://github.com/tunnelforge/tunnelforge/issues")
                 )
 
                 LinkRow(
                     icon: "heart",
                     title: "Rate on App Store",
                     subtitle: "Share your feedback",
-                    url: URL(string: "https://apps.apple.com/app/vibetunnel")
+                    url: URL(string: "https://apps.apple.com/app/tunnelforge")
                 )
             }
 
             // Credits
             VStack(spacing: Theme.Spacing.small) {
-                Text("Made with ❤️ by the VibeTunnel team")
+                Text("Made with ❤️ by the TunnelForge team")
                     .font(Theme.Typography.terminalSystem(size: 12))
                     .foregroundColor(Theme.Colors.secondaryText)
                     .multilineTextAlignment(.center)
 
-                Text("© 2024 VibeTunnel. All rights reserved.")
+                Text("© 2024 TunnelForge. All rights reserved.")
                     .font(Theme.Typography.terminalSystem(size: 11))
                     .foregroundColor(Theme.Colors.secondaryText.opacity(0.7))
             }

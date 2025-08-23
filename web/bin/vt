@@ -1,5 +1,5 @@
 #!/bin/bash
-# Unified VibeTunnel CLI wrapper - compatible with both Mac app and npm installations
+# Unified TunnelForge CLI wrapper - compatible with both Mac app and npm installations
 
 # Function to convert absolute paths to use ~
 prettify_path() {
@@ -31,13 +31,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     # Get the real path of this script to avoid infinite recursion
     SCRIPT_REAL_PATH="$(resolve_symlink_macos "${BASH_SOURCE[0]}")"
 
-    # Comprehensive Mac app search - order depends on VIBETUNNEL_PREFER_DERIVED_DATA
+    # Comprehensive Mac app search - order depends on TUNNELFORGE_PREFER_DERIVED_DATA
     APP_PATH=""
     
-    if [ -n "$VIBETUNNEL_PREFER_DERIVED_DATA" ]; then
+    if [ -n "$TUNNELFORGE_PREFER_DERIVED_DATA" ]; then
         # When preference is set, try DerivedData first
-        for CANDIDATE in $(find ~/Library/Developer/Xcode/DerivedData -name "VibeTunnel.app" -type d 2>/dev/null | grep -v "\.dSYM" | grep -v "Index\.noindex" | sort -r); do
-            if [ -f "$CANDIDATE/Contents/Resources/vibetunnel" ]; then
+        for CANDIDATE in $(find ~/Library/Developer/Xcode/DerivedData -name "TunnelForge.app" -type d 2>/dev/null | grep -v "\.dSYM" | grep -v "Index\.noindex" | sort -r); do
+            if [ -f "$CANDIDATE/Contents/Resources/tunnelforge" ]; then
                 VT_SCRIPT="$CANDIDATE/Contents/Resources/vt"
                 if [ -f "$VT_SCRIPT" ] && [ -x "$VT_SCRIPT" ]; then
                     VT_REAL_PATH="$(resolve_symlink_macos "$VT_SCRIPT")"
@@ -56,8 +56,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     
     # If not found yet, try standard locations
     if [ -z "$APP_PATH" ]; then
-        for TRY_PATH in "/Applications/VibeTunnel.app" "$HOME/Applications/VibeTunnel.app"; do
-            if [ -d "$TRY_PATH" ] && [ -f "$TRY_PATH/Contents/Resources/vibetunnel" ]; then
+        for TRY_PATH in "/Applications/TunnelForge.app" "$HOME/Applications/TunnelForge.app"; do
+            if [ -d "$TRY_PATH" ] && [ -f "$TRY_PATH/Contents/Resources/tunnelforge" ]; then
                 VT_SCRIPT="$TRY_PATH/Contents/Resources/vt"
                 if [ -f "$VT_SCRIPT" ] && [ -x "$VT_SCRIPT" ]; then
                     # Avoid infinite recursion by checking if this is the same script
@@ -72,11 +72,11 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         done
     fi
     
-    # If not found in standard locations and VIBETUNNEL_PREFER_DERIVED_DATA wasn't set, search development builds
-    if [ -z "$APP_PATH" ] && [ -z "$VIBETUNNEL_PREFER_DERIVED_DATA" ]; then
+    # If not found in standard locations and TUNNELFORGE_PREFER_DERIVED_DATA wasn't set, search development builds
+    if [ -z "$APP_PATH" ] && [ -z "$TUNNELFORGE_PREFER_DERIVED_DATA" ]; then
         # Try DerivedData (for development)
-        for CANDIDATE in $(find ~/Library/Developer/Xcode/DerivedData -name "VibeTunnel.app" -type d 2>/dev/null | grep -v "\.dSYM" | grep -v "Index\.noindex"); do
-            if [ -f "$CANDIDATE/Contents/Resources/vibetunnel" ]; then
+        for CANDIDATE in $(find ~/Library/Developer/Xcode/DerivedData -name "TunnelForge.app" -type d 2>/dev/null | grep -v "\.dSYM" | grep -v "Index\.noindex"); do
+            if [ -f "$CANDIDATE/Contents/Resources/tunnelforge" ]; then
                 VT_SCRIPT="$CANDIDATE/Contents/Resources/vt"
                 if [ -f "$VT_SCRIPT" ] && [ -x "$VT_SCRIPT" ]; then
                     VT_REAL_PATH="$(resolve_symlink_macos "$VT_SCRIPT")"
@@ -94,8 +94,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         
         # If still not found, use mdfind as last resort
         if [ -z "$APP_PATH" ]; then
-            for CANDIDATE in $(mdfind -name "VibeTunnel.app" 2>/dev/null | grep -v "\.dSYM"); do
-                if [ -f "$CANDIDATE/Contents/Resources/vibetunnel" ]; then
+            for CANDIDATE in $(mdfind -name "TunnelForge.app" 2>/dev/null | grep -v "\.dSYM"); do
+                if [ -f "$CANDIDATE/Contents/Resources/tunnelforge" ]; then
                     VT_SCRIPT="$CANDIDATE/Contents/Resources/vt"
                     if [ -f "$VT_SCRIPT" ] && [ -x "$VT_SCRIPT" ]; then
                         VT_REAL_PATH="$(resolve_symlink_macos "$VT_SCRIPT")"
@@ -112,8 +112,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     
     # If we found a Mac app but couldn't use its vt script, use its binary directly
     if [ -n "$APP_PATH" ]; then
-        VIBETUNNEL_BIN="$APP_PATH/Contents/Resources/vibetunnel"
-        if [ -f "$VIBETUNNEL_BIN" ]; then
+        TUNNELFORGE_BIN="$APP_PATH/Contents/Resources/tunnelforge"
+        if [ -f "$TUNNELFORGE_BIN" ]; then
             # Found Mac app bundle - will use this binary
             # Silent operation - no message printed
             true  # No-op command to fix syntax error
@@ -121,22 +121,22 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 fi
 
-# If we get here without a Mac app, use the npm-installed vibetunnel
-if [ -z "$VIBETUNNEL_BIN" ]; then
-    # First, try to find vibetunnel in the same directory as this script
+# If we get here without a Mac app, use the npm-installed tunnelforge
+if [ -z "$TUNNELFORGE_BIN" ]; then
+    # First, try to find tunnelforge in the same directory as this script
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    if [ -f "$SCRIPT_DIR/vibetunnel" ]; then
-        VIBETUNNEL_BIN="$SCRIPT_DIR/vibetunnel"
+    if [ -f "$SCRIPT_DIR/tunnelforge" ]; then
+        TUNNELFORGE_BIN="$SCRIPT_DIR/tunnelforge"
     else
-        # Try to find vibetunnel in PATH
-        if command -v vibetunnel >/dev/null 2>&1; then
-            VIBETUNNEL_BIN="$(command -v vibetunnel)"
+        # Try to find tunnelforge in PATH
+        if command -v tunnelforge >/dev/null 2>&1; then
+            TUNNELFORGE_BIN="$(command -v tunnelforge)"
         fi
     fi
 
-    if [ -z "$VIBETUNNEL_BIN" ] || [ ! -f "$VIBETUNNEL_BIN" ]; then
-        echo "Error: vibetunnel binary not found. Please ensure vibetunnel is installed." >&2
-        echo "Install with: npm install -g vibetunnel" >&2
+    if [ -z "$TUNNELFORGE_BIN" ] || [ ! -f "$TUNNELFORGE_BIN" ]; then
+        echo "Error: tunnelforge binary not found. Please ensure tunnelforge is installed." >&2
+        echo "Install with: npm install -g tunnelforge" >&2
         exit 1
     fi
 fi
@@ -148,11 +148,11 @@ if [[ "$1" == "title" || "$1" == "status" || "$1" == "--version" || "$1" == "ver
     SUPPRESS_OUTPUT=true
 fi
 
-# Log VibeTunnel binary info when VIBETUNNEL_PREFER_DERIVED_DATA is set
-if [ -n "$VIBETUNNEL_PREFER_DERIVED_DATA" ] && [ -n "$VIBETUNNEL_BIN" ] && [ "$SUPPRESS_OUTPUT" != "true" ]; then
+# Log TunnelForge binary info when TUNNELFORGE_PREFER_DERIVED_DATA is set
+if [ -n "$TUNNELFORGE_PREFER_DERIVED_DATA" ] && [ -n "$TUNNELFORGE_BIN" ] && [ "$SUPPRESS_OUTPUT" != "true" ]; then
     # Get version and build info
-    VERSION_OUTPUT=$("$VIBETUNNEL_BIN" --version 2>&1)
-    VERSION_LINE=$(echo "$VERSION_OUTPUT" | grep "^VibeTunnel Server" | head -n 1)
+    VERSION_OUTPUT=$("$TUNNELFORGE_BIN" --version 2>&1)
+    VERSION_LINE=$(echo "$VERSION_OUTPUT" | grep "^TunnelForge Server" | head -n 1)
     BUILD_LINE=$(echo "$VERSION_OUTPUT" | grep "^Built:" | head -n 1)
     
     # Gray color (bright black)
@@ -160,14 +160,14 @@ if [ -n "$VIBETUNNEL_PREFER_DERIVED_DATA" ] && [ -n "$VIBETUNNEL_BIN" ] && [ "$S
     RESET='\033[0m'
     
     # Always log this info regardless of verbosity level
-    # Shorten path by removing /Contents/Resources/vibetunnel suffix
-    DISPLAY_PATH=$(prettify_path "$VIBETUNNEL_BIN")
-    DISPLAY_PATH=${DISPLAY_PATH%/Contents/Resources/vibetunnel}
-    echo -e "${GRAY}[VibeTunnel] ${DISPLAY_PATH}${RESET}"
+    # Shorten path by removing /Contents/Resources/tunnelforge suffix
+    DISPLAY_PATH=$(prettify_path "$TUNNELFORGE_BIN")
+    DISPLAY_PATH=${DISPLAY_PATH%/Contents/Resources/tunnelforge}
+    echo -e "${GRAY}[TunnelForge] ${DISPLAY_PATH}${RESET}"
     if [ -n "$VERSION_LINE" ] && [ -n "$BUILD_LINE" ]; then
-        echo -e "${GRAY}[VibeTunnel] Version: ${VERSION_LINE#VibeTunnel Server } (${BUILD_LINE})${RESET}"
+        echo -e "${GRAY}[TunnelForge] Version: ${VERSION_LINE#TunnelForge Server } (${BUILD_LINE})${RESET}"
     elif [ -n "$VERSION_LINE" ]; then
-        echo -e "${GRAY}[VibeTunnel] Version: ${VERSION_LINE#VibeTunnel Server }${RESET}"
+        echo -e "${GRAY}[TunnelForge] Version: ${VERSION_LINE#TunnelForge Server }${RESET}"
     fi
 fi
 
@@ -175,11 +175,11 @@ fi
 # This must come BEFORE the session check to avoid the recursive session error
 if [[ "$1" == "status" || "$1" == "version" || "$1" == "--version" ]]; then
     # These commands can run safely inside or outside a session
-    exec "$VIBETUNNEL_BIN" "$@"
+    exec "$TUNNELFORGE_BIN" "$@"
 fi
 
-# Check if we're already inside a VibeTunnel session
-if [ -n "$VIBETUNNEL_SESSION_ID" ]; then
+# Check if we're already inside a TunnelForge session
+if [ -n "$TUNNELFORGE_SESSION_ID" ]; then
     # Special case: handle 'vt title' command inside a session
     if [[ "$1" == "title" ]]; then
         if [[ $# -lt 2 ]]; then
@@ -190,14 +190,14 @@ if [ -n "$VIBETUNNEL_SESSION_ID" ]; then
         shift # Remove 'title' from arguments
         TITLE="$*" # Get all remaining arguments as the title
         
-        # Use the vibetunnel binary's new --update-title flag
-        exec "$VIBETUNNEL_BIN" fwd --update-title "$TITLE" --session-id "$VIBETUNNEL_SESSION_ID"
+        # Use the tunnelforge binary's new --update-title flag
+        exec "$TUNNELFORGE_BIN" fwd --update-title "$TITLE" --session-id "$TUNNELFORGE_SESSION_ID"
         # If exec fails, exit with error
         exit 1
     fi
     
     # For all other commands, block recursive sessions
-    echo "Error: Already inside a VibeTunnel session (ID: $VIBETUNNEL_SESSION_ID). Recursive VibeTunnel sessions are not supported." >&2
+    echo "Error: Already inside a TunnelForge session (ID: $TUNNELFORGE_SESSION_ID). Recursive TunnelForge sessions are not supported." >&2
     echo "If you need to run commands, use them directly without the 'vt' prefix." >&2
     exit 1
 fi
@@ -222,7 +222,7 @@ json_escape() {
 # Function to show help
 show_help() {
     cat << 'EOF'
-vt - VibeTunnel TTY Forward Wrapper
+vt - TunnelForge TTY Forward Wrapper
 
 USAGE:
     vt [command] [args...]
@@ -230,7 +230,7 @@ USAGE:
     vt -i [args...]
     vt --no-shell-wrap [command] [args...]
     vt -S [command] [args...]
-    vt title <new title>    # Inside a VibeTunnel session only
+    vt title <new title>    # Inside a TunnelForge session only
     vt status              # Show server status and follow mode
     vt follow [branch]      # Enable follow mode for current or specified branch
     vt unfollow            # Disable follow mode
@@ -241,27 +241,27 @@ QUICK VERBOSITY:
     -q (quiet), -v (verbose), -vv (extra), -vvv (debug)
 
 DESCRIPTION:
-    This wrapper script allows VibeTunnel to see the output of commands by
-    forwarding TTY data through the vibetunnel utility. When you run commands
-    through 'vt', VibeTunnel can monitor and display the command's output
+    This wrapper script allows TunnelForge to see the output of commands by
+    forwarding TTY data through the tunnelforge utility. When you run commands
+    through 'vt', TunnelForge can monitor and display the command's output
     in real-time.
 
     By default, commands are executed through your shell to resolve aliases,
     functions, and builtins. Use --no-shell-wrap to execute commands directly.
 
-    Inside a VibeTunnel session, use 'vt title' to update the session name.
+    Inside a TunnelForge session, use 'vt title' to update the session name.
     
-    Follow mode automatically switches your VibeTunnel terminal to the Git
+    Follow mode automatically switches your TunnelForge terminal to the Git
     worktree that matches the branch you're working on in your editor/IDE.
-    When you switch branches in your editor, VibeTunnel follows along.
+    When you switch branches in your editor, TunnelForge follows along.
     
-    The 'vt git event' command is used by Git hooks to notify VibeTunnel
+    The 'vt git event' command is used by Git hooks to notify TunnelForge
     of repository changes for automatic worktree switching.
 
 EXAMPLES:
-    vt top                  # Watch top with VibeTunnel monitoring
+    vt top                  # Watch top with TunnelForge monitoring
     vt python script.py     # Run Python script with output forwarding
-    vt npm test             # Run tests with VibeTunnel visibility
+    vt npm test             # Run tests with TunnelForge visibility
     vt --shell              # Launch current shell (equivalent to vt $SHELL)
     vt -i                   # Launch current shell (short form)
     vt -S ls -la            # List files without shell alias resolution
@@ -278,7 +278,7 @@ EXAMPLES:
     vt unfollow            # Disable follow mode
     
     # Git event command (typically called by Git hooks):
-    vt git event            # Notify VibeTunnel of Git changes
+    vt git event            # Notify TunnelForge of Git changes
 
 OPTIONS:
     --shell, -i            Launch current shell (equivalent to vt $SHELL)
@@ -304,34 +304,34 @@ VERBOSITY:
     -vv           Show everything except debug messages
     -vvv          Show all messages including debug
 
-    You can also set VIBETUNNEL_LOG_LEVEL environment variable:
-    export VIBETUNNEL_LOG_LEVEL=error    # Default
-    export VIBETUNNEL_LOG_LEVEL=warn     # Show errors and warnings
-    export VIBETUNNEL_LOG_LEVEL=info     # Show errors, warnings, and info
-    export VIBETUNNEL_LOG_LEVEL=verbose  # All except debug
-    export VIBETUNNEL_LOG_LEVEL=debug    # Everything
+    You can also set TUNNELFORGE_LOG_LEVEL environment variable:
+    export TUNNELFORGE_LOG_LEVEL=error    # Default
+    export TUNNELFORGE_LOG_LEVEL=warn     # Show errors and warnings
+    export TUNNELFORGE_LOG_LEVEL=info     # Show errors, warnings, and info
+    export TUNNELFORGE_LOG_LEVEL=verbose  # All except debug
+    export TUNNELFORGE_LOG_LEVEL=debug    # Everything
 
 NOTE:
-    This script automatically detects and uses the best available VibeTunnel installation:
+    This script automatically detects and uses the best available TunnelForge installation:
     - Mac app bundle (preferred on macOS)
     - npm package installation (fallback)
 EOF
     
     # Show path and version info
     echo
-    echo "VIBETUNNEL BINARY:"
-    echo "    Path: $VIBETUNNEL_BIN"
-    if [ -f "$VIBETUNNEL_BIN" ]; then
+    echo "TUNNELFORGE BINARY:"
+    echo "    Path: $TUNNELFORGE_BIN"
+    if [ -f "$TUNNELFORGE_BIN" ]; then
         # Try to get version from binary output first (works for both Mac app and npm)
-        VERSION_INFO=$("$VIBETUNNEL_BIN" --version 2>&1 | grep "^VibeTunnel Server" | head -n 1)
-        BUILD_INFO=$("$VIBETUNNEL_BIN" --version 2>&1 | grep "^Built:" | head -n 1)
-        PLATFORM_INFO=$("$VIBETUNNEL_BIN" --version 2>&1 | grep "^Platform:" | head -n 1)
+        VERSION_INFO=$("$TUNNELFORGE_BIN" --version 2>&1 | grep "^TunnelForge Server" | head -n 1)
+        BUILD_INFO=$("$TUNNELFORGE_BIN" --version 2>&1 | grep "^Built:" | head -n 1)
+        PLATFORM_INFO=$("$TUNNELFORGE_BIN" --version 2>&1 | grep "^Platform:" | head -n 1)
         
         if [ -n "$VERSION_INFO" ]; then
-            echo "    Version: ${VERSION_INFO#VibeTunnel Server }"
+            echo "    Version: ${VERSION_INFO#TunnelForge Server }"
         else
             # Fallback to package.json for npm installations
-            PACKAGE_JSON="$(dirname "$(dirname "$VIBETUNNEL_BIN")")/package.json"
+            PACKAGE_JSON="$(dirname "$(dirname "$TUNNELFORGE_BIN")")/package.json"
             if [ -f "$PACKAGE_JSON" ]; then
                 VERSION=$(grep '"version"' "$PACKAGE_JSON" | head -1 | sed 's/.*"version".*:.*"\(.*\)".*/\1/')
                 echo "    Version: $VERSION"
@@ -346,11 +346,11 @@ EOF
         fi
         
         # Determine installation type
-        if [[ "$VIBETUNNEL_BIN" == */Applications/VibeTunnel.app/* ]]; then
+        if [[ "$TUNNELFORGE_BIN" == */Applications/TunnelForge.app/* ]]; then
             echo "    Status: Mac app bundle"
-        elif [[ "$VIBETUNNEL_BIN" == */DerivedData/* ]]; then
+        elif [[ "$TUNNELFORGE_BIN" == */DerivedData/* ]]; then
             echo "    Status: Development build"
-        elif [[ "$VIBETUNNEL_BIN" == *npm* ]] || [[ "$VIBETUNNEL_BIN" == */bin/vibetunnel ]]; then
+        elif [[ "$TUNNELFORGE_BIN" == *npm* ]] || [[ "$TUNNELFORGE_BIN" == */bin/tunnelforge ]]; then
             echo "    Status: Installed via npm"
         else
             echo "    Status: Unknown installation"
@@ -365,7 +365,7 @@ exec_with_fallback() {
     # Save the command for potential fallback
     local SAVED_CMD=("$@")
     
-    # Try running with VibeTunnel
+    # Try running with TunnelForge
     local START_TIME=$(date +%s%N 2>/dev/null || echo "0")  # nanoseconds if available
     
     # Run the command (without exec to capture exit code)
@@ -383,16 +383,16 @@ exec_with_fallback() {
     # Check if it was killed by macOS (exit code 137 or very quick failure)
     if [[ $EXIT_CODE -eq 137 ]] || ([[ $EXIT_CODE -ne 0 ]] && [[ $DURATION -lt 100 ]]); then
         # Log the error
-        echo "[vt] VibeTunnel binary killed by macOS (exit code: $EXIT_CODE). Running command directly." >&2
+        echo "[vt] TunnelForge binary killed by macOS (exit code: $EXIT_CODE). Running command directly." >&2
         
-        # Extract the actual command (skip vibetunnel binary and fwd)
+        # Extract the actual command (skip tunnelforge binary and fwd)
         local FALLBACK_CMD=()
         local SKIP_NEXT=0
         local IN_COMMAND=0
         
         for arg in "${SAVED_CMD[@]}"; do
-            # Skip the vibetunnel binary path
-            if [[ "$arg" == "$VIBETUNNEL_BIN" ]]; then
+            # Skip the tunnelforge binary path
+            if [[ "$arg" == "$TUNNELFORGE_BIN" ]]; then
                 continue
             fi
             # Skip "fwd"
@@ -436,15 +436,15 @@ resolve_command() {
     case "$shell_name" in
         zsh)
             # For zsh, we need interactive mode to get aliases
-            exec_with_fallback "$VIBETUNNEL_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$user_shell" -i -c "$(printf '%q ' "$cmd" "$@")"
+            exec_with_fallback "$TUNNELFORGE_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$user_shell" -i -c "$(printf '%q ' "$cmd" "$@")"
             ;;
         bash)
             # For bash, expand aliases in non-interactive mode
-            exec_with_fallback "$VIBETUNNEL_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$user_shell" -c "shopt -s expand_aliases; source ~/.bashrc 2>/dev/null || source ~/.bash_profile 2>/dev/null || true; $(printf '%q ' "$cmd" "$@")"
+            exec_with_fallback "$TUNNELFORGE_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$user_shell" -c "shopt -s expand_aliases; source ~/.bashrc 2>/dev/null || source ~/.bash_profile 2>/dev/null || true; $(printf '%q ' "$cmd" "$@")"
             ;;
         *)
             # Generic shell handling
-            exec_with_fallback "$VIBETUNNEL_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$user_shell" -c "$(printf '%q ' "$cmd" "$@")"
+            exec_with_fallback "$TUNNELFORGE_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$user_shell" -c "$(printf '%q ' "$cmd" "$@")"
             ;;
     esac
 }
@@ -458,7 +458,7 @@ fi
 
 # Handle 'vt title' command when not inside a session
 if [[ "$1" == "title" ]]; then
-    echo "Error: 'vt title' can only be used inside a VibeTunnel session." >&2
+    echo "Error: 'vt title' can only be used inside a TunnelForge session." >&2
     echo "Start a session first with 'vt' or 'vt <command>'" >&2
     exit 1
 fi
@@ -487,8 +487,8 @@ if [[ "$1" == "follow" ]]; then
         echo "Enabling follow mode for worktree: $(prettify_path "$WORKTREE_PATH")"
         echo "Main repository ($(prettify_path "$MAIN_REPO")) will track this worktree"
         
-        # Use vibetunnel CLI with worktree context
-        exec "$VIBETUNNEL_BIN" follow --from-worktree --worktree-path "$WORKTREE_PATH" --main-repo "$MAIN_REPO"
+        # Use tunnelforge CLI with worktree context
+        exec "$TUNNELFORGE_BIN" follow --from-worktree --worktree-path "$WORKTREE_PATH" --main-repo "$MAIN_REPO"
     else
         # We're in main repo
         MAIN_REPO=$(git rev-parse --show-toplevel 2>/dev/null)
@@ -542,7 +542,7 @@ if [[ "$1" == "follow" ]]; then
             echo "Enabling follow mode for branch: $CURRENT_BRANCH"
             echo "Following worktree: $(prettify_path "$WORKTREE_PATH")"
             echo "Main repository: $(prettify_path "$MAIN_REPO")"
-            exec "$VIBETUNNEL_BIN" follow --worktree-path "$WORKTREE_PATH" --main-repo "$MAIN_REPO"
+            exec "$TUNNELFORGE_BIN" follow --worktree-path "$WORKTREE_PATH" --main-repo "$MAIN_REPO"
             
         elif [[ -d "$ARG" ]] || [[ "$ARG" == /* ]] || [[ "$ARG" == ../* ]]; then
             # Path argument
@@ -553,7 +553,7 @@ if [[ "$1" == "follow" ]]; then
             fi
             echo "Enabling follow mode for worktree: $(prettify_path "$WORKTREE_PATH")"
             echo "Main repository: $(prettify_path "$MAIN_REPO")"
-            exec "$VIBETUNNEL_BIN" follow --worktree-path "$WORKTREE_PATH" --main-repo "$MAIN_REPO"
+            exec "$TUNNELFORGE_BIN" follow --worktree-path "$WORKTREE_PATH" --main-repo "$MAIN_REPO"
         else
             # Branch argument
             WORKTREE_PATH=$(git worktree list --porcelain | grep -B2 "branch refs/heads/$ARG" | grep "worktree" | cut -d' ' -f2 | grep -v "^$MAIN_REPO$" | head -n1)
@@ -567,21 +567,21 @@ if [[ "$1" == "follow" ]]; then
             echo "Enabling follow mode for branch: $ARG"
             echo "Following worktree: $(prettify_path "$WORKTREE_PATH")"
             echo "Main repository: $(prettify_path "$MAIN_REPO")"
-            exec "$VIBETUNNEL_BIN" follow --worktree-path "$WORKTREE_PATH" --main-repo "$MAIN_REPO"
+            exec "$TUNNELFORGE_BIN" follow --worktree-path "$WORKTREE_PATH" --main-repo "$MAIN_REPO"
         fi
     fi
 fi
 
 # Handle 'vt unfollow' command
 if [[ "$1" == "unfollow" ]]; then
-    # Use vibetunnel CLI to disable follow mode via socket
-    exec "$VIBETUNNEL_BIN" unfollow
+    # Use tunnelforge CLI to disable follow mode via socket
+    exec "$TUNNELFORGE_BIN" unfollow
 fi
 
 # Handle 'vt git event' command
 if [[ "$1" == "git" && "$2" == "event" ]]; then
-    # Use vibetunnel CLI to send git event via socket
-    exec "$VIBETUNNEL_BIN" git-event
+    # Use tunnelforge CLI to send git event via socket
+    exec "$TUNNELFORGE_BIN" git-event
 fi
 
 # Handle verbosity flags
@@ -603,7 +603,7 @@ fi
 # Handle --shell or -i option (launch current shell)
 if [[ "$1" == "--shell" || "$1" == "-i" ]]; then
     shift
-    # Execute current shell through vibetunnel
+    # Execute current shell through tunnelforge
     exec "$0" ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} "${SHELL:-/bin/bash}" "$@"
 fi
 
@@ -625,12 +625,12 @@ fi
 if [ $# -gt 0 ] && [[ "$1" != -* ]]; then
     if [[ "$NO_SHELL_WRAP" == "true" ]]; then
         # Execute directly without shell wrapper
-        exec_with_fallback "$VIBETUNNEL_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$@"
+        exec_with_fallback "$TUNNELFORGE_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$@"
     else
         # Check if the first argument is a real binary
         if which "$1" >/dev/null 2>&1; then
             # It's a real binary, execute directly
-            exec_with_fallback "$VIBETUNNEL_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$@"
+            exec_with_fallback "$TUNNELFORGE_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$@"
         else
             # Not a real binary, try alias resolution
             resolve_command "$@"
@@ -638,5 +638,5 @@ if [ $# -gt 0 ] && [[ "$1" != -* ]]; then
     fi
 else
     # Run with fwd command (original behavior for options)
-    exec_with_fallback "$VIBETUNNEL_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$@"
+    exec_with_fallback "$TUNNELFORGE_BIN" fwd ${VERBOSITY_ARGS:+$VERBOSITY_ARGS} ${TITLE_MODE_ARGS:+"$TITLE_MODE_ARGS"} "$@"
 fi

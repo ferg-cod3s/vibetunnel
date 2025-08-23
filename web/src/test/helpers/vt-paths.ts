@@ -8,8 +8,8 @@ export function getVtScriptPath(): string {
 }
 
 /**
- * Get the path to the vibetunnel binary for testing
+ * Get the path to the tunnelforge binary for testing
  */
 export function getVibetunnelBinaryPath(): string {
-  return path.join(process.cwd(), 'native', 'vibetunnel');
+  return path.join(process.cwd(), 'native', 'tunnelforge');
 }

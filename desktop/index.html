@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TunnelForge</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #1a1a1a;
+        font-family: system-ui, -apple-system, sans-serif;
+        overflow: hidden;
+      }
+      
+      .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: #666;
+        font-size: 14px;
+        background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      }
+      
+      .loading::after {
+        content: '';
+        margin-left: 8px;
+        width: 12px;
+        height: 12px;
+        border: 2px solid #666;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      iframe {
+        width: 100%;
+        height: 100vh;
+        border: none;
+        background: #1a1a1a;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading" class="loading">Loading TunnelForge...</div>
+    <iframe 
+      id="app" 
+      src="http://localhost:3001" 
+      style="display: none;"
+      onload="
+        document.getElementById('loading').style.display = 'none';
+        this.style.display = 'block';
+      "
+      onerror="
+        document.getElementById('loading').innerHTML = 'Failed to connect to TunnelForge server. Make sure it is running.';
+      "
+    ></iframe>
+    
+    <script>
+      // Check if server is running and handle connection issues
+      const iframe = document.getElementById('app');
+      const loading = document.getElementById('loading');
+      
+      // Retry loading if initial load fails
+      setTimeout(() => {
+        if (loading.style.display !== 'none') {
+          loading.innerHTML = 'Connecting to TunnelForge server...';
+          iframe.src = iframe.src + '?retry=' + Date.now();
+        }
+      }, 5000);
+      
+      // Handle navigation within iframe
+      iframe.addEventListener('load', () => {
+        try {
+          // Attempt to communicate with the iframe content
+          // This will help detect if the server is actually running
+          loading.style.display = 'none';
+          iframe.style.display = 'block';
+        } catch (error) {
+          console.log('Iframe loaded but may have connection issues:', error);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# VibeTunnel Integration Test: Bun Web + Go Server Stack
-echo "🧪 Testing VibeTunnel Bun+Go Integration Stack"
+# TunnelForge Integration Test: Bun Web + Go Server Stack
+echo "🧪 Testing TunnelForge Bun+Go Integration Stack"
 echo "=============================================="
 
 # Configuration
@@ -118,7 +118,7 @@ else
 fi
 
 # Test directory creation (create a test directory)
-TEST_DIR="vibetunnel_test_$(date +%s)"
+TEST_DIR="tunnelforge_test_$(date +%s)"
 if curl -s -X POST "http://localhost:$GO_SERVER_PORT/api/filesystem/mkdir" \
    -H "Content-Type: application/json" \
    -d "{\"path\":\"$TEST_DIR\"}" | grep -q "success"; then

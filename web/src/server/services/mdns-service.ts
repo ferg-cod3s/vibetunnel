@@ -14,7 +14,7 @@ export class MDNSService {
   private isAdvertising = false;
 
   /**
-   * Start advertising the VibeTunnel service via mDNS/Bonjour
+   * Start advertising the TunnelForge service via mDNS/Bonjour
    */
   async startAdvertising(port: number, instanceName?: string): Promise<void> {
     if (this.isAdvertising) {
@@ -26,7 +26,7 @@ export class MDNSService {
       this.bonjour = new BonjourLib();
 
       // Use hostname or custom name as the instance name
-      const name = instanceName || os.hostname() || 'VibeTunnel Server';
+      const name = instanceName || os.hostname() || 'TunnelForge Server';
 
       // Advertise the service
       if (!this.bonjour) {
@@ -34,7 +34,7 @@ export class MDNSService {
       }
       this.service = this.bonjour.publish({
         name,
-        type: '_vibetunnel._tcp',
+        type: '_tunnelforge._tcp',
         port,
         txt: {
           version: '1.0',
