@@ -115,6 +115,9 @@ TunnelForge/Resources/tunnelforge
 web/tunnelforge
 /server/tunnelforge-server
 server/tunnelforge-fwd
+server/bin/
+server/tunnelforge*
+server/test-server
 /.build-tools
 linux/tunnelforge
 *.o

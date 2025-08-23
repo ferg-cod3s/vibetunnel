@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# TunnelForge CLI - Modern command interface
+# This is the preferred command for TunnelForge operations
+# 'vt' remains available as a legacy alias for backwards compatibility
+
+# Check if we're being called as 'vt' and show migration notice
+SCRIPT_NAME=$(basename "$0")
+if [[ "$SCRIPT_NAME" == "vt" ]]; then
+    # Only show notice occasionally to avoid spam
+    if [[ -z "$TUNNELFORGE_VT_NOTICE_SHOWN" ]]; then
+        echo "📢 Notice: 'vt' is now legacy. Please use 'tf' instead for the latest features." >&2
+        export TUNNELFORGE_VT_NOTICE_SHOWN=1
+    fi
+fi
+
+# Determine the best available TunnelForge implementation
+if [[ -x "/usr/local/bin/tunnelforge" ]]; then
+    # Prefer the Go server binary if available
+    exec /usr/local/bin/tunnelforge "$@"
+elif [[ -x "/Applications/TunnelForge.app/Contents/MacOS/TunnelForge" ]]; then
+    # Fall back to Mac app if installed
+    exec /Applications/TunnelForge.app/Contents/MacOS/TunnelForge "$@"
+elif command -v tunnelforge &> /dev/null; then
+    # Use npm-installed version if available
+    exec tunnelforge "$@"
+else
+    echo "❌ Error: TunnelForge is not installed." >&2
+    echo "Install via:" >&2
+    echo "  - Download from: https://github.com/tunnelforge/tunnelforge/releases" >&2
+    echo "  - Or: npm install -g tunnelforge" >&2
+    echo "  - Or: brew install --cask tunnelforge" >&2
+    exit 1
+fi
