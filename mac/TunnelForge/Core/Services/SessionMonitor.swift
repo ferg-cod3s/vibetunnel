@@ -164,6 +164,9 @@ final class SessionMonitor {
             if let gitMonitor = gitRepositoryMonitor {
                 await preCacheGitRepositories(for: sessionsArray, using: gitMonitor)
             }
+            
+            // Update power management based on running sessions
+            updatePowerManagement()
         } catch {
             // Only update error if it's not a simple connection error
             if !(error is URLError) {
@@ -232,5 +235,28 @@ final class SessionMonitor {
             .debug(
                 "Pre-caching Git data for \(uniqueDirectoriesToCheck.count) unique directories (from \(sessions.count) sessions)"
             )
+    }
+    
+    /// Update power management state based on running sessions
+    private func updatePowerManagement() {
+        // Check if power management is enabled in config
+        guard ConfigManager.shared.preventSleepWhenRunning else {
+            // If disabled in config, ensure sleep prevention is off
+            PowerManagementService.shared.allowSleep()
+            return
+        }
+        
+        // Count running sessions
+        let runningCount = sessionCount
+        
+        if runningCount > 0 {
+            // Enable sleep prevention when sessions are running
+            PowerManagementService.shared.preventSleep()
+            logger.info("Enabled sleep prevention - \(runningCount) running session(s)")
+        } else {
+            // Disable sleep prevention when no sessions are running
+            PowerManagementService.shared.allowSleep()
+            logger.info("Disabled sleep prevention - no running sessions")
+        }
     }
 }

@@ -6,19 +6,19 @@
 **Issue**: Both Go (`server/`) and Node.js (`web/`) servers exist simultaneously
 
 **Resolution**:
-- [ ] Primary: Go server (`server/`) on port 4021 for production
-- [ ] Secondary: Keep Node.js (`web/`) ONLY for npm package distribution
-- [ ] Update all documentation to clarify this distinction
-- [ ] Add deprecation notices to Node.js server
+- [x] Primary: Go server (`server/`) on port 4021 for production
+- [x] Secondary: Keep Node.js (`web/`) ONLY for npm package distribution
+- [x] Update all documentation to clarify this distinction
+- [x] Add deprecation notices to Node.js server
 
 ### 2. ✅ CLI Command Naming (vt vs tf)
 **Issue**: Documentation mentions both `vt` (legacy) and `tf` (new) commands
 
 **Resolution**:
-- [ ] Create `tf` symlink pointing to main binary
-- [ ] Keep `vt` as backwards-compatible alias
+- [x] Create `tf` symlink pointing to main binary
+- [x] Keep `vt` as backwards-compatible alias
 - [ ] Update all documentation to use `tf` in examples
-- [ ] Add migration notice when `vt` is used
+- [x] Add migration notice when `vt` is used
 
 ### 3. ✅ Port Configuration
 **Issue**: Different components use different ports (4020, 4021, 3000)
@@ -27,16 +27,16 @@
 - Port 4021: Go server (primary)
 - Port 4020: Legacy Node.js server (deprecated)
 - Port 3000: Development server (Bun)
-- [ ] Standardize on 4021 for production
-- [ ] Update all configurations
+- [x] Standardize on 4021 for production
+- [x] Update all configurations
 
 ### 4. ✅ Build Artifacts Organization
 **Issue**: Multiple server binaries cluttering `server/` directory
 
 **Resolution**:
-- [ ] Move all binaries to `server/bin/`
-- [ ] Clean up root of `server/` directory
-- [ ] Update .gitignore to exclude binaries
+- [x] Move all binaries to `server/bin/`
+- [x] Clean up root of `server/` directory
+- [x] Update .gitignore to exclude binaries
 - [ ] Create clear build scripts
 
 ### 5. ✅ Architecture Documentation
@@ -75,10 +75,10 @@
 3. Update all README files
 
 ## Success Criteria
-- [ ] Single primary server (Go) clearly identified
-- [ ] `tf` command available and documented
-- [ ] Consistent port usage (4021)
-- [ ] Clean directory structure
+- [x] Single primary server (Go) clearly identified
+- [x] `tf` command available and documented
+- [x] Consistent port usage (4021)
+- [x] Clean directory structure
 - [ ] Clear documentation separation
 
 ## Timeline
