@@ -375,7 +375,7 @@ final class StatusBarMenuManager: NSObject {
 
     @objc
     private func reportIssue() {
-        if let url = URL(string: "https://github.com/amantus-ai/vibetunnel/issues") {
+        if let url = URL(string: "https://github.com/ferg-cod3s/tunnelforge/issues") {
             NSWorkspace.shared.open(url)
         }
     }

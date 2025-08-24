@@ -1,37 +1,16 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "build": {
-    "beforeDevCommand": "echo 'Go server should be running on port 4021'",
-    "beforeBuildCommand": "cd ../web && bun build src/client/app-entry.ts --outfile=public/bundle/client-bundle.js --format=esm --minify && bunx postcss src/client/styles.css -o public/bundle/styles.css",
-    "devUrl": "http://localhost:4021",
-    "frontendDist": "../web/public"
+    "beforeBuildCommand": "echo 'Building TunnelForge Desktop interface'",
+    "frontendDist": "../dist"
   },
   "productName": "TunnelForge",
   "version": "1.0.0",
   "identifier": "dev.tunnelforge.desktop",
   "plugins": {
-    "fs": {
-      "scope": ["$HOME/**", "$APPDATA/**", "$APPCONFIG/**", "$APPLOCALDATA/**", "$APPLOG/**"]
-    },
+    "opener": {},
     "shell": {
-      "open": true,
-      "sidecar": true,
-      "scope": [
-        {
-          "name": "tunnelforge",
-          "cmd": "tunnelforge",
-          "args": true
-        }
-      ]
-    },
-    "process": {
-      "exit": true,
-      "restart_api": true
-    },
-    "notification": {
-      "default": [
-        "core:default"
-      ]
+      "open": true
     }
   },
   "bundle": {
@@ -45,15 +24,14 @@
         "icons/icon.ico"
       ],
       "resources": [],
-      "externalBin": [
-        "tunnelforge-server"
-      ],
+      "externalBin": [],
       "copyright": "Copyright © 2024 TunnelForge Team",
       "category": "DeveloperTool",
       "shortDescription": "Terminal sharing made simple",
       "longDescription": "TunnelForge allows you to share terminal sessions through any web browser with a beautiful, fast desktop interface."
     },
   "app": {
+    "withGlobalTauri": true,
     "security": {
       "csp": null
     },
@@ -67,9 +45,11 @@
         "minWidth": 800,
         "minHeight": 600,
         "visible": false,
+        "url": "index.html",
         "decorations": true,
         "alwaysOnTop": false,
-        "skipTaskbar": false
+        "skipTaskbar": false,
+        "devtools": true
       }
     ],
     "trayIcon": {

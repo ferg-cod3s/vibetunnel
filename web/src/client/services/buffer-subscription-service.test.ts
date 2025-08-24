@@ -106,31 +106,58 @@ describe('BufferSubscriptionService', () => {
       service = new BufferSubscriptionService();
 
       // Mock fetch for auth config check
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ noAuth: true }),
-      } as Response);
+      vi.spyOn(global, 'fetch').mockImplementation((url) => {
+        if (url === '/api/auth/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ noAuth: true }),
+          } as Response);
+        }
+        if (url === '/api/config') {
+          // Return config with WebSocket URL
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ websocketUrl: 'ws://localhost:4021' }),
+          } as Response);
+        }
+        return Promise.reject(new Error('Unexpected fetch'));
+      });
 
       await service.initialize();
 
       // Advance timers to trigger connection after delay
       vi.advanceTimersByTime(100);
+      
+      // Wait for async getWebSocketUrl
+      await vi.runAllTimersAsync();
 
-      expect(mockWebSocketConstructor).toHaveBeenCalledWith('ws://localhost/buffers');
+      expect(mockWebSocketConstructor).toHaveBeenCalledWith('ws://localhost:4021/buffers');
       expect(mockWebSocketInstance.binaryType).toBe('arraybuffer');
     });
 
     it('should handle successful connection', async () => {
       service = new BufferSubscriptionService();
 
-      // Mock fetch for auth config check
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ noAuth: true }),
-      } as Response);
+      // Mock fetch for auth config check and server config
+      vi.spyOn(global, 'fetch').mockImplementation((url) => {
+        if (url === '/api/auth/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ noAuth: true }),
+          } as Response);
+        }
+        if (url === '/api/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ websocketUrl: 'ws://localhost:4021' }),
+          } as Response);
+        }
+        return Promise.reject(new Error('Unexpected fetch'));
+      });
 
       await service.initialize();
       vi.advanceTimersByTime(100);
+      await vi.runAllTimersAsync();
 
       // Simulate successful connection
       mockWebSocketInstance.mockOpen();
@@ -141,14 +168,26 @@ describe('BufferSubscriptionService', () => {
     it('should handle connection errors', async () => {
       service = new BufferSubscriptionService();
 
-      // Mock fetch for auth config check
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ noAuth: true }),
-      } as Response);
+      // Mock fetch for auth config check and server config
+      vi.spyOn(global, 'fetch').mockImplementation((url) => {
+        if (url === '/api/auth/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ noAuth: true }),
+          } as Response);
+        }
+        if (url === '/api/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ websocketUrl: 'ws://localhost:4021' }),
+          } as Response);
+        }
+        return Promise.reject(new Error('Unexpected fetch'));
+      });
 
       await service.initialize();
       vi.advanceTimersByTime(100);
+      await vi.runAllTimersAsync();
 
       // Simulate connection error followed by close
       mockWebSocketInstance.mockError();
@@ -161,14 +200,26 @@ describe('BufferSubscriptionService', () => {
     it('should reconnect with exponential backoff', async () => {
       service = new BufferSubscriptionService();
 
-      // Mock fetch for auth config check
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ noAuth: true }),
-      } as Response);
+      // Mock fetch for auth config check and server config
+      vi.spyOn(global, 'fetch').mockImplementation((url) => {
+        if (url === '/api/auth/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ noAuth: true }),
+          } as Response);
+        }
+        if (url === '/api/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ websocketUrl: 'ws://localhost:4021' }),
+          } as Response);
+        }
+        return Promise.reject(new Error('Unexpected fetch'));
+      });
 
       await service.initialize();
       vi.advanceTimersByTime(100);
+      await vi.runAllTimersAsync();
 
       // First reconnect - 1 second
       mockWebSocketInstance.mockClose();
@@ -190,14 +241,26 @@ describe('BufferSubscriptionService', () => {
     it('should cap reconnect delay at 30 seconds', async () => {
       service = new BufferSubscriptionService();
 
-      // Mock fetch for auth config check
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ noAuth: true }),
-      } as Response);
+      // Mock fetch for auth config check and server config
+      vi.spyOn(global, 'fetch').mockImplementation((url) => {
+        if (url === '/api/auth/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ noAuth: true }),
+          } as Response);
+        }
+        if (url === '/api/config') {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ websocketUrl: 'ws://localhost:4021' }),
+          } as Response);
+        }
+        return Promise.reject(new Error('Unexpected fetch'));
+      });
 
       await service.initialize();
       vi.advanceTimersByTime(100);
+      await vi.runAllTimersAsync();
 
       // Trigger many failed connections
       for (let i = 0; i < 10; i++) {

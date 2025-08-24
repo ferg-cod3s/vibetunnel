@@ -98,6 +98,27 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 };
 
+// Mock requestAnimationFrame and cancelAnimationFrame
+let rafId = 0;
+const rafCallbacks = new Map<number, FrameRequestCallback>();
+
+global.requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => {
+  const id = ++rafId;
+  rafCallbacks.set(id, callback);
+  setTimeout(() => {
+    const cb = rafCallbacks.get(id);
+    if (cb) {
+      rafCallbacks.delete(id);
+      cb(performance.now());
+    }
+  }, 16); // Simulate ~60fps
+  return id;
+});
+
+global.cancelAnimationFrame = vi.fn((id: number) => {
+  rafCallbacks.delete(id);
+});
+
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   observe() {}

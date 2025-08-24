@@ -1,0 +1,351 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Product Requirements Document - TunnelForge Documentation">
+  <div class="page-header">
+    <h1>Product Requirements Document</h1>
+    <p>
+      Comprehensive product requirements and specifications for TunnelForge.
+    </p>
+  </div>
+
+  <div class="content">
+    <section class="overview">
+      <h2>Product Overview</h2>
+      <p>
+        TunnelForge is a modern terminal sharing and remote access solution
+        designed for developers, DevOps engineers, and AI agents who need
+        secure, reliable terminal access across platforms.
+      </p>
+    </section>
+
+    <section class="core-features">
+      <h2>Core Features</h2>
+
+      <h3>Terminal Management</h3>
+      <ul>
+        <li>
+          <strong>Session Creation</strong> - Create new terminal sessions with custom
+          shells
+        </li>
+        <li>
+          <strong>Real-time Sharing</strong> - Share terminal sessions with team
+          members
+        </li>
+        <li>
+          <strong>Persistent Sessions</strong> - Sessions survive disconnections
+          and server restarts
+        </li>
+        <li>
+          <strong>Multi-user Access</strong> - Multiple users can connect to the
+          same session
+        </li>
+      </ul>
+
+      <h3>Web Interface</h3>
+      <ul>
+        <li>
+          <strong>Responsive Dashboard</strong> - Modern web interface accessible
+          from any device
+        </li>
+        <li>
+          <strong>Terminal Emulator</strong> - Full-featured terminal with xterm.js
+        </li>
+        <li>
+          <strong>Session Management</strong> - Start, stop, and monitor sessions
+        </li>
+        <li><strong>User Authentication</strong> - Secure access control</li>
+      </ul>
+
+      <h3>Remote Access</h3>
+      <ul>
+        <li>
+          <strong>Tailscale Integration</strong> - Secure remote access via Tailscale
+        </li>
+        <li>
+          <strong>ngrok Support</strong> - Public access with ngrok tunnels
+        </li>
+        <li>
+          <strong>SSH Key Authentication</strong> - Secure key-based access
+        </li>
+        <li>
+          <strong>Cross-platform</strong> - Works on macOS, Linux, and Windows
+        </li>
+      </ul>
+    </section>
+
+    <section class="technical-requirements">
+      <h2>Technical Requirements</h2>
+
+      <h3>Architecture</h3>
+      <ul>
+        <li>
+          <strong>Backend</strong> - Node.js server with WebSocket support
+        </li>
+        <li>
+          <strong>Desktop</strong> - Tauri v2 for cross-platform native apps
+        </li>
+        <li><strong>Frontend</strong> - Lit components with xterm.js</li>
+        <li>
+          <strong>Protocol</strong> - WebSocket for real-time communication
+        </li>
+      </ul>
+
+      <h3>Performance</h3>
+      <ul>
+        <li>
+          <strong>Latency</strong> - &lt;50ms input-to-output for local sessions
+        </li>
+        <li>
+          <strong>Throughput</strong> - Support 1000+ concurrent connections
+        </li>
+        <li>
+          <strong>Memory</strong> - &lt;100MB RAM for server with 10 active sessions
+        </li>
+        <li>
+          <strong>Bundle Size</strong> - Desktop app &lt;15MB, npm package &lt;50MB
+        </li>
+        <li><strong>Startup</strong> - &lt;1 second cold start</li>
+      </ul>
+
+      <h3>Security</h3>
+      <ul>
+        <li>
+          <strong>Authentication</strong> - Multiple modes (system, SSH keys, tokens)
+        </li>
+        <li><strong>Encryption</strong> - TLS for remote connections</li>
+        <li><strong>Isolation</strong> - Session isolation and sandboxing</li>
+        <li>
+          <strong>Audit</strong> - Comprehensive logging and session recording
+        </li>
+        <li><strong>Compliance</strong> - Follow security best practices</li>
+      </ul>
+
+      <h3>Platform Support</h3>
+      <ul>
+        <li>
+          <strong>Desktop</strong> - macOS 14+, Linux (Ubuntu 20.04+), Windows 11
+        </li>
+        <li><strong>Mobile</strong> - iOS 17+, Android 12+</li>
+        <li>
+          <strong>Browser</strong> - Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+        </li>
+        <li><strong>Server</strong> - Node.js 20+, Go 1.21+</li>
+      </ul>
+    </section>
+
+    <section class="success-metrics">
+      <h2>Success Metrics</h2>
+
+      <h3>User Metrics</h3>
+      <ul>
+        <li>
+          <strong>Adoption</strong> - 10,000+ active users within 6 months
+        </li>
+        <li><strong>Retention</strong> - 60% monthly active user retention</li>
+        <li>
+          <strong>Engagement</strong> - Average 5+ sessions per user per week
+        </li>
+        <li><strong>Satisfaction</strong> - NPS score &gt; 50</li>
+      </ul>
+
+      <h3>Technical Metrics</h3>
+      <ul>
+        <li><strong>Reliability</strong> - 99.9% uptime for core services</li>
+        <li><strong>Performance</strong> - P95 latency &lt; 100ms</li>
+        <li><strong>Quality</strong> - &lt;5 critical bugs per release</li>
+        <li><strong>Coverage</strong> - &gt;80% test coverage</li>
+      </ul>
+
+      <h3>Business Metrics</h3>
+      <ul>
+        <li><strong>Growth</strong> - 20% month-over-month user growth</li>
+        <li>
+          <strong>Conversion</strong> - 10% free-to-paid conversion (future)
+        </li>
+        <li><strong>Support</strong> - &lt;24 hour response time</li>
+        <li><strong>Community</strong> - 1000+ Discord members</li>
+      </ul>
+    </section>
+
+    <section class="competitive-analysis">
+      <h2>Competitive Analysis</h2>
+
+      <h3>Direct Competitors</h3>
+      <ul>
+        <li><strong>Eternal Terminal</strong> - Persistent SSH connections</li>
+        <li><strong>Mosh</strong> - Mobile shell with roaming</li>
+        <li><strong>tmux/screen</strong> - Terminal multiplexers</li>
+        <li><strong>VS Code Remote</strong> - IDE-based remote development</li>
+      </ul>
+
+      <h3>Indirect Competitors</h3>
+      <ul>
+        <li><strong>Replit</strong> - Cloud development environment</li>
+        <li>
+          <strong>GitHub Codespaces</strong> - Cloud-hosted dev environments
+        </li>
+        <li><strong>Cloud9</strong> - AWS cloud IDE</li>
+      </ul>
+
+      <h3>Competitive Advantages</h3>
+      <ol>
+        <li><strong>Zero Configuration</strong> - Works out of the box</li>
+        <li>
+          <strong>Lightweight</strong> - 85% smaller than Electron alternatives
+        </li>
+        <li><strong>AI-Optimized</strong> - Built for AI agent workflows</li>
+        <li>
+          <strong>Cross-Platform</strong> - True native apps for all platforms
+        </li>
+        <li><strong>Open Source</strong> - Community-driven development</li>
+      </ol>
+    </section>
+
+    <section class="release-strategy">
+      <h2>Release Strategy</h2>
+
+      <h3>MVP Release (v1.0)</h3>
+      <ul>
+        <li>Core terminal forwarding</li>
+        <li>Web dashboard</li>
+        <li>Local access only</li>
+        <li>Basic authentication</li>
+      </ul>
+
+      <h3>Enhanced Release (v1.5)</h3>
+      <ul>
+        <li>Remote access (Tailscale/ngrok)</li>
+        <li>Git follow mode</li>
+        <li>Dynamic titles</li>
+        <li>Mobile web support</li>
+      </ul>
+
+      <h3>Platform Expansion (v2.0)</h3>
+      <ul>
+        <li>Native mobile apps</li>
+        <li>Windows support</li>
+        <li>Collaboration features</li>
+        <li>Enterprise features</li>
+      </ul>
+    </section>
+
+    <section class="risks-mitigations">
+      <h2>Risks and Mitigations</h2>
+
+      <h3>Technical Risks</h3>
+      <ul>
+        <li><strong>Risk</strong>: WebSocket connection stability</li>
+        <li>
+          <strong>Mitigation</strong>: Implement reconnection logic and fallback
+          protocols
+        </li>
+      </ul>
+
+      <h3>Security Risks</h3>
+      <ul>
+        <li><strong>Risk</strong>: Unauthorized terminal access</li>
+        <li>
+          <strong>Mitigation</strong>: Multiple auth layers, audit logging,
+          encryption
+        </li>
+      </ul>
+
+      <h3>Market Risks</h3>
+      <ul>
+        <li><strong>Risk</strong>: Limited adoption due to existing tools</li>
+        <li>
+          <strong>Mitigation</strong>: Focus on unique AI monitoring use cases
+        </li>
+      </ul>
+
+      <h3>Resource Risks</h3>
+      <ul>
+        <li><strong>Risk</strong>: Limited development resources</li>
+        <li><strong>Mitigation</strong>: Open source community development</li>
+      </ul>
+    </section>
+
+    <div class="next-steps">
+      <h2>Next Steps</h2>
+      <p>
+        Check out the <a href="/roadmap">Roadmap</a> to see the development timeline
+        and upcoming features.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .content section {
+    margin-bottom: 3rem;
+  }
+
+  .content h2 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .content h3 {
+    color: #374151;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  ul,
+  ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .next-steps {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .next-steps h2 {
+    margin-top: 0;
+    color: #1e40af;
+  }
+
+  .next-steps p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #1e40af;
+  }
+</style>

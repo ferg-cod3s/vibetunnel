@@ -50,7 +50,7 @@ tf command  # Uses Go server on port 4021
 ### Need Help?
 - Migration guide: [docs/MIGRATION.md](../docs/MIGRATION.md)
 - Discord: [https://discord.gg/tunnelforge](https://discord.gg/tunnelforge)
-- Issues: [GitHub Issues](https://github.com/tunnelforge/tunnelforge/issues)
+- Issues: [GitHub Issues](https://github.com/ferg-cod3s/tunnelforge/issues)
 
 ---
 Last Updated: January 2025

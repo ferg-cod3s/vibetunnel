@@ -413,7 +413,7 @@ main() {
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>TunnelForge Updates</title>
-        <link>https://github.com/amantus-ai/tunnelforge</link>
+        <link>https://github.com/ferg-cod3s/tunnelforge</link>
         <description>TunnelForge automatic updates feed</description>
         <language>en</language>
 EOF
@@ -456,7 +456,7 @@ EOF
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>TunnelForge Pre-release Updates</title>
-        <link>https://github.com/amantus-ai/tunnelforge</link>
+        <link>https://github.com/ferg-cod3s/tunnelforge</link>
         <description>TunnelForge pre-release and beta updates feed</description>
         <language>en</language>
 EOF

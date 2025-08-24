@@ -17,12 +17,12 @@
   --color-text-bright: rgb(0 0 0);
   --color-text-muted: rgb(75 75 75);
   --color-text-dim: rgb(115 115 115);
-  --color-primary: #10B981;
-  --color-primary-hover: #059669;
-  --color-primary-dark: #047857;
-  --color-primary-light: #34D399;
-  --color-primary-muted: #10B98133;
-  --color-primary-glow: #10B98166;
+  --color-primary: #ff6b35;
+  --color-primary-hover: #ff5722;
+  --color-primary-dark: #e64a19;
+  --color-primary-light: #ff8a65;
+  --color-primary-muted: #ff6b3533;
+  --color-primary-glow: #ff6b3566;
   --color-status-error: #EF4444;
   --color-status-warning: #F59E0B;
   --color-status-success: #10B981;
@@ -60,10 +60,10 @@
   --color-status-info: var(--color-status-info);
   
   /* Box Shadows */
-  --shadow-glow: 0 0 20px rgb(16 185 129 / 0.4);
-  --shadow-glow-sm: 0 0 10px rgb(16 185 129 / 0.3);
-  --shadow-glow-lg: 0 0 30px rgb(16 185 129 / 0.5);
-  --shadow-glow-intense: 0 0 40px rgb(16 185 129 / 0.6);
+  --shadow-glow: 0 0 20px rgb(255 107 53 / 0.4);
+  --shadow-glow-sm: 0 0 10px rgb(255 107 53 / 0.3);
+  --shadow-glow-lg: 0 0 30px rgb(255 107 53 / 0.5);
+  --shadow-glow-intense: 0 0 40px rgb(255 107 53 / 0.6);
   --shadow-glow-error: 0 0 20px rgb(239 68 68 / 0.4);
   --shadow-glow-error-sm: 0 0 10px rgb(239 68 68 / 0.3);
   --shadow-glow-error-lg: 0 0 30px rgb(239 68 68 / 0.5);

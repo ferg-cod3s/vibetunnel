@@ -1754,11 +1754,11 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .shadow-glow {
-    --tw-shadow: 0 0 20px var(--tw-shadow-color, rgb(16 185 129 / 0.4));
+    --tw-shadow: 0 0 20px var(--tw-shadow-color, rgb(255 107 53 / 0.4));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .shadow-glow-sm {
-    --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+    --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .shadow-lg {
@@ -2251,7 +2251,7 @@
   .hover\:shadow-glow {
     &:hover {
       @media (hover: hover) {
-        --tw-shadow: 0 0 20px var(--tw-shadow-color, rgb(16 185 129 / 0.4));
+        --tw-shadow: 0 0 20px var(--tw-shadow-color, rgb(255 107 53 / 0.4));
         box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
       }
     }
@@ -2300,7 +2300,7 @@
   }
   .focus\:shadow-glow-sm {
     &:focus {
-      --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+      --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
   }
@@ -2949,12 +2949,12 @@
   --color-text-bright: rgb(0 0 0);
   --color-text-muted: rgb(75 75 75);
   --color-text-dim: rgb(115 115 115);
-  --color-primary: #10B981;
-  --color-primary-hover: #059669;
-  --color-primary-dark: #047857;
-  --color-primary-light: #34D399;
-  --color-primary-muted: #10B98133;
-  --color-primary-glow: #10B98166;
+  --color-primary: #ff6b35;
+  --color-primary-hover: #ff5722;
+  --color-primary-dark: #e64a19;
+  --color-primary-light: #ff8a65;
+  --color-primary-muted: #ff6b3533;
+  --color-primary-glow: #ff6b3566;
   --color-status-error: #EF4444;
   --color-status-warning: #F59E0B;
   --color-status-success: #10B981;
@@ -3437,7 +3437,7 @@
       border-color: var(--color-primary);
     }
     &:focus {
-      --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+      --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
     &:focus {
@@ -3629,7 +3629,7 @@
     }
     &:hover {
       @media (hover: hover) {
-        --tw-shadow: 0 0 20px var(--tw-shadow-color, rgb(16 185 129 / 0.4));
+        --tw-shadow: 0 0 20px var(--tw-shadow-color, rgb(255 107 53 / 0.4));
         box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
       }
     }
@@ -3692,7 +3692,7 @@
     }
     &:hover {
       @media (hover: hover) {
-        --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+        --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
         box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
       }
     }
@@ -3895,7 +3895,7 @@
     }
     &:hover {
       @media (hover: hover) {
-        --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+        --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
         box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
       }
     }
@@ -3912,7 +3912,7 @@
     border-color: var(--color-primary);
     background-color: var(--color-primary);
     color: var(--color-bg);
-    --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+    --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .modal-backdrop {
@@ -4193,19 +4193,19 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .hover-glow:hover {
-    --tw-shadow: 0 0 20px var(--tw-shadow-color, rgb(16 185 129 / 0.4));
+    --tw-shadow: 0 0 20px var(--tw-shadow-color, rgb(255 107 53 / 0.4));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .hover-glow-sm:hover {
-    --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+    --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .hover-glow-lg:hover {
-    --tw-shadow: 0 0 30px var(--tw-shadow-color, rgb(16 185 129 / 0.5));
+    --tw-shadow: 0 0 30px var(--tw-shadow-color, rgb(255 107 53 / 0.5));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .focus-within-glow:focus-within {
-    --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+    --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -5075,7 +5075,7 @@ body.initial-session-load .session-flex-responsive > session-card:nth-child(n + 
   color: var(--color-primary);
   --tw-translate-y: calc(var(--spacing) * -0.5);
   translate: var(--tw-translate-x) var(--tw-translate-y);
-  --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(16 185 129 / 0.3));
+  --tw-shadow: 0 0 10px var(--tw-shadow-color, rgb(255 107 53 / 0.3));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   backdrop-filter: blur(16px) saturate(1.8);
   -webkit-backdrop-filter: blur(16px) saturate(1.8);

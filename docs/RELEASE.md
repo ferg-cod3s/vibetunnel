@@ -1,4 +1,8 @@
-# TunnelForge Release Documentation
+# Release Process
+
+> **🔄 Refactoring in Progress**: This document covers release processes for both the current Node.js + SwiftUI implementation and the target Go + Bun + Tauri architecture. Build tools and processes will change as the refactoring progresses.
+
+## Overview
 
 This guide provides comprehensive documentation for creating and publishing releases for TunnelForge, a macOS menu bar application using Sparkle 2.x for automatic updates.
 

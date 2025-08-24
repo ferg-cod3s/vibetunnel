@@ -90,6 +90,82 @@ function getTailscaleUser(req: Request): TailscaleUser | null {
   };
 }
 
+// Standalone authentication functions for testing and modular use
+export async function authenticateRequest(req: Request, res: Response, next: NextFunction) {
+  // Implementation for JWT token authentication
+  const authHeader = req.headers.authorization;
+  const cookieToken = (req as any).cookies?.token;
+  const queryToken = req.query.token as string;
+  
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : 
+                 cookieToken || queryToken;
+  
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+  
+  try {
+    // In a real implementation, this would verify the JWT
+    // For testing, we'll use the mock behavior
+    const jwt = await import('jsonwebtoken');
+    const payload = jwt.verify(token, process.env.JWT_SECRET || 'test-secret', {
+      algorithms: ['HS256']
+    });
+    
+    (req as any).user = payload;
+    next();
+  } catch (error: any) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expired' });
+    }
+    return res.status(401).json({ error: error.message || 'Invalid token' });
+  }
+}
+
+export async function validateSession(req: Request, res: Response, next: NextFunction) {
+  // Implementation for session validation
+  const user = (req as any).user;
+  
+  if (!user) {
+    return res.status(401).json({ error: 'No user session' });
+  }
+  
+  // Check session age (24 hours)
+  const sessionAge = Date.now() / 1000 - (user.iat || 0);
+  if (sessionAge > 24 * 60 * 60) {
+    return res.status(401).json({ error: 'Session expired' });
+  }
+  
+  // Check for session hijacking
+  const currentIP = req.ip;
+  if (user.ip && user.ip !== currentIP) {
+    return res.status(401).json({ error: 'Session hijacking detected' });
+  }
+  
+  next();
+}
+
+export async function checkPermissions(requiredPermissions: string[]) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const user = (req as any).user;
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+    
+    const userPermissions = user.permissions || [];
+    const hasPermission = requiredPermissions.every(perm => 
+      userPermissions.includes(perm)
+    );
+    
+    if (!hasPermission) {
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+    
+    next();
+  };
+}
+
 export function createAuthMiddleware(config: AuthConfig) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     // Skip auth for auth endpoints, client logging, push notifications, and Tailscale status

@@ -448,7 +448,7 @@ struct AboutSettingsView: View {
                     icon: "exclamationmark.bubble",
                     title: "Report an Issue",
                     subtitle: "Help us improve",
-                    url: URL(string: "https://github.com/tunnelforge/tunnelforge/issues")
+                    url: URL(string: "https://github.com/ferg-cod3s/tunnelforge/issues")
                 )
 
                 LinkRow(

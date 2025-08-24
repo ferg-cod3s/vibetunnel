@@ -1,0 +1,419 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Installation Guide - TunnelForge Documentation">
+  <div class="page-header">
+    <h1>Installation Guide</h1>
+    <p>
+      Get TunnelForge running on your system with these step-by-step
+      installation instructions.
+    </p>
+  </div>
+
+  <div class="content">
+    <section class="prerequisites">
+      <h2>📋 Prerequisites</h2>
+      <ul>
+        <li><strong>macOS:</strong> 10.15+ (Catalina or later)</li>
+        <li><strong>Linux:</strong> Ubuntu 18.04+, CentOS 7+, or similar</li>
+        <li><strong>Node.js:</strong> 20.0.0+ (for web interface)</li>
+        <li><strong>Git:</strong> For building from source</li>
+      </ul>
+    </section>
+
+    <section class="installation-methods">
+      <h2>🍎 macOS Installation</h2>
+
+      <div class="method">
+        <h3>Option 1: Direct Download (Recommended)</h3>
+        <ol>
+          <li>
+            Visit <a
+              href="https://github.com/ferg-cod3s/tunnelforge/releases"
+              target="_blank">GitHub Releases</a
+            >
+          </li>
+          <li>
+            Download the latest <code>TunnelForge-*.dmg</code> file from the releases
+            page
+          </li>
+          <li>Open the DMG and drag TunnelForge to your Applications folder</li>
+          <li>Launch TunnelForge from Applications</li>
+        </ol>
+      </div>
+
+      <div class="method">
+        <h3>Option 2: Homebrew</h3>
+        <pre><code># Install via Homebrew
+brew install --cask tunnelforge
+
+# Launch the application
+open /Applications/TunnelForge.app</code></pre>
+      </div>
+
+      <div class="method">
+        <h3>Option 3: Build from Source</h3>
+        <pre><code># Clone the repository
+git clone https://github.com/ferg-cod3s/tunnelforge.git
+cd tunnelforge
+
+# Install dependencies
+cd mac
+./scripts/build.sh
+
+# The app will be built to build/TunnelForge.app</code></pre>
+      </div>
+    </section>
+
+    <section class="installation-methods">
+      <h2>🐧 Linux Installation</h2>
+
+      <div class="method">
+        <h3>Option 1: NPM Package (Recommended)</h3>
+        <pre><code># Install Node.js 20+ if not already installed
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install TunnelForge globally
+sudo npm install -g tunnelforge
+
+# Verify installation
+tunnelforge --version</code></pre>
+      </div>
+
+      <div class="method">
+        <h3>Option 2: Build from Source</h3>
+        <pre><code># Clone the repository
+git clone https://github.com/ferg-cod3s/tunnelforge.git
+cd tunnelforge
+
+# Install dependencies
+cd web
+npm install
+
+# Build the application
+npm run build
+
+# Start the server
+npm start</code></pre>
+      </div>
+
+      <div class="method">
+        <h3>Option 3: Docker</h3>
+        <pre><code># Pull the official image
+docker pull ghcr.io/ferg-cod3s/tunnelforge:latest
+
+# Run the container
+docker run -d \
+  --name tunnelforge \
+  -p 4020:4020 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  ghcr.io/ferg-cod3s/tunnelforge:latest</code></pre>
+      </div>
+    </section>
+
+    <section class="web-interface">
+      <h2>🌐 Web Interface</h2>
+      <p>
+        The web interface is included with all installations and runs on port
+        4020 by default.
+      </p>
+
+      <h3>Access the Web Interface</h3>
+      <ol>
+        <li>Start TunnelForge (macOS app or Linux server)</li>
+        <li>Open your browser to <code>http://localhost:4020</code></li>
+        <li>The web interface will load automatically</li>
+      </ol>
+
+      <h3>Default Configuration</h3>
+      <ul>
+        <li><strong>Port:</strong> 4020</li>
+        <li><strong>Host:</strong> localhost (127.0.0.1)</li>
+        <li><strong>Authentication:</strong> SSH key-based (configurable)</li>
+      </ul>
+    </section>
+
+    <section class="cli-tools">
+      <h2>🔧 CLI Tools</h2>
+
+      <h3>Install VT Command (Optional)</h3>
+      <p>
+        The <code>vt</code> command provides additional terminal integration:
+      </p>
+
+      <pre><code># macOS (with Homebrew)
+brew install --cask tunnelforge
+
+# Linux
+curl -fsSL https://raw.githubusercontent.com/ferg-cod3s/tunnelforge/main/scripts/install-vt.sh | bash
+
+# Verify installation
+vt --version</code></pre>
+
+      <h3>VT Command Features</h3>
+      <ul>
+        <li><code>vt start</code> - Start a new terminal session</li>
+        <li><code>vt list</code> - List active sessions</li>
+        <li>
+          <code>vt attach &lt;session-id&gt;</code> - Attach to existing session
+        </li>
+        <li><code>vt title "Session Name"</code> - Set session title</li>
+      </ul>
+    </section>
+
+    <section class="quick-start">
+      <h2>🚀 Quick Start</h2>
+      <p>After installation:</p>
+      <ol>
+        <li><strong>Launch TunnelForge</strong> (macOS app or start server)</li>
+        <li>
+          <strong>Open Web Interface</strong> at <code
+            >http://localhost:4020</code
+          >
+        </li>
+        <li><strong>Create Session</strong> using the web interface or CLI</li>
+        <li><strong>Share Session</strong> by sharing the session ID or URL</li>
+      </ol>
+    </section>
+
+    <section class="security">
+      <h2>🔒 Security Configuration</h2>
+
+      <h3>SSH Key Authentication</h3>
+      <pre><code># Generate SSH key pair
+ssh-keygen -t ed25519 -C "your-email@example.com"
+
+# Add public key to authorized_keys
+cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys</code></pre>
+
+      <h3>PAM Authentication (Linux)</h3>
+      <pre><code># Install PAM module
+sudo apt-get install libpam0g-dev
+
+# Configure PAM (see authentication.md for details)</code></pre>
+    </section>
+
+    <section class="mobile-access">
+      <h2>📱 Mobile Access</h2>
+
+      <h3>iOS App</h3>
+      <ol>
+        <li>Download TunnelForge from the App Store</li>
+        <li>Configure server connection settings</li>
+        <li>Connect to your TunnelForge server</li>
+      </ol>
+
+      <h3>Android/Web</h3>
+      <ul>
+        <li>Use any modern web browser</li>
+        <li>Navigate to your server's web interface</li>
+        <li>Mobile-optimized interface included</li>
+      </ul>
+    </section>
+
+    <section class="troubleshooting">
+      <h2>🐛 Troubleshooting</h2>
+
+      <h3>Common Issues</h3>
+
+      <div class="issue">
+        <h4>Port Already in Use</h4>
+        <pre><code># Check what's using port 4020
+sudo lsof -i :4020
+
+# Kill the process or change port in config</code></pre>
+      </div>
+
+      <div class="issue">
+        <h4>Permission Denied</h4>
+        <pre><code># Fix SSH key permissions
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub</code></pre>
+      </div>
+
+      <div class="issue">
+        <h4>Node.js Version Issues</h4>
+        <pre><code># Check Node.js version
+node --version
+
+# Update if needed (requires v20+)
+nvm install 20
+nvm use 20</code></pre>
+      </div>
+
+      <h3>Getting Help</h3>
+      <ul>
+        <li>Check the <a href="/troubleshooting">Troubleshooting Guide</a></li>
+        <li>
+          Search <a
+            href="https://github.com/ferg-cod3s/tunnelforge/issues"
+            target="_blank">GitHub Issues</a
+          >
+        </li>
+        <li>
+          Join our <a href="https://discord.gg/3Ub3EUwrcR" target="_blank"
+            >Discord Community</a
+          >
+        </li>
+      </ul>
+    </section>
+
+    <section class="updates">
+      <h2>🔄 Updates</h2>
+
+      <h3>macOS</h3>
+      <ul>
+        <li>Automatic updates via Sparkle framework</li>
+        <li>Manual updates from GitHub releases</li>
+      </ul>
+
+      <h3>Linux</h3>
+      <pre><code># Update NPM package
+sudo npm update -g tunnelforge
+
+# Update from source
+git pull origin main
+npm install
+npm run build</code></pre>
+    </section>
+
+    <div class="next-steps">
+      <h2>Next Steps</h2>
+      <p>
+        Check out the <a href="/getting-started">Getting Started Guide</a> to create
+        your first terminal session!
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .content section {
+    margin-bottom: 3rem;
+  }
+
+  .content h2 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .content h3 {
+    color: #374151;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  .content h4 {
+    color: #4b5563;
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .method {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .method h3 {
+    margin-top: 0;
+    color: #1f2937;
+  }
+
+  .issue {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .issue h4 {
+    margin-top: 0;
+    color: #991b1b;
+  }
+
+  pre {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  code {
+    background-color: #f3f4f6;
+    color: #dc2626;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+      "Courier New", monospace;
+    font-size: 0.875em;
+  }
+
+  pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  ul,
+  ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .next-steps {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .next-steps h2 {
+    margin-top: 0;
+    color: #1e40af;
+  }
+
+  .next-steps p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #1e40af;
+  }
+</style>

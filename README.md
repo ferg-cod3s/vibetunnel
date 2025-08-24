@@ -1,17 +1,17 @@
-<!-- Generated: 2025-07-28 12:35:00 UTC -->
+<!-- Generated: 2025-01-27 12:35:00 UTC -->
 <p align="center">
   <img src="assets/banner.png" alt="TunnelForge Banner" />
 </p>
 
 <p align="center">
-  <strong>Turn any browser into your Mac terminal.</strong><br>
+  <strong>Turn any browser into your terminal.</strong><br>
   TunnelForge proxies your terminals right into the browser, so you can code anywhere.
 </p>
 
 <p align="center">
-  <a href="https://github.com/johnferguson/tunnelforge/releases/latest"><img src="https://img.shields.io/badge/Download-macOS-blue" alt="Download"></a>
-  <a href="https://www.npmjs.com/package/tunnelforge"><img src="https://img.shields.io/npm/v/tunnelforge.svg" alt="npm version"></a>
-  <a href="https://formulae.brew.sh/cask/tunnelforge"><img src="https://img.shields.io/homebrew/cask/v/tunnelforge" alt="Homebrew"></a>
+  <a href="https://github.com/ferg-cod3s/tunnelforge/releases/latest"><img src="https://img.shields.io/badge/Download-macOS-blue" alt="Download"></a>
+  <a href="https://www.npmjs.com/package/tunnelforge"><img src="https://img.shields.io/badge/npm-Package-orange" alt="npm Package"></a>
+  <a href="https://formulae.brew.sh/cask/tunnelforge"><img src="https://img.shields.io/badge/homebrew-Cask-red" alt="Homebrew"></a>
   <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go" alt="Go 1.21+"></a>
   <a href="https://bun.sh"><img src="https://img.shields.io/badge/Bun-1.0+-F472B6?logo=bun" alt="Bun 1.0+"></a>
   <a href="https://tauri.app"><img src="https://img.shields.io/badge/Tauri-v2-FFC131?logo=tauri" alt="Tauri v2"></a>
@@ -30,14 +30,17 @@
 
 <p align="center">
   <a href="https://docs.tunnelforge.sh">Documentation</a> •
-  <a href="https://github.com/johnferguson/tunnelforge/releases">Releases</a> •
+  <a href="https://github.com/ferg-cod3s/tunnelforge/releases">Releases</a> •
   <a href="https://discord.gg/3Ub3EUwrcR">Discord</a> •
   <a href="https://twitter.com/tunnelforge">Twitter</a>
 </p>
 
+> **🔄 Refactoring in Progress**: TunnelForge is currently being refactored from the legacy Node.js + SwiftUI architecture to a modern Go + Bun + Tauri architecture. The current app still works, but a major upgrade is underway!
+
 ## Table of Contents
 
 - [Why TunnelForge?](#why-tunnelforge)
+- [Current Status](#current-status)
 - [Installation Options](#installation-options)
 - [Quick Start](#quick-start)
 - [Features](#features)
@@ -60,18 +63,42 @@
 
 Ever wanted to check on your AI agents while you're away? Need to monitor that long-running build from your phone? Want to share a terminal session with a colleague without complex SSH setups? TunnelForge makes it happen with zero friction.
 
+## Current Status
+
+**🔄 Refactoring in Progress**: TunnelForge is actively being refactored to improve performance and add cross-platform support.
+
+**Current Implementation (Legacy)**:
+- Node.js server with Express routing (port 4020)
+- SwiftUI macOS app with menu bar integration
+- Stable, working terminal sharing functionality
+
+**Target Implementation (In Development)**:
+- Go server backend for high-performance terminal management (port 4021)
+- Bun web server for modern TypeScript frontend (port 3001)
+- Tauri v2 desktop apps for cross-platform support (macOS, Windows, Linux)
+
+**Migration Phases**:
+1. ✅ **Phase 1: Go Server** - In development
+2. 🔄 **Phase 2: Bun Web Server** - Next
+3. 📋 **Phase 3: Tauri Desktop Apps** - Planned
+4. 📋 **Phase 4: Legacy Cleanup** - Planned
+
 ## Installation Options
 
-### Desktop App (Cross-Platform)
-The Tauri-based desktop app provides native performance across all platforms:
-- **macOS**: Menu bar integration, native notifications
-- **Linux**: System tray support, lightweight (~10-15MB)
-- **Windows**: Native Windows integration (coming soon)
+### Current: macOS App (Native SwiftUI)
+The current SwiftUI macOS app provides a stable experience on macOS:
+- **Menu Bar Integration**: Quick access from the system menu bar
+- **Native Notifications**: System-level notifications and alerts
+- **Auto-Start**: Automatic server management and lifecycle
+- **System Integration**: Native file access and permissions
 
-[Download the latest release](https://github.com/johnferguson/tunnelforge/releases/latest) for your platform.
+[Download the latest release](https://github.com/ferg-cod3s/tunnelforge/releases/latest) for macOS.
 
-### Legacy macOS App (Deprecated)
-The Swift-based Mac app is being phased out in favor of the unified Tauri desktop app. Existing users should migrate to the new desktop app for better performance and smaller bundle size.
+### Future: Cross-Platform Desktop Apps (Tauri v2)
+Coming soon - cross-platform desktop applications:
+- **macOS**: Native integration with menu bar and notifications
+- **Windows**: Native Windows integration and system tray
+- **Linux**: System tray support and lightweight footprint
 
 ### npm Package (Servers & CI/CD)
 For Linux servers, Docker containers, or headless systems, install via npm:
@@ -85,15 +112,15 @@ This provides the full TunnelForge server with web UI for terminal environments.
 ## Quick Start
 
 ### Requirements
-
-**macOS App**: Requires an Apple Silicon Mac (M1+). Intel Macs are not supported for the native app.
-
-**npm Package**: Works on any system with Node.js 20+, including Intel Macs and Linux. Windows is not yet supported ([#252](https://github.com/johnferguson/tunnelforge/issues/252)).
+- **macOS**: macOS 14.0+ (Sonoma or later), Apple Silicon Mac (M1+)
+- **Linux**: Node.js 20+ with build tools (current) / Go 1.21+ (future)
+- **Browser**: Modern browser with WebSocket support
+- **Network**: Local network access (localhost:4020 for current, 3001 for future)
 
 ### 1. Download & Install
 
 #### Option 1: Direct Download
-[Download TunnelForge](https://github.com/johnferguson/tunnelforge/releases/latest) and drag it to your Applications folder.
+[Download TunnelForge](https://github.com/ferg-cod3s/tunnelforge/releases/latest) and drag it to your Applications folder.
 
 #### Option 2: Homebrew
 ```bash
@@ -165,6 +192,8 @@ Visit [http://localhost:4020](http://localhost:4020) to see all your terminal se
 
 ## Features
 
+### Current Features (Available Now)
+
 - **🌐 Browser-Based Access** - Control your Mac terminal from any device with a web browser
 - **🚀 Zero Configuration** - No SSH keys, no port forwarding, no complexity
 - **🤖 AI Agent Friendly** - Perfect for monitoring Claude Code, ChatGPT, or any terminal-based AI tools
@@ -178,31 +207,76 @@ Visit [http://localhost:4020](http://localhost:4020) to see all your terminal se
 - **🍎 Apple Silicon Native** - Optimized for Apple Silicon (M1+) Macs with ARM64-only binaries
 - **🐚 Shell Alias Support** - Your custom aliases and shell functions work automatically
 
+### Coming Soon (Target Architecture)
+
+- **🚀 Blazing Fast Performance** - Go server with <1ms response times and 1000+ concurrent connections
+- **🌍 Cross-Platform Support** - Native desktop apps for macOS, Windows, and Linux
+- **📦 Smaller Bundle Size** - Tauri apps 85% smaller than Electron alternatives
+- **⚡ Modern Runtime** - Bun for faster startup and better TypeScript support
+- **🔧 Enhanced PTY Management** - Native Go PTY handling with creack/pty
+- **📱 Improved Mobile Experience** - Better iOS app with enhanced WebSocket handling
+
 > **Note**: The iOS app is still work in progress and not recommended for production use yet.
 
 ## Architecture
 
-TunnelForge uses a modern, performance-focused architecture:
+> **🔄 Refactoring in Progress**: TunnelForge is being refactored from the current Node.js + SwiftUI architecture to a modern Go + Bun + Tauri architecture for better performance and cross-platform support.
 
-### Core Components
+### Current Architecture (Legacy - Being Replaced)
 
-1. **Desktop App (Tauri v2)** - Cross-platform desktop application
+**Core Components**:
+
+1. **macOS App (SwiftUI)** - Native macOS application
+   - Built with SwiftUI for native macOS performance and integration
+   - Menu bar integration with system tray and notifications
+   - Automatic server lifecycle management
+   - Native file system access and permissions
+
+2. **Node.js Server** - High-performance backend server
+   - Written in TypeScript with Express for robust HTTP handling
+   - WebSocket-based real-time communication
+   - Built-in session management and event broadcasting
+   - Native terminal emulation via node-pty
+
+3. **Web Frontend** - Modern responsive interface
+   - Lit components for lightweight, fast UI
+   - xterm.js for terminal rendering
+   - Real-time session updates via WebSocket
+   - Progressive Web App capabilities
+
+4. **iOS Companion App** - Mobile terminal access
+   - SwiftUI-based mobile interface
+   - WebSocket client for remote terminal access
+   - Optimized for touch and mobile workflows
+
+**Current Architecture Benefits**:
+- **Performance**: Node.js server with native PTY support for fast terminal operations
+- **Integration**: Native macOS app with system-level permissions and notifications
+- **Reliability**: Mature Node.js ecosystem with proven WebSocket and PTY libraries
+- **Maintainability**: Clear separation of concerns with well-defined interfaces
+- **Cross-platform**: Web interface works on any device with a modern browser
+
+### Target Architecture (In Development)
+
+**Core Components**:
+
+1. **Go Server Backend** - High-performance Go server
+   - Written in Go for excellent concurrency and low memory usage
+   - WebSocket-based real-time communication
+   - Built-in session persistence and event broadcasting
+   - Native terminal emulation via creack/pty
+
+2. **Bun Web Server** - Modern TypeScript-based web interface
+   - Uses Bun for superior startup time and performance
+   - Native TypeScript support without transpilation overhead
+   - API proxy to Go server backend
+   - Static file serving with caching
+
+3. **Tauri v2 Desktop Apps** - Cross-platform desktop applications
    - Built with Rust and Tauri v2 for native performance
    - ~10-15MB bundle size (vs 100MB+ with Electron)
    - Supports Mac, Linux, and Windows from single codebase
    - System tray integration and native notifications
-
-2. **Go Server** - High-performance backend server
-   - Written in Go for excellent concurrency and low memory usage
-   - WebSocket-based real-time communication
-   - Built-in session persistence and event broadcasting
-   - Native terminal emulation via PTY
-
-3. **Bun Runtime** - JavaScript/TypeScript execution
-   - Uses Bun for superior startup time and performance
-   - Native TypeScript support without transpilation overhead
-   - Smaller binaries and faster package installation
-   - Compatible with existing Node.js ecosystem
 
 4. **Web Frontend** - Modern responsive interface
    - Lit components for lightweight, fast UI
@@ -210,13 +284,34 @@ TunnelForge uses a modern, performance-focused architecture:
    - Real-time session updates via WebSocket
    - Progressive Web App capabilities
 
-### Architecture Benefits
-
+**Target Architecture Benefits**:
 - **Performance**: Go server + Bun runtime = blazing fast execution
 - **Size**: Tauri desktop app is 85% smaller than Electron alternatives
 - **Cross-platform**: Single codebase for Mac, Linux, and Windows
 - **Modern**: Latest tech stack with Tauri v2, Go 1.21+, and Bun 1.0+
 - **Maintainable**: Clear separation of concerns with well-defined interfaces
+
+### Migration Timeline
+
+**Phase 1: Go Server Development** ✅ (In Progress)
+- Implement Go server with PTY management
+- Add WebSocket communication
+- Implement session management
+
+**Phase 2: Bun Web Server** 🔄 (Next)
+- Create Bun server with API proxy
+- Migrate frontend to Bun runtime
+- Test integration with Go server
+
+**Phase 3: Tauri Desktop Apps** 📋 (Planned)
+- Implement Tauri v2 desktop applications
+- Add cross-platform support
+- Migrate from SwiftUI macOS app
+
+**Phase 4: Legacy Cleanup** 📋 (Planned)
+- Remove Node.js server code
+- Remove SwiftUI macOS app
+- Update all documentation and tooling
 
 ## Remote Access Options
 
@@ -339,7 +434,7 @@ git config tunnelforge.followWorktree
 # The config is managed by vt commands - manual editing not recommended
 ```
 
-For more advanced Git worktree workflows, see our [detailed worktree documentation](docs/worktree.md).
+For more advanced Git worktree workflows, see our [detailed worktree documentation](docs/git-worktree-follow-mode.md).
 
 ## Terminal Title Management
 
@@ -716,7 +811,7 @@ npm publish
 
 ```bash
 # Clone the repository
-git clone https://github.com/johnferguson/tunnelforge.git
+git clone https://github.com/ferg-cod3s/tunnelforge.git
 cd tunnelforge
 
 # Install Bun (if not already installed)
@@ -898,7 +993,7 @@ When using TunnelForge on mobile browsers (Safari, Chrome), pasting works differ
 
 #### Future: Hot Module Replacement
 
-For true hot module replacement without manual refresh, see our [Vite migration plan](docs/vite-plan.md) which would provide:
+For true hot module replacement without manual refresh, see our [Vite migration plan](../development/docs/VITE_MIGRATION.md) which would provide:
 - Instant updates without page refresh
 - Preserved application state during development
 - Sub-second feedback loops
@@ -1006,13 +1101,22 @@ TUNNELFORGE_LOG_LEVEL=silent vt npm test
 
 ## Documentation
 
+TunnelForge has two types of documentation:
+
+### 📚 Project Documentation (`docs/`)
+Developer and technical documentation:
 - [Keyboard Shortcuts](docs/keyboard-shortcuts.md) - Complete keyboard shortcut reference
-- [Quick Reference Card](docs/keyboard-shortcuts-quick-reference.md) - Printable shortcuts cheat sheet
 - [Technical Specification](docs/spec.md) - Detailed architecture and implementation
 - [Contributing Guide](docs/CONTRIBUTING.md) - Development setup and guidelines
-- [Architecture](docs/architecture.md) - System design overview
+- [Architecture](docs/ARCHITECTURE.md) - System design overview
 - [Build System](docs/build-system.md) - Build process details
 - [Push Notifications](docs/push-notification.md) - How web push notifications work
+- [Documentation Index](docs/INDEX.md) - Complete documentation overview
+
+### 🌐 Documentation Website (`documentation/`)
+Interactive user-facing documentation built with Astro:
+- [Documentation Site](../documentation/) - User guides and tutorials
+- [Documentation Development](../documentation/README.md) - How to contribute to the docs site
 
 ## macOS Permissions
 
@@ -1158,4 +1262,4 @@ TunnelForge is open source software licensed under the MIT License. See [LICENSE
 
 ---
 
-**Ready to vibe?** [Download TunnelForge](https://github.com/johnferguson/tunnelforge/releases/latest) and start tunneling!
+**Ready to vibe?** [Download TunnelForge](https://github.com/ferg-cod3s/tunnelforge/releases/latest) and start tunneling!

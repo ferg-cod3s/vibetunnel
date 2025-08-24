@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tauri API Debug</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #4f8ef7;
+            padding: 20px;
+        }
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+        }
+        button {
+            background: #4f8ef7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tauri API Debug</h1>
+    
+    <button onclick="checkTauri()">Check Tauri API</button>
+    <button onclick="checkWindow()">Check Window Object</button>
+    <button onclick="tryInvoke()">Try Invoke</button>
+    <button onclick="findTauriAnywhere()">Deep Search for Tauri</button>
+    
+    <h2>Output:</h2>
+    <pre id="output"></pre>
+    
+    <script>
+        function log(msg) {
+            document.getElementById('output').innerHTML += msg + '\n';
+        }
+        
+        function checkTauri() {
+            log('\n=== Checking Tauri API ===');
+            log('window.__TAURI__ exists: ' + (typeof window.__TAURI__ !== 'undefined'));
+            
+            if (window.__TAURI__) {
+                log('window.__TAURI__ keys: ' + Object.keys(window.__TAURI__).join(', '));
+                
+                if (window.__TAURI__.core) {
+                    log('window.__TAURI__.core exists: true');
+                    log('window.__TAURI__.core keys: ' + Object.keys(window.__TAURI__.core).join(', '));
+                    
+                    if (window.__TAURI__.core.invoke) {
+                        log('window.__TAURI__.core.invoke exists: true');
+                        log('Type of invoke: ' + typeof window.__TAURI__.core.invoke);
+                    }
+                }
+                
+                if (window.__TAURI__.tauri) {
+                    log('window.__TAURI__.tauri exists: true');
+                    log('window.__TAURI__.tauri keys: ' + Object.keys(window.__TAURI__.tauri).join(', '));
+                }
+                
+                if (window.__TAURI__.invoke) {
+                    log('window.__TAURI__.invoke exists: true');
+                    log('Type of invoke: ' + typeof window.__TAURI__.invoke);
+                }
+            }
+            
+            // Check old locations
+            log('\n--- Checking legacy locations ---');
+            log('window.tauri exists: ' + (typeof window.tauri !== 'undefined'));
+            log('window.__TAURI_IPC__ exists: ' + (typeof window.__TAURI_IPC__ !== 'undefined'));
+            log('window.__TAURI_INVOKE__ exists: ' + (typeof window.__TAURI_INVOKE__ !== 'undefined'));
+        }
+        
+        function checkWindow() {
+            log('\n=== All Window Properties ===');
+            const props = Object.keys(window).filter(key => 
+                key.includes('TAURI') || 
+                key.includes('tauri') || 
+                key.includes('invoke') ||
+                key.includes('ipc')
+            );
+            log('Filtered window properties: ' + props.join(', '));
+        }
+        
+        async function tryInvoke() {
+            log('\n=== Trying Different Invoke Methods ===');
+            
+            // Method 1: Direct from __TAURI__.core
+            try {
+                if (window.__TAURI__ && window.__TAURI__.core && window.__TAURI__.core.invoke) {
+                    const version = await window.__TAURI__.core.invoke('get_app_version');
+                    log('Method 1 SUCCESS - App version: ' + version);
+                } else {
+                    log('Method 1 FAILED - API not found at window.__TAURI__.core.invoke');
+                }
+            } catch (e) {
+                log('Method 1 ERROR: ' + e.message);
+            }
+            
+            // Method 2: Direct from __TAURI__
+            try {
+                if (window.__TAURI__ && window.__TAURI__.invoke) {
+                    const version = await window.__TAURI__.invoke('get_app_version');
+                    log('Method 2 SUCCESS - App version: ' + version);
+                } else {
+                    log('Method 2 FAILED - API not found at window.__TAURI__.invoke');
+                }
+            } catch (e) {
+                log('Method 2 ERROR: ' + e.message);
+            }
+            
+            // Method 3: From __TAURI__.tauri
+            try {
+                if (window.__TAURI__ && window.__TAURI__.tauri && window.__TAURI__.tauri.invoke) {
+                    const version = await window.__TAURI__.tauri.invoke('get_app_version');
+                    log('Method 3 SUCCESS - App version: ' + version);
+                } else {
+                    log('Method 3 FAILED - API not found at window.__TAURI__.tauri.invoke');
+                }
+            } catch (e) {
+                log('Method 3 ERROR: ' + e.message);
+            }
+            
+            // Method 4: Legacy window.__TAURI_INVOKE__
+            try {
+                if (window.__TAURI_INVOKE__) {
+                    const version = await window.__TAURI_INVOKE__('get_app_version');
+                    log('Method 4 SUCCESS - App version: ' + version);
+                } else {
+                    log('Method 4 FAILED - __TAURI_INVOKE__ not found');
+                }
+            } catch (e) {
+                log('Method 4 ERROR: ' + e.message);
+            }
+            
+            // Method 5: IPC method
+            try {
+                if (window.__TAURI_IPC__) {
+                    log('Method 5 - __TAURI_IPC__ exists, type: ' + typeof window.__TAURI_IPC__);
+                } else {
+                    log('Method 5 FAILED - __TAURI_IPC__ not found');
+                }
+            } catch (e) {
+                log('Method 5 ERROR: ' + e.message);
+            }
+        }
+        
+        function findTauriAnywhere() {
+            log('\n=== Deep Search for Tauri ===');
+            
+            function searchObject(obj, path = 'window', depth = 0) {
+                if (depth > 3) return; // Limit depth to prevent infinite recursion
+                
+                try {
+                    for (let key in obj) {
+                        if (key.toLowerCase().includes('tauri') || key.toLowerCase().includes('invoke')) {
+                            log(`Found at ${path}.${key}`);
+                            
+                            try {
+                                const value = obj[key];
+                                if (typeof value === 'object' && value !== null) {
+                                    log(`  -> Type: object, Keys: ${Object.keys(value).slice(0, 5).join(', ')}...`);
+                                } else {
+                                    log(`  -> Type: ${typeof value}`);
+                                }
+                            } catch (e) {
+                                log(`  -> Cannot access: ${e.message}`);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // Ignore errors when traversing
+                }
+            }
+            
+            searchObject(window);
+        }
+        
+        // Auto-run check on load
+        window.addEventListener('load', () => {
+            log('=== Page Loaded ===');
+            log('Document ready state: ' + document.readyState);
+            log('User Agent: ' + navigator.userAgent);
+            checkTauri();
+        });
+        
+        // Try again after a delay
+        setTimeout(() => {
+            log('\n=== After 1 second delay ===');
+            checkTauri();
+        }, 1000);
+    </script>
+</body>
+</html>

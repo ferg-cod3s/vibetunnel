@@ -36,6 +36,12 @@
   - WebSocket message batching
   - SwiftUI view optimization with LazyVStack
   - Connection pooling in server manager
+  - [x] **xterm.js performance improvements (COMPLETED)**
+    - [x] Added lazy loading for WebGL and Canvas addons
+    - [x] Optimized scrollback buffer (reduced from 10000 to 1000 lines default)
+    - [x] Implemented user preference system for scrollback size
+    - [x] Added performance monitoring and debug metrics
+    - [x] Hardware acceleration support preparation
 
 - [ ] **Complete end-to-end testing**
   - Full regression testing with Go server

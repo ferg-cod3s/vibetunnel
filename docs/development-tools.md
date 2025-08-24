@@ -1,4 +1,8 @@
-# Development Tools Setup
+# Development Tools
+
+> **🔄 Refactoring in Progress**: This document covers development tools for both the current Node.js + SwiftUI implementation and the target Go + Bun + Tauri architecture. Tool requirements will change as the refactoring progresses.
+
+## Overview
 
 Comprehensive guide for setting up and configuring development tools for TunnelForge across all platforms.
 

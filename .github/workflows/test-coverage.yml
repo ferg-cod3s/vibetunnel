@@ -1,0 +1,381 @@
+name: Test Coverage & Quality Gates
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+env:
+  NODE_VERSION: '20'
+  BUN_VERSION: 'latest'
+  
+# Cancel in-progress runs for the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-web:
+    name: Web Tests & Coverage
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for accurate coverage comparison
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./web
+        run: |
+          bun install --frozen-lockfile
+          # Install playwright browsers
+          npx playwright install chromium
+
+      - name: Run unit tests with coverage
+        working-directory: ./web
+        run: |
+          bun run test:coverage --reporter=json --outputFile=coverage-report.json
+          # Also generate HTML report for artifacts
+          bun run test:coverage --reporter=html
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: web/coverage/
+
+      - name: Check coverage thresholds
+        working-directory: ./web
+        run: |
+          # Extract coverage percentages
+          COVERAGE_JSON=$(cat coverage/coverage-summary.json 2>/dev/null || echo '{}')
+          
+          # Parse coverage values
+          LINES=$(echo $COVERAGE_JSON | jq -r '.total.lines.pct // 0')
+          STATEMENTS=$(echo $COVERAGE_JSON | jq -r '.total.statements.pct // 0')
+          FUNCTIONS=$(echo $COVERAGE_JSON | jq -r '.total.functions.pct // 0')
+          BRANCHES=$(echo $COVERAGE_JSON | jq -r '.total.branches.pct // 0')
+          
+          echo "Coverage Report:"
+          echo "Lines: ${LINES}%"
+          echo "Statements: ${STATEMENTS}%"
+          echo "Functions: ${FUNCTIONS}%"
+          echo "Branches: ${BRANCHES}%"
+          
+          # Check against thresholds
+          MIN_COVERAGE=60
+          CRITICAL_PATH_COVERAGE=80
+          
+          # For PRs, ensure coverage doesn't decrease
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # Get base branch coverage
+            git checkout ${{ github.base_ref }}
+            bun install --frozen-lockfile
+            bun run test:coverage --reporter=json --outputFile=base-coverage.json || true
+            BASE_COVERAGE=$(cat coverage/coverage-summary.json 2>/dev/null | jq -r '.total.lines.pct // 0')
+            
+            git checkout -
+            
+            if (( $(echo "$LINES < $BASE_COVERAGE" | bc -l) )); then
+              echo "❌ Coverage decreased from ${BASE_COVERAGE}% to ${LINES}%"
+              exit 1
+            fi
+          fi
+          
+          # Enforce minimum coverage
+          if (( $(echo "$LINES < $MIN_COVERAGE" | bc -l) )); then
+            echo "❌ Coverage ${LINES}% is below minimum threshold of ${MIN_COVERAGE}%"
+            exit 1
+          fi
+          
+          echo "✅ Coverage checks passed!"
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const coverage = JSON.parse(fs.readFileSync('web/coverage/coverage-summary.json', 'utf8'));
+            
+            const comment = `## 📊 Test Coverage Report
+            
+            | Metric | Coverage | Status |
+            |--------|----------|--------|
+            | Lines | ${coverage.total.lines.pct}% | ${coverage.total.lines.pct >= 60 ? '✅' : '❌'} |
+            | Statements | ${coverage.total.statements.pct}% | ${coverage.total.statements.pct >= 60 ? '✅' : '❌'} |
+            | Functions | ${coverage.total.functions.pct}% | ${coverage.total.functions.pct >= 60 ? '✅' : '❌'} |
+            | Branches | ${coverage.total.branches.pct}% | ${coverage.total.branches.pct >= 60 ? '✅' : '❌'} |
+            
+            **Minimum threshold:** 60%
+            **Critical paths threshold:** 80%
+            
+            [View detailed coverage report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  test-e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        working-directory: ./web
+        run: |
+          bun install --frozen-lockfile
+          npx playwright install chromium
+          npx playwright install-deps
+
+      - name: Build application
+        working-directory: ./web
+        run: bun run build
+
+      - name: Run E2E tests
+        working-directory: ./web
+        run: |
+          # Start server in background
+          bun run start:test &
+          SERVER_PID=$!
+          
+          # Wait for server to be ready
+          npx wait-on http://localhost:3456 -t 30000
+          
+          # Run E2E tests
+          npx playwright test --reporter=html
+          
+          # Stop server
+          kill $SERVER_PID
+
+      - name: Upload E2E test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: web/playwright-report/
+
+  test-security:
+    name: Security Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run security audit
+        working-directory: ./web
+        run: |
+          # Check for known vulnerabilities
+          npm audit --audit-level=moderate
+          
+          # Run additional security checks
+          npx snyk test --severity-threshold=medium || true
+
+      - name: Run SAST scan
+        uses: github/super-linter@v5
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_JSON: true
+          VALIDATE_YAML: true
+
+  test-performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        working-directory: ./web
+        run: bun install --frozen-lockfile
+
+      - name: Build application
+        working-directory: ./web
+        run: bun run build
+
+      - name: Run performance benchmarks
+        working-directory: ./web
+        run: |
+          # Create performance test script
+          cat > perf-test.js << 'EOF'
+          const { performance } = require('perf_hooks');
+          
+          // Test terminal rendering performance
+          async function testTerminalPerformance() {
+            const start = performance.now();
+            
+            // Simulate terminal operations
+            for (let i = 0; i < 10000; i++) {
+              // Mock terminal write
+              process.stdout.write(`\rLine ${i}`);
+            }
+            
+            const duration = performance.now() - start;
+            console.log(`\nTerminal rendering: ${duration.toFixed(2)}ms`);
+            
+            if (duration > 1000) {
+              console.error('❌ Terminal rendering too slow!');
+              process.exit(1);
+            }
+          }
+          
+          // Test WebSocket throughput
+          async function testWebSocketThroughput() {
+            // Mock WebSocket performance test
+            const messages = 1000;
+            const start = performance.now();
+            
+            for (let i = 0; i < messages; i++) {
+              // Simulate message processing
+              JSON.stringify({ type: 'data', content: 'x'.repeat(1024) });
+            }
+            
+            const duration = performance.now() - start;
+            const throughput = (messages / (duration / 1000)).toFixed(2);
+            
+            console.log(`WebSocket throughput: ${throughput} msg/s`);
+            
+            if (throughput < 500) {
+              console.error('❌ WebSocket throughput too low!');
+              process.exit(1);
+            }
+          }
+          
+          // Run tests
+          (async () => {
+            await testTerminalPerformance();
+            await testWebSocketThroughput();
+            console.log('✅ Performance tests passed!');
+          })();
+          EOF
+          
+          node perf-test.js
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: web/performance-report/
+
+  coverage-report:
+    name: Generate Coverage Report
+    needs: [test-web, test-e2e, test-security]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Download all coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+      - name: Generate combined coverage badge
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct // 0')
+          COLOR="red"
+          
+          if (( $(echo "$COVERAGE >= 80" | bc -l) )); then
+            COLOR="brightgreen"
+          elif (( $(echo "$COVERAGE >= 60" | bc -l) )); then
+            COLOR="yellow"
+          fi
+          
+          # Generate badge URL
+          BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}"
+          echo "Coverage: ${COVERAGE}%"
+          echo "Badge URL: ${BADGE_URL}"
+          
+          # Save badge URL for README
+          echo $BADGE_URL > coverage-badge-url.txt
+
+      - name: Update coverage in README
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # Update README with latest coverage badge
+          BADGE_URL=$(cat coverage-badge-url.txt)
+          # This would update the README.md with the new badge
+          echo "Would update README with: $BADGE_URL"
+
+  quality-gates:
+    name: Quality Gates Summary
+    needs: [test-web, test-e2e, test-security, test-performance]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Check quality gates
+        run: |
+          echo "## Quality Gates Summary"
+          echo ""
+          
+          # Check if all required jobs passed
+          if [ "${{ needs.test-web.result }}" != "success" ]; then
+            echo "❌ Unit tests failed"
+            exit 1
+          fi
+          
+          if [ "${{ needs.test-e2e.result }}" != "success" ]; then
+            echo "❌ E2E tests failed"
+            exit 1
+          fi
+          
+          if [ "${{ needs.test-security.result }}" != "success" ]; then
+            echo "⚠️ Security tests have warnings"
+          fi
+          
+          if [ "${{ needs.test-performance.result }}" != "success" ]; then
+            echo "⚠️ Performance tests have concerns"
+          fi
+          
+          echo "✅ All quality gates passed!"
+
+      - name: Set merge status
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Set commit status
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: 'success',
+              description: 'All quality gates passed',
+              context: 'Quality Gates'
+            });

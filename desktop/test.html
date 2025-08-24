@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tauri API Test</title>
+</head>
+<body>
+    <h1>Tauri API Test</h1>
+    <button onclick="testInvoke()">Test Invoke</button>
+    <pre id="output"></pre>
+    
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(msg) {
+            output.textContent += msg + '\n';
+            console.log(msg);
+        }
+        
+        // Check what's available
+        log('Window properties: ' + Object.keys(window).filter(k => k.includes('TAURI')).join(', '));
+        
+        // Check __TAURI__
+        if (window.__TAURI__) {
+            log('__TAURI__ exists');
+            log('__TAURI__ keys: ' + Object.keys(window.__TAURI__).join(', '));
+            
+            if (window.__TAURI__.core) {
+                log('__TAURI__.core exists');
+                log('__TAURI__.core keys: ' + Object.keys(window.__TAURI__.core).join(', '));
+            }
+            
+            if (window.__TAURI__.tauri) {
+                log('__TAURI__.tauri exists');
+                log('__TAURI__.tauri keys: ' + Object.keys(window.__TAURI__.tauri).join(', '));
+            }
+        }
+        
+        // Check __TAURI_INTERNALS__
+        if (window.__TAURI_INTERNALS__) {
+            log('__TAURI_INTERNALS__ exists');
+            log('__TAURI_INTERNALS__ keys: ' + Object.keys(window.__TAURI_INTERNALS__).join(', '));
+        }
+        
+        async function testInvoke() {
+            try {
+                // Try different methods
+                let invoke;
+                
+                // Method 1: __TAURI__.core
+                if (window.__TAURI__?.core?.invoke) {
+                    invoke = window.__TAURI__.core.invoke;
+                    log('Using __TAURI__.core.invoke');
+                }
+                // Method 2: __TAURI__.tauri
+                else if (window.__TAURI__?.tauri?.invoke) {
+                    invoke = window.__TAURI__.tauri.invoke;
+                    log('Using __TAURI__.tauri.invoke');
+                }
+                // Method 3: __TAURI__.invoke
+                else if (window.__TAURI__?.invoke) {
+                    invoke = window.__TAURI__.invoke;
+                    log('Using __TAURI__.invoke');
+                }
+                
+                if (invoke) {
+                    const version = await invoke('get_app_version');
+                    log('App version: ' + version);
+                } else {
+                    log('No invoke function found!');
+                }
+            } catch (error) {
+                log('Error: ' + error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -31,7 +31,7 @@ export class TerminalIcon extends LitElement {
   render() {
     return html`
       <img
-        src="/apple-touch-icon.png"
+        src="/tunnelforge-icon.svg?v=1.0.0"
         alt="TunnelForge"
         style="width: ${this.size}px; height: ${this.size}px"
         class="terminal-icon"

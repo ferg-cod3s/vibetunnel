@@ -2,8 +2,10 @@ package static
 
 import (
 	"embed"
+	"io"
 	"io/fs"
 	"net/http"
+	"strings"
 )
 
 //go:embed public/*
@@ -25,5 +27,41 @@ func GetStaticHandler() (http.Handler, error) {
 	if err != nil {
 		return nil, err
 	}
-	return http.FileServer(fileSystem), nil
+	
+	// Get the embedded public FS directly for special handling
+	publicFS, err := fs.Sub(staticFiles, "public")
+	if err != nil {
+		return nil, err
+	}
+	
+	// Create custom handler
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Handle root path specially
+		if r.URL.Path == "/" {
+			// Open index.html directly from embedded FS
+			file, err := publicFS.Open("index.html")
+			if err == nil {
+				defer file.Close()
+				
+				// Get file info for headers
+				stat, err := file.Stat()
+				if err == nil {
+					// Set content type
+					w.Header().Set("Content-Type", "text/html; charset=utf-8")
+					// Serve the file
+					http.ServeContent(w, r, "index.html", stat.ModTime(), file.(io.ReadSeeker))
+					return
+				}
+			}
+		}
+		
+		// For all other paths, use the regular file server
+		// But strip any trailing slashes to avoid directory listing redirects
+		path := strings.TrimSuffix(r.URL.Path, "/")
+		if path != r.URL.Path {
+			r.URL.Path = path
+		}
+		
+		http.FileServer(fileSystem).ServeHTTP(w, r)
+	}), nil
 }

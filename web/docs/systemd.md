@@ -380,4 +380,4 @@ A: Yes, each user can install their own service. Just ensure they use different 
 For issues specific to the systemd service:
 1. Check the logs with `journalctl --user -u tunnelforge`
 2. Verify the installation with `tunnelforge systemd status`
-3. Report issues at https://github.com/amantus-ai/tunnelforge/issues
+3. Report issues at https://github.com/ferg-cod3s/tunnelforge/issues

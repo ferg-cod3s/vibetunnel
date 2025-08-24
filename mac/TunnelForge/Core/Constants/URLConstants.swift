@@ -10,8 +10,8 @@ enum URLConstants {
     // MARK: - Main Website & Social
 
     static let website = "https://vibetunnel.sh"
-    static let githubRepo = "https://github.com/amantus-ai/vibetunnel"
-    static let githubIssues = "https://github.com/amantus-ai/vibetunnel/issues"
+    static let githubRepo = "https://github.com/ferg-cod3s/tunnelforge"
+static let githubIssues = "https://github.com/ferg-cod3s/tunnelforge/issues"
     static let twitter = "https://x.com/TunnelForge"
 
     // MARK: - Contributors

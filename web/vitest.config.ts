@@ -53,13 +53,13 @@ export default defineConfig(({ mode }) => {
       reporters,
       poolOptions: {
         threads: {
-          // Use available CPU cores for parallel execution
-          maxThreads: undefined,
+          // Limit parallel execution to prevent system overload
+          maxThreads: 4, // Cap at 4 threads
           minThreads: 1,
         },
         forks: {
-          // Allow multiple forks for better test isolation
-          maxForks: undefined,
+          // Limit forks to prevent memory exhaustion
+          maxForks: 2, // Cap at 2 forks
           minForks: 1,
         }
       },
@@ -78,7 +78,8 @@ export default defineConfig(({ mode }) => {
           '**/*.spec.ts',
         ],
         include: coverageInclude,
-        all: true,
+        all: false, // Don't include untested files to reduce memory usage
+        skipFull: true, // Skip files with 100% coverage
         reportsDirectory: coverageDir,
         // No thresholds - just report coverage
       },

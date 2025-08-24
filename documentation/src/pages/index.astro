@@ -1,0 +1,239 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SearchBar from "../components/SearchBar.svelte";
+import FeatureCard from "../components/FeatureCard.svelte";
+---
+
+<Layout title="TunnelForge Documentation">
+  <main class="hero">
+    <div class="container">
+      <h1>TunnelForge Documentation</h1>
+      <p class="hero-subtitle">
+        Welcome to the official TunnelForge documentation! A powerful terminal
+        sharing server with a modern web interface, supporting macOS, Linux, and
+        headless environments.
+      </p>
+
+      <div class="hero-actions">
+        <a href="/installation" class="btn btn-primary">Get Started</a>
+        <a
+          href="https://github.com/ferg-cod3s/tunnelforge"
+          class="btn btn-secondary"
+          target="_blank"
+        >
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <section class="features">
+    <div class="container">
+      <h2>🚀 Quick Start</h2>
+      <div class="feature-grid">
+        <FeatureCard
+          title="Installation Guide"
+          description="Get TunnelForge running on your system"
+          href="/installation"
+          icon="📥"
+        />
+        <FeatureCard
+          title="Getting Started"
+          description="Your first terminal session"
+          href="/getting-started"
+          icon="🎯"
+        />
+        <FeatureCard
+          title="Setup GitHub Pages"
+          description="Deploy documentation automatically"
+          href="/setup-github-pages"
+          icon="🌐"
+        />
+        <FeatureCard
+          title="CLI Reference"
+          description="Command-line interface documentation"
+          href="/cli-reference"
+          icon="⌨️"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h2>📚 Core Features</h2>
+      <div class="feature-grid">
+        <FeatureCard
+          title="Terminal Sharing"
+          description="Share terminal sessions with team members"
+          icon="🖥️"
+        />
+        <FeatureCard
+          title="Web Interface"
+          description="Access terminals from any browser"
+          icon="🌐"
+        />
+        <FeatureCard
+          title="Session Management"
+          description="Create, manage, and monitor terminal sessions"
+          icon="📋"
+        />
+        <FeatureCard
+          title="Cross-Platform"
+          description="Works on macOS, Linux, and headless servers"
+          icon="🔄"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="search-section">
+    <div class="container">
+      <h2>🔍 Search Documentation</h2>
+      <SearchBar client:load />
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <h2>Ready to get started?</h2>
+      <p>
+        Check out the Installation Guide to get TunnelForge running on your
+        system!
+      </p>
+      <a href="/installation" class="btn btn-primary">Install TunnelForge</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background-color: #f59e0b;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: #d97706;
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .features {
+    padding: 4rem 0;
+  }
+
+  .features h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2rem;
+    color: #1f2937;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .search-section {
+    background-color: #f9fafb;
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .search-section h2 {
+    margin-bottom: 2rem;
+    color: #1f2937;
+  }
+
+  .cta {
+    background-color: #1f2937;
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .cta h2 {
+    margin-bottom: 1rem;
+  }
+
+  .cta p {
+    margin-bottom: 2rem;
+    opacity: 0.9;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .feature-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -120,7 +120,7 @@ if [ -z "$version_content" ]; then
     cat << EOF
 <h2>TunnelForge $VERSION</h2>
 <p>Latest version of TunnelForge with new features and improvements.</p>
-<p><a href="https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md">View full changelog</a></p>
+<p><a href="https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md">View full changelog</a></p>
 EOF
     exit 0
 fi
@@ -156,4 +156,4 @@ if [ "$in_list" = true ]; then
 fi
 
 # Add link to full changelog
-echo "<p><a href=\"https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md#${VERSION//./}-$(date +%Y%m%d)\">View full changelog</a></p>"
+echo "<p><a href=\"https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md#${VERSION//./}-$(date +%Y%m%d)\">View full changelog</a></p>"

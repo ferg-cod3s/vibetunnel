@@ -1,0 +1,228 @@
+/* TunnelForge Brand Colors */
+:root {
+  /* Primary Brand Colors - Fire/Forge Theme */
+  --tf-primary-gold: #FFD700;
+  --tf-primary-orange: #FF8C00;
+  --tf-primary-flame: #FF6B35;
+  --tf-primary-ember: #CC3300;
+  
+  /* Terminal Colors */
+  --tf-terminal-green: #00FF41;
+  --tf-terminal-green-dim: rgba(0, 255, 65, 0.6);
+  --tf-terminal-green-faint: rgba(0, 255, 65, 0.3);
+  
+  /* Background Colors - Dark Theme */
+  --tf-bg-dark: #1A1A1A;
+  --tf-bg-medium: #2A2A2A;
+  --tf-bg-light: #3A3A3A;
+  --tf-bg-lighter: #4A4A4A;
+  
+  /* Metal/UI Colors */
+  --tf-metal-dark: #2A2A2A;
+  --tf-metal-medium: #4A4A4A;
+  --tf-metal-light: #6A6A6A;
+  --tf-metal-bright: #8A8A8A;
+  --tf-metal-highlight: #9A9A9A;
+  
+  /* Accent Colors */
+  --tf-accent-wood: #8B4513;
+  --tf-accent-spark: #FFD700;
+  --tf-accent-danger: #FF6B60;
+  
+  /* Functional Colors */
+  --tf-success: var(--tf-terminal-green);
+  --tf-warning: var(--tf-primary-gold);
+  --tf-error: var(--tf-accent-danger);
+  --tf-info: var(--tf-primary-orange);
+  
+  /* Text Colors */
+  --tf-text-primary: #FFFFFF;
+  --tf-text-secondary: #CCCCCC;
+  --tf-text-muted: #999999;
+  --tf-text-dim: #666666;
+  
+  /* Border Colors */
+  --tf-border-bright: var(--tf-terminal-green);
+  --tf-border-medium: var(--tf-metal-light);
+  --tf-border-subtle: var(--tf-metal-medium);
+  
+  /* Interactive States */
+  --tf-hover-bg: rgba(255, 215, 0, 0.1);
+  --tf-active-bg: rgba(255, 215, 0, 0.2);
+  --tf-focus-ring: var(--tf-terminal-green);
+  
+  /* Shadows and Glows */
+  --tf-glow-terminal: 0 0 8px rgba(0, 255, 65, 0.5);
+  --tf-glow-fire: 0 0 12px rgba(255, 140, 0, 0.4);
+  --tf-shadow-dark: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --tf-shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark theme overrides for TunnelForge */
+[data-theme="dark"] {
+  --color-bg-primary: var(--tf-bg-dark);
+  --color-bg-secondary: var(--tf-bg-medium);
+  --color-bg-tertiary: var(--tf-bg-light);
+  
+  --color-text-primary: var(--tf-text-primary);
+  --color-text-secondary: var(--tf-text-secondary);
+  --color-text-muted: var(--tf-text-muted);
+  
+  --color-accent-primary: var(--tf-primary-gold);
+  --color-accent-secondary: var(--tf-terminal-green);
+  
+  --color-border-primary: var(--tf-border-medium);
+  --color-border-secondary: var(--tf-border-subtle);
+}
+
+/* Terminal-specific theme */
+.terminal {
+  background: var(--tf-bg-dark);
+  color: var(--tf-terminal-green);
+  border: 2px solid var(--tf-terminal-green);
+  box-shadow: var(--tf-glow-terminal);
+}
+
+.terminal-titlebar {
+  background: var(--tf-terminal-green-faint);
+  border-bottom: 1px solid var(--tf-terminal-green-dim);
+}
+
+/* Button styles with TunnelForge theme */
+.btn-primary {
+  background: linear-gradient(135deg, var(--tf-primary-gold), var(--tf-primary-orange));
+  color: var(--tf-bg-dark);
+  border: 1px solid var(--tf-primary-flame);
+  box-shadow: var(--tf-glow-fire);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--tf-primary-orange), var(--tf-primary-flame));
+  box-shadow: 0 0 16px rgba(255, 140, 0, 0.6);
+}
+
+.btn-secondary {
+  background: var(--tf-metal-medium);
+  color: var(--tf-text-primary);
+  border: 1px solid var(--tf-metal-light);
+}
+
+.btn-secondary:hover {
+  background: var(--tf-metal-light);
+  box-shadow: var(--tf-shadow-medium);
+}
+
+/* Session card styling */
+.session-card {
+  background: var(--tf-bg-medium);
+  border: 1px solid var(--tf-metal-medium);
+  border-radius: 8px;
+  box-shadow: var(--tf-shadow-dark);
+}
+
+.session-card:hover {
+  border-color: var(--tf-terminal-green);
+  box-shadow: var(--tf-glow-terminal), var(--tf-shadow-dark);
+}
+
+.session-card.active {
+  border-color: var(--tf-primary-gold);
+  box-shadow: var(--tf-glow-fire), var(--tf-shadow-dark);
+}
+
+/* Status indicators */
+.status-running {
+  color: var(--tf-success);
+}
+
+.status-stopped {
+  color: var(--tf-text-muted);
+}
+
+.status-error {
+  color: var(--tf-error);
+}
+
+/* Navigation and header */
+.app-header {
+  background: var(--tf-bg-medium);
+  border-bottom: 1px solid var(--tf-metal-medium);
+  box-shadow: var(--tf-shadow-medium);
+}
+
+.nav-link {
+  color: var(--tf-text-secondary);
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--tf-primary-gold);
+}
+
+.nav-link.active {
+  color: var(--tf-terminal-green);
+}
+
+/* Focus and selection states */
+*:focus {
+  outline: 2px solid var(--tf-focus-ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--tf-primary-gold);
+  color: var(--tf-bg-dark);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tf-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tf-metal-medium);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tf-metal-light);
+}
+
+/* Loading and progress indicators */
+.loading-spinner {
+  border: 2px solid var(--tf-metal-medium);
+  border-top: 2px solid var(--tf-primary-gold);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Toast notifications */
+.toast {
+  background: var(--tf-bg-medium);
+  border: 1px solid var(--tf-metal-medium);
+  box-shadow: var(--tf-shadow-dark);
+}
+
+.toast.success {
+  border-left: 4px solid var(--tf-success);
+}
+
+.toast.warning {
+  border-left: 4px solid var(--tf-warning);
+}
+
+.toast.error {
+  border-left: 4px solid var(--tf-error);
+}
+
+.toast.info {
+  border-left: 4px solid var(--tf-info);
+}

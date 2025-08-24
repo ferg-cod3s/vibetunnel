@@ -1,15 +1,24 @@
-<!-- Generated: 2025-07-18 11:30:00 UTC -->
+<!-- Generated: 2025-01-27 11:30:00 UTC -->
 # TunnelForge Development Guide
 
 ## Overview
 
-TunnelForge follows modern Swift 6 and TypeScript development practices with a focus on async/await patterns, protocol-oriented design, and reactive UI architectures. The codebase is organized into three main components: macOS app (Swift/SwiftUI), iOS app (Swift/SwiftUI), and web dashboard (TypeScript/Lit).
+> **🔄 Refactoring in Progress**: TunnelForge is currently being refactored from the legacy Node.js + SwiftUI architecture to a modern Go + Bun + Tauri architecture. This guide covers both current and target development practices.
+
+### Current Architecture (Legacy - Being Replaced)
+TunnelForge currently follows modern Swift 6 and TypeScript development practices with a focus on async/await patterns, protocol-oriented design, and reactive UI architectures. The codebase is organized into three main components: macOS app (Swift/SwiftUI), iOS app (Swift/SwiftUI), and web dashboard (TypeScript/Lit).
+
+### Target Architecture (In Development)
+The refactored version will use Go for the backend server, Bun for the web interface, and Tauri v2 for cross-platform desktop applications. This will provide better performance, smaller bundle sizes, and cross-platform support.
 
 Key architectural principles:
 - **Protocol-oriented design** for flexibility and testability
 - **Async/await** throughout for clean asynchronous code
 - **Observable pattern** for reactive state management
 - **Dependency injection** via environment values in SwiftUI
+- **Go backend** for high-performance terminal management
+- **Bun runtime** for fast TypeScript execution
+- **Tauri v2** for cross-platform desktop apps
 
 ## Code Style
 
@@ -22,11 +31,18 @@ Key architectural principles:
 class ServerManager {
     @MainActor static let shared = ServerManager()
     
-    private(set) var serverType: ServerType = .bun
+    // Legacy: Node.js server type
+    private(set) var serverType: ServerType = .nodejs
+    // Future: Will support Go server type
+    // private(set) var serverType: ServerType = .go
+    
     private(set) var isSwitchingServer = false
     
     var port: String {
+        // Legacy: Port 4020 for Node.js
         get { UserDefaults.standard.string(forKey: "serverPort") ?? "4020" }
+        // Future: Port 4021 for Go server
+        // get { UserDefaults.standard.string(forKey: "serverPort") ?? "4021" }
         set { UserDefaults.standard.set(newValue, forKey: "serverPort") }
     }
 }
@@ -118,6 +134,51 @@ export class VibeTerminalBuffer extends LitElement {
 }
 ```
 
+### Go Conventions (Target Architecture)
+
+**Go server patterns** - From `development/go-server/internal/server/server.go`:
+```go
+// Target: Go server with Gorilla Mux routing
+type Server struct {
+    router *mux.Router
+    server *http.Server
+    config *Config
+}
+
+func NewServer(config *Config) *Server {
+    router := mux.NewRouter()
+    
+    // Add middleware
+    router.Use(middleware.CORS)
+    router.Use(middleware.Auth)
+    router.Use(middleware.RateLimit)
+    
+    return &Server{
+        router: router,
+        config: config,
+    }
+}
+```
+
+**Bun web server patterns** - From `development/bun-web/src/server.ts`:
+```typescript
+// Target: Bun server with API proxy to Go backend
+const server = Bun.serve({
+  port: 3001,
+  fetch(req) {
+    const url = new URL(req.url);
+    
+    // Proxy API requests to Go server
+    if (url.pathname.startsWith('/api/')) {
+      return proxyToGoServer(req);
+    }
+    
+    // Serve static files
+    return serveStaticFiles(req);
+  }
+});
+```
+
 ## Common Patterns
 
 ### Service Architecture
@@ -181,6 +242,34 @@ async handleClientMessage(
   if (data.type === 'subscribe' && data.sessionId) {
     // Handle subscription
   }
+}
+```
+
+**Go async patterns** - From `development/go-server/internal/websocket/handler.go`:
+```go
+// Target: Go WebSocket handler with goroutines
+func (h *Handler) handleWebSocket(w http.ResponseWriter, r *http.Request) {
+    conn, err := upgrader.Upgrade(w, r, nil)
+    if err != nil {
+        log.Printf("WebSocket upgrade failed: %v", err)
+        return
+    }
+    defer conn.Close()
+    
+    // Handle WebSocket in goroutine
+    go h.handleConnection(conn)
+}
+
+func (h *Handler) handleConnection(conn *websocket.Conn) {
+    for {
+        messageType, message, err := conn.ReadMessage()
+        if err != nil {
+            break
+        }
+        
+        // Process message
+        h.processMessage(conn, messageType, message)
+    }
 }
 ```
 
@@ -419,92 +508,129 @@ vt -S command
 4. For binaries: executes directly through `tunnelforge fwd`
 5. For aliases/functions: wraps in appropriate shell (`zsh -i -c` or `bash -c`) for proper resolution
 
-**Technical Details**:
-- The `--` separator should not be passed to `fwd` as it was being misinterpreted as a command
-- Aliases require interactive shell mode to be resolved properly
-- The script prevents recursive TunnelForge sessions by checking `TUNNELFORGE_SESSION_ID`
-- The `fwd` binary now properly handles `--` as an argument separator when needed
+## Migration Development Workflow
 
-## Web Development
+### Current Development State
 
-### Code Quality Tools
+**🔄 Refactoring in Progress**: The codebase is being migrated from Node.js + SwiftUI to Go + Bun + Tauri architecture.
 
-TunnelForge uses several tools to maintain code quality:
+**Legacy Components** (Still Active):
+- `mac/TunnelForge/` - SwiftUI macOS app
+- `web/src/server/` - Node.js server
+- `ios/TunnelForge/` - SwiftUI iOS app
 
-#### Running All Checks
+**Target Components** (In Development):
+- `development/go-server/` - Go backend server
+- `development/bun-web/` - Bun web interface
+- `development/tauri-app/` - Tauri desktop apps
 
-To run all code quality checks (read-only checks run in parallel):
+### Development Workflow
 
+**Phase 1: Go Server Development** ✅ (In Progress)
 ```bash
-pnpm run check
+# Work on Go server
+cd development/go-server
+go run cmd/server/main.go
+
+# Test Go server endpoints
+curl http://localhost:4021/health
 ```
 
-This runs format checking, linting, and type checking in parallel and reports any issues.
-
-#### Individual Tools
-
-**Formatting** (Biome):
+**Phase 2: Bun Web Server** 🔄 (Next)
 ```bash
-pnpm run format        # Fix formatting issues
-pnpm run format:check  # Check formatting without fixing
+# Work on Bun web server
+cd development/bun-web
+bun run dev
+
+# Test Bun server
+curl http://localhost:3001/health
 ```
 
-**Linting** (Biome + TypeScript):
+**Phase 3: Tauri Desktop Apps** 📋 (Planned)
 ```bash
-pnpm run lint      # Check for lint errors
-pnpm run lint:fix  # Fix auto-fixable lint errors
+# Work on Tauri apps
+cd development/tauri-app
+cargo tauri dev
 ```
 
-**Type Checking** (TypeScript):
+### Testing During Migration
+
+**Legacy Testing**:
 ```bash
-pnpm run typecheck  # Run type checking on all configs
-```
-
-#### Auto-fix All Issues
-
-To automatically fix all formatting and linting issues:
-
-```bash
-pnpm run check:fix
-```
-
-This runs format and lint:fix **sequentially** to avoid file conflicts.
-
-### Why Sequential Fixes?
-
-Running multiple file-modifying tools in parallel can cause race conditions where:
-- Both tools try to write to the same file simultaneously
-- One tool's changes get overwritten by another
-- Git operations fail due to file locks
-
-Best practices from the JavaScript community recommend:
-1. **Parallel for checks**: Read-only operations can run simultaneously
-2. **Sequential for fixes**: File modifications should happen one after another
-3. **Biome as unified tool**: Reduces conflicts by combining formatting and linting
-
-### Why Multiple Tools?
-
-1. **Biome**: Fast, modern formatter and linter for JavaScript/TypeScript
-2. **TypeScript**: Type checking across server, client, and service worker contexts
-3. **Parallel execution**: Saves time by running independent checks simultaneously
-
-### Tips for Faster Development
-
-1. **Use `pnpm run check` before committing** - Catches all issues at once
-2. **Enable format-on-save in your editor** - Prevents formatting issues
-3. **Run `pnpm run check:fix` to quickly fix issues** - Handles problems sequentially
-
-### Continuous Development
-
-When developing, you typically want:
-
-```bash
-# Terminal 1: Run the dev server
-pnpm run dev
-
-# Terminal 2: Run tests in watch mode (when needed)
+# Test current Node.js implementation
+cd web
 pnpm test
 
-# Before committing: Run all checks
-pnpm run check
+# Test current SwiftUI app
+cd mac
+xcodebuild test -workspace TunnelForge.xcworkspace -scheme TunnelForge
 ```
+
+**Target Testing**:
+```bash
+# Test Go server
+cd development/go-server
+go test ./...
+
+# Test Bun web server
+cd development/bun-web
+bun test
+```
+
+### Code Organization During Migration
+
+**Current Structure**:
+```
+tunnelforge/
+├── mac/                    # SwiftUI macOS app (legacy)
+├── web/                    # Node.js server (legacy)
+├── ios/                    # SwiftUI iOS app (legacy)
+└── development/            # New architecture (in development)
+    ├── go-server/          # Go backend
+    ├── bun-web/            # Bun web interface
+    └── tauri-app/          # Tauri desktop apps
+```
+
+**Future Structure** (After Migration):
+```
+tunnelforge/
+├── go-server/              # Go backend server
+├── bun-web/                # Bun web interface
+├── tauri-app/              # Tauri desktop apps
+└── legacy/                 # Old code (for reference)
+    ├── mac/
+    ├── web/
+    └── ios/
+```
+
+### Development Guidelines
+
+**During Migration**:
+1. **Legacy Code**: Fix critical bugs only, avoid new features
+2. **Target Code**: Implement new features and improvements
+3. **Documentation**: Keep both architectures documented
+4. **Testing**: Maintain test coverage for both implementations
+
+**After Migration**:
+1. **Remove Legacy**: Delete old Node.js and SwiftUI code
+2. **Update Tooling**: Migrate CI/CD to new architecture
+3. **Clean Documentation**: Remove legacy references
+4. **Performance Testing**: Validate Go + Bun + Tauri improvements
+
+### Common Migration Tasks
+
+**Port Changes**:
+- Legacy: Port 4020 (Node.js)
+- Target: Port 4021 (Go) + 3001 (Bun)
+
+**Server Types**:
+- Legacy: `ServerType.nodejs`
+- Target: `ServerType.go`
+
+**Build Systems**:
+- Legacy: Xcode + npm/pnpm
+- Target: Go + Bun + Cargo (Tauri)
+
+**Distribution**:
+- Legacy: macOS DMG only
+- Target: Cross-platform packages (macOS, Windows, Linux)

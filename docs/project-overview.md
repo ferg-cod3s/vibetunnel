@@ -1,83 +1,86 @@
-<!-- Generated: 2025-06-21 17:45:00 UTC -->
+<!-- Generated: 2025-01-27 17:45:00 UTC -->
 # TunnelForge Project Overview
 
-TunnelForge turns any browser into a terminal for your Mac, enabling remote access to command-line tools and AI agents from any device. Built for developers who need to monitor long-running processes, check on AI coding assistants, or share terminal sessions without complex SSH setups.
+> **🔄 Refactoring in Progress**: TunnelForge is currently being refactored from the legacy Node.js + SwiftUI architecture to a modern Go + Bun + Tauri architecture. This document describes the **TARGET IMPLEMENTATION** being developed.
 
-The project provides a native macOS menu bar application that runs a local HTTP server with WebSocket support for real-time terminal streaming. Users can access their terminals through a responsive web interface at `http://localhost:4020`, with optional secure remote access via Tailscale or ngrok integration.
+## Current Status
+
+**Legacy Implementation** (Being Replaced):
+- Node.js server with Express routing
+- SwiftUI macOS app with menu bar integration
+- Port 4020
+
+**Target Implementation** (In Development):
+- Go server backend for high-performance terminal management
+- Bun web server for modern TypeScript frontend
+- Tauri v2 desktop apps for cross-platform support
+- Port 4021 (Go server) + 3001 (Bun web)
+
+## Target Architecture
+
+TunnelForge will turn any browser into a terminal for your computer, enabling remote access to command-line tools and AI agents from any device. Built for developers who need to monitor long-running processes, check on AI coding assistants, or share terminal sessions without complex SSH setups.
+
+The project will provide cross-platform desktop applications that run a local Go HTTP server with WebSocket support for real-time terminal streaming. Users will access their terminals through a responsive web interface at `http://localhost:3001`, with the Go server running on port 4021 for terminal management.
 
 ## Key Files
 
 **Main Entry Points**
-- `mac/TunnelForge/TunnelForgeApp.swift` - macOS app entry point with menu bar integration
-- `ios/TunnelForge/App/TunnelForgeApp.swift` - iOS companion app entry  
-- `web/src/index.ts` - Node.js server entry point for terminal forwarding
-- `mac/TunnelForge/Utilities/CLIInstaller.swift` - CLI tool (`vt`) installer
+- `development/go-server/cmd/server/main.go` - Go server entry point
+- `development/bun-web/src/server.ts` - Bun web server entry point
+- `development/tauri-app/src-tauri/` - Tauri desktop app backend
+- `development/tauri-app/src/` - Tauri desktop app frontend
 
 **Core Configuration**
-- `web/package.json` - Node.js dependencies and build scripts
-- `mac/TunnelForge.xcodeproj/project.pbxproj` - Xcode project configuration
-- `mac/TunnelForge/version.xcconfig` - Version management
-- `apple/Local.xcconfig.template` - Developer configuration template
+- `development/go-server/go.mod` - Go dependencies and module definition
+- `development/bun-web/package.json` - Bun dependencies and build scripts
+- `development/tauri-app/tauri.conf.json` - Tauri configuration
 
 ## Technology Stack
 
-**macOS Application** - Native Swift/SwiftUI app
-- Menu bar app: `mac/TunnelForge/Presentation/Views/MenuBarView.swift`
-- Server management: `mac/TunnelForge/Core/Services/ServerManager.swift` 
-- Session monitoring: `mac/TunnelForge/Core/Services/SessionMonitor.swift`
-- Terminal operations: `mac/TunnelForge/Core/Services/TerminalManager.swift`
-- Sparkle framework for auto-updates
+**Go Server Backend** - High-performance Go server
+- HTTP server: `development/go-server/internal/server/server.go`
+- Terminal management: `development/go-server/internal/terminal/pty.go`
+- Session management: `development/go-server/internal/session/manager.go`
+- PTY integration: `creack/pty` for native terminal process creation
 
-**Web Server** - Node.js/TypeScript with Bun runtime
-- HTTP/WebSocket server: `web/src/server/server.ts`
-- Terminal forwarding: `web/src/server/fwd.ts`
-- Session management: `web/src/server/lib/sessions.ts`
-- PTY integration: `@homebridge/node-pty-prebuilt-multiarch`
+**Bun Web Server** - Modern TypeScript-based web interface
+- HTTP/WebSocket server: `development/bun-web/src/server.ts`
+- API proxy to Go server backend
+- Static file serving with caching
+- Native SSE implementation
+
+**Tauri Desktop Applications** - Cross-platform desktop apps
+- Rust backend with web frontend using Tauri v2
+- Native system integration (tray, notifications, file system)
+- Cross-platform support (macOS, Windows, Linux)
+- Manages Go server lifecycle as subprocess
 
 **Web Frontend** - Modern TypeScript/Lit web components  
-- Terminal rendering: `web/src/client/components/terminal-viewer.ts`
-- WebSocket client: `web/src/client/lib/websocket-client.ts`
-- UI styling: Tailwind CSS (`web/src/client/styles.css`)
-- Build system: esbuild bundler
-
-**iOS Application** - SwiftUI companion app
-- Connection management: `ios/TunnelForge/App/TunnelForgeApp.swift` (lines 40-107)
-- Terminal viewer: `ios/TunnelForge/Views/Terminal/TerminalView.swift`
-- WebSocket client: `ios/TunnelForge/Services/BufferWebSocketClient.swift`
+- Terminal rendering: `development/bun-web/src/client/components/terminal-viewer.ts`
+- WebSocket client: `development/bun-web/src/client/lib/websocket-client.ts`
+- UI styling: Tailwind CSS
+- Build system: Bun bundler
 
 ## Platform Support
 
-**macOS Requirements**
-- macOS 14.0+ (Sonoma or later)
-- Apple Silicon Mac (M1+)
-- Xcode 15+ for building from source
-- Code signing for proper terminal permissions
+**Desktop Requirements**
+- **macOS**: macOS 14.0+ (Sonoma or later)
+- **Windows**: Windows 10+ (64-bit)
+- **Linux**: Ubuntu 20.04+, Debian 11+, or equivalent
+- **Build Tools**: Go 1.21+, Bun 1.0+, Rust 1.70+
 
-**Linux & Headless Support**
-- Any Linux distribution with Node.js 20+
-- Runs as standalone server via npm package
-- No GUI required - perfect for VPS/cloud deployments
-- Install: `npm install -g tunnelforge`
-- Run: `tunnelforge-server`
-
-**iOS Requirements**  
-- iOS 17.0+
-- iPhone or iPad
-- Network access to TunnelForge server
+**Server Platforms**
+- **Go Server**: Any platform supported by Go (macOS, Linux, Windows)
+- **Bun Web Server**: Any platform supported by Bun (macOS, Linux, Windows)
+- **Headless Support**: Perfect for VPS/cloud deployments
 
 **Browser Support**
 - Modern browsers with WebSocket support
 - Mobile-responsive design for phones/tablets
 - Terminal rendering via canvas/WebGL
 
-**Server Platforms**
-- Primary: Bun runtime (Node.js compatible)
-- Build requirements: Node.js 20+, npm/bun
-- Supports macOS, Linux, and headless environments
-
 **Key Platform Files**
-- macOS app bundle: `mac/TunnelForge.xcodeproj`
-- iOS app: `ios/TunnelForge.xcodeproj`  
-- Web server: `web/` directory with TypeScript source
-- CLI tool: Installed to `/usr/local/bin/vt` (macOS only)
-- npm package: `tunnelforge` on npm registry
+- Go server: `development/go-server/`
+- Bun web server: `development/bun-web/`
+- Tauri desktop apps: `development/tauri-app/`
+- Cross-platform distribution via Tauri

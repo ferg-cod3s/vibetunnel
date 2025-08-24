@@ -27,7 +27,7 @@ elif command -v tunnelforge &> /dev/null; then
 else
     echo "❌ Error: TunnelForge is not installed." >&2
     echo "Install via:" >&2
-    echo "  - Download from: https://github.com/tunnelforge/tunnelforge/releases" >&2
+    echo "  - Download from: https://github.com/ferg-cod3s/tunnelforge/releases" >&2
     echo "  - Or: npm install -g tunnelforge" >&2
     echo "  - Or: brew install --cask tunnelforge" >&2
     exit 1

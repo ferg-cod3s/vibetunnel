@@ -158,7 +158,8 @@ tunnelforge/
 │   │   └── client/        # Web frontend (Lit/TypeScript)
 │   └── public/            # Static assets
 │
-└── docs/                  # Documentation
+├── docs/                  # Project documentation
+└── documentation/         # Documentation website (Astro)
 ```
 
 ## Testing
@@ -278,7 +279,7 @@ We follow conventional commits:
 
 When adding new features:
 
-1. Update the relevant documentation in `docs/`
+1. Update the relevant documentation in `docs/` (for project docs) or `documentation/` (for user-facing docs)
 2. Add JSDoc/Swift documentation comments
 3. Update README.md if it's a user-facing feature
 4. Include examples in your documentation

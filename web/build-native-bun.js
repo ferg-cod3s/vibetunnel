@@ -132,7 +132,7 @@ process.env.GIT_COMMIT = '${gitCommit}';
 process.env.TUNNELFORGE_BUN = 'true';
 
 // Import the main CLI entry point
-require('./src/cli.ts');
+require('../src/cli.ts');
 `;
 
     fs.writeFileSync('build/bun-entry.ts', buildEntryContent);

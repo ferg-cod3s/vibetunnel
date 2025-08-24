@@ -116,9 +116,9 @@ struct AboutView: View {
     private var linksSection: some View {
         VStack(spacing: 10) {
             HoverableLink(url: "https://vibetunnel.sh", title: "Website", icon: "globe")
-            HoverableLink(url: "https://github.com/amantus-ai/vibetunnel", title: "View on GitHub", icon: "link")
+            HoverableLink(url: "https://github.com/ferg-cod3s/tunnelforge", title: "View on GitHub", icon: "link")
             HoverableLink(
-                url: "https://github.com/amantus-ai/vibetunnel/issues",
+                url: "https://github.com/ferg-cod3s/tunnelforge/issues",
                 title: "Report an Issue",
                 icon: "exclamationmark.bubble"
             )

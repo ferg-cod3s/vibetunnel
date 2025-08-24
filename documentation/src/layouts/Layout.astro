@@ -1,0 +1,335 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Official documentation for TunnelForge - Terminal sharing server with web interface",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">
+            <a href="/">
+              <h1>TunnelForge</h1>
+            </a>
+          </div>
+          <nav class="main-nav">
+            <ul>
+              <li><a href="/installation">Install</a></li>
+              <li><a href="/getting-started">Get Started</a></li>
+              <li>
+                <a
+                  href="https://github.com/ferg-cod3s/tunnelforge"
+                  target="_blank">GitHub</a
+                >
+              </li>
+              <li>
+                <a href="https://discord.gg/3Ub3EUwrcR" target="_blank"
+                  >Discord</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <div class="content-wrapper">
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
+          <ul>
+            <li><a href="/">Overview</a></li>
+            <li><a href="/installation">Installation</a></li>
+            <li><a href="/getting-started">Getting Started</a></li>
+            <li><a href="/setup-github-pages">Setup GitHub Pages</a></li>
+            <li><a href="/api-reference">API Reference</a></li>
+            <li><a href="/architecture">Architecture</a></li>
+            <li><a href="/contributing">Contributing</a></li>
+            <li><a href="/release">Release Guide</a></li>
+            <li><a href="/roadmap">Roadmap</a></li>
+            <li><a href="/product-requirements">Product Requirements</a></li>
+            <li><a href="/security">Security</a></li>
+            <li><a href="/development">Development</a></li>
+            <li><a href="/testing">Testing</a></li>
+            <li><a href="/cli-reference">CLI Reference</a></li>
+            <li><a href="/web-interface">Web Interface</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <slot />
+      </main>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-links">
+            <a href="https://github.com/ferg-cod3s/tunnelforge" target="_blank"
+              >GitHub</a
+            >
+            <a href="https://discord.gg/3Ub3EUwrcR" target="_blank">Discord</a>
+            <a
+              href="https://github.com/ferg-cod3s/tunnelforge/issues"
+              target="_blank">Issues</a
+            >
+          </div>
+          <div class="footer-copyright">
+            <p>
+              &copy; {new Date().getFullYear()} TunnelForge. Built with ❤️ by the
+              community.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  :root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary-color: #64748b;
+    --accent-color: #f59e0b;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.125rem;
+    --line-height: 1.6;
+
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+
+    --max-width: 1200px;
+    --sidebar-width: 250px;
+    --header-height: 60px;
+    --border-radius: 6px;
+    --box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height);
+    color: #374151;
+    background-color: #f9fafb;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+  }
+
+  /* Header */
+  .header {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--box-shadow);
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--header-height);
+  }
+
+  .logo h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+  }
+
+  .logo a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .main-nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: var(--spacing-lg);
+  }
+
+  .main-nav a {
+    color: var(--secondary-color);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .main-nav a:hover {
+    color: var(--primary-color);
+    background-color: #f3f4f6;
+  }
+
+  /* Content Layout */
+  .content-wrapper {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    gap: var(--spacing-2xl);
+    align-items: start;
+    min-height: calc(100vh - var(--header-height));
+    padding: var(--spacing-xl) 0;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: sticky;
+    top: calc(var(--header-height) + var(--spacing-xl));
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--box-shadow);
+    height: fit-content;
+  }
+
+  .sidebar-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar-nav li {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .sidebar-nav a {
+    display: block;
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .sidebar-nav a:hover {
+    color: var(--primary-color);
+    background-color: #f3f4f6;
+  }
+
+  /* Main Content */
+  .main-content {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--box-shadow);
+  }
+
+  /* Footer */
+  .footer {
+    background-color: #111827;
+    color: #9ca3af;
+    padding: var(--spacing-2xl) 0;
+    margin-top: var(--spacing-2xl);
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: var(--spacing-lg);
+  }
+
+  .footer-links a {
+    color: #9ca3af;
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: white;
+  }
+
+  .footer-copyright p {
+    margin: 0;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .content-wrapper {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+    }
+
+    .sidebar {
+      position: static;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .header-content {
+      flex-direction: column;
+      height: auto;
+      padding: var(--spacing-md) 0;
+    }
+
+    .main-nav ul {
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .footer-content {
+      flex-direction: column;
+      gap: var(--spacing-md);
+      text-align: center;
+    }
+  }
+</style>

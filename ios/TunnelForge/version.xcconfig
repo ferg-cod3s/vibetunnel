@@ -6,7 +6,7 @@ CURRENT_PROJECT_VERSION = 160
 
 // Domain and GitHub configuration
 APP_DOMAIN = tunnelforge.dev
-GITHUB_URL = https://github.com/johnferguson/tunnelforge
+GITHUB_URL = https://github.com/ferg-cod3s/tunnelforge
 
 // Bundle identifier
 PRODUCT_BUNDLE_IDENTIFIER = dev.tunnelforge.ios

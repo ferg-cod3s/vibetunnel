@@ -142,7 +142,7 @@ sign_update -f /path/to/private/sparkle_private_key /path/to/TunnelForge-1.0.0-b
                 <!-- HTML formatted release notes -->
             ]]></description>
             <pubDate>Tue, 08 Jul 2025 10:18:00 +0100</pubDate>
-            <enclosure url="https://github.com/amantus-ai/vibetunnel/releases/download/v1.0.0-beta.8/TunnelForge-1.0.0-beta.8.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.8/TunnelForge-1.0.0-beta.8.dmg" 
                        sparkle:version="172" 
                        sparkle:shortVersionString="1.0.0-beta.8" 
                        length="44748347" 

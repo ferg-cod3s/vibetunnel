@@ -2,6 +2,8 @@
 
 ## Overview
 
+> **🔄 Refactoring Note**: The current API runs on port 4020. When the refactoring to Go + Bun + Tauri is complete, the Go server will run on port 4021 and the Bun web interface on port 3001.
+
 TunnelForge provides a RESTful API for managing terminal sessions and a WebSocket API for real-time terminal I/O. All APIs are served from the base URL (default: `http://localhost:4020`).
 
 ## Authentication

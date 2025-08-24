@@ -107,7 +107,7 @@ describe('BufferSubscriptionService', () => {
 
     // Mock window.location
     Object.defineProperty(window, 'location', {
-      value: { host: 'localhost:8080', protocol: 'http:' },
+      value: { host: 'localhost:4021', protocol: 'http:' },
       writable: true,
     });
 
@@ -135,7 +135,7 @@ describe('BufferSubscriptionService', () => {
 
   describe('Connection Management', () => {
     it('should connect to WebSocket on creation', () => {
-      expect(global.WebSocket).toHaveBeenCalledWith('ws://localhost:8080/buffers');
+      expect(global.WebSocket).toHaveBeenCalledWith('ws://localhost:4021/buffers');
       expect(mockWebSocket.readyState).toBe(MockWebSocket.OPEN);
     });
 
@@ -147,7 +147,7 @@ describe('BufferSubscriptionService', () => {
       await service.initialize();
       await vi.advanceTimersByTimeAsync(100);
 
-      expect(global.WebSocket).toHaveBeenCalledWith('wss://localhost:8080/buffers');
+      expect(global.WebSocket).toHaveBeenCalledWith('wss://localhost:4021/buffers');
     });
 
     it('should set binary type to arraybuffer', () => {

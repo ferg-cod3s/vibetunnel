@@ -1,0 +1,108 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [main, development]
+    paths: ["documentation/**"]
+  pull_request:
+    branches: [main]
+    paths: ["documentation/**"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: |
+          cd documentation
+          bun install
+
+      - name: Build documentation
+        run: |
+          cd documentation
+          bun run build
+
+      - name: Test build output
+        run: |
+          cd documentation/dist
+          # Check if index.html exists
+          test -f index.html
+          # Check if CSS and JS files exist
+          test -f _assets/css/style.css
+          test -f _assets/js/main.js
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: |
+          cd documentation
+          bun install
+
+      - name: Build documentation
+        run: |
+          cd documentation
+          bun run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./documentation/dist
+          destination_dir: /docs
+          force_orphan: true
+
+  preview:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: |
+          cd documentation
+          bun install
+
+      - name: Build documentation
+        run: |
+          cd documentation
+          bun run build
+
+      - name: Comment PR with preview info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `📚 Documentation preview is ready!\n\nTo preview the changes:\n1. Go to your repository settings\n2. Enable GitHub Pages\n3. Set source to "Deploy from a branch"\n4. Select the \`gh-pages\` branch\n5. Set folder to \`/docs\`\n\nYour documentation will be available at: \`https://${context.repo.owner}.github.io/${context.repo.repo}\``
+            })

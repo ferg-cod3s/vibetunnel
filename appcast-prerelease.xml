@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>TunnelForge Pre-release Updates</title>
-        <link>https://github.com/amantus-ai/tunnelforge</link>
+        <link>https://github.com/ferg-cod3s/tunnelforge</link>
         <description>TunnelForge pre-release and beta updates feed</description>
         <language>en</language>
         <item>
             <title>TunnelForge 1.0.0-beta.15</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.15/TunnelForge-1.0.0-beta.15.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.15/TunnelForge-1.0.0-beta.15.dmg</link>
             <sparkle:version>205</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.15</sparkle:shortVersionString>
             <description><![CDATA[
@@ -67,7 +67,7 @@
                 <p>Additional contributors: @hjanuschka, @fal3, @hewigovens</p>
             ]]></description>
             <pubDate>Fri, 02 Aug 2025 00:19:31 +0000</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.15/TunnelForge-1.0.0-beta.15.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.15/TunnelForge-1.0.0-beta.15.dmg" 
                        sparkle:version="205" 
                        sparkle:shortVersionString="1.0.0-beta.15" 
                        length="35951408" 
@@ -76,7 +76,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.14</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.14/TunnelForge-1.0.0-beta.14.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.14/TunnelForge-1.0.0-beta.14.dmg</link>
             <sparkle:version>203</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.14</sparkle:shortVersionString>
             <description><![CDATA[
@@ -176,10 +176,10 @@
                 <li>Fixed OpenCode support for better integration with external apps</li>
                 </ul>
                 
-                <p><a href="https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md#100-beta14-20250721">View full changelog</a></p>
+                <p><a href="https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md#100-beta14-20250721">View full changelog</a></p>
             ]]></description>
             <pubDate>Mon, 21 Jul 2025 15:22:57 GMT</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.14/TunnelForge-1.0.0-beta.14.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.14/TunnelForge-1.0.0-beta.14.dmg" 
                        sparkle:version="203" 
                        sparkle:shortVersionString="1.0.0-beta.14" 
                        length="41684541" 
@@ -188,7 +188,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.13</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.13/TunnelForge-1.0.0-beta.13.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.13/TunnelForge-1.0.0-beta.13.dmg</link>
             <sparkle:version>202</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.13</sparkle:shortVersionString>
             <description><![CDATA[
@@ -232,10 +232,10 @@
                 <li>Organized all documentation into logical categories with Mintlify</li>
                 </ul>
                 
-                <p><a href="https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md#100-beta13-20250719">View full changelog</a></p>
+                <p><a href="https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md#100-beta13-20250719">View full changelog</a></p>
             ]]></description>
             <pubDate>Sat, 19 Jul 2025 02:00:00 +0200</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.13/TunnelForge-1.0.0-beta.13.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.13/TunnelForge-1.0.0-beta.13.dmg" 
                        sparkle:version="202" 
                        sparkle:shortVersionString="1.0.0-beta.13" 
                        length="41475580" 
@@ -244,7 +244,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.12</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.12/TunnelForge-1.0.0-beta.12.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.12/TunnelForge-1.0.0-beta.12.dmg</link>
             <sparkle:version>201</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.12</sparkle:shortVersionString>
             <description><![CDATA[
@@ -291,7 +291,7 @@
                 </ul>
             ]]></description>
             <pubDate>Thu, 17 Jul 2025 19:35:43 +0200</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.12/TunnelForge-1.0.0-beta.12.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.12/TunnelForge-1.0.0-beta.12.dmg" 
                        sparkle:version="201" 
                        sparkle:shortVersionString="1.0.0-beta.12" 
                        length="51126870" 
@@ -300,7 +300,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.11</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.11/TunnelForge-1.0.0-beta.11.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.11/TunnelForge-1.0.0-beta.11.dmg</link>
             <sparkle:version>200</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.11</sparkle:shortVersionString>
             <description><![CDATA[
@@ -357,7 +357,7 @@
                 </ul>
             ]]></description>
             <pubDate>Thu, 16 Jan 2025 23:30:00 +0000</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.11/TunnelForge-1.0.0-beta.11.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.11/TunnelForge-1.0.0-beta.11.dmg" 
                        sparkle:version="200" 
                        sparkle:shortVersionString="1.0.0-beta.11" 
                        length="51131803" 
@@ -366,7 +366,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.10</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.10/TunnelForge-1.0.0-beta.10.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.10/TunnelForge-1.0.0-beta.10.dmg</link>
             <sparkle:version>190</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.10</sparkle:shortVersionString>
             <description><![CDATA[
@@ -438,10 +438,10 @@
                 <li>More comprehensive test suite with better coverage</li>
                 </ul>
                 
-                <p><a href="https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md#100-beta10-20250715">View full changelog</a></p>
+                <p><a href="https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md#100-beta10-20250715">View full changelog</a></p>
             ]]></description>
             <pubDate>Tue, 15 Jul 2025 09:38:40 +0200</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.10/TunnelForge-1.0.0-beta.10.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.10/TunnelForge-1.0.0-beta.10.dmg" 
                        sparkle:version="190" 
                        sparkle:shortVersionString="1.0.0-beta.10" 
                        length="50989458" 
@@ -450,7 +450,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.9</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.9/TunnelForge-1.0.0-beta.9.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.9/TunnelForge-1.0.0-beta.9.dmg</link>
             <sparkle:version>173</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.9</sparkle:shortVersionString>
             <description><![CDATA[
@@ -515,7 +515,7 @@
                 </ul>
             ]]></description>
             <pubDate>Fri, 11 Jul 2025 10:48:00 +0200</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.9/TunnelForge-1.0.0-beta.9.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.9/TunnelForge-1.0.0-beta.9.dmg" 
                        sparkle:version="173" 
                        sparkle:shortVersionString="1.0.0-beta.9" 
                        length="44821464" 
@@ -524,7 +524,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.8</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.8/TunnelForge-1.0.0-beta.8.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.8/TunnelForge-1.0.0-beta.8.dmg</link>
             <sparkle:version>172</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.8</sparkle:shortVersionString>
             <description><![CDATA[
@@ -544,7 +544,7 @@
                 </ul>
             ]]></description>
             <pubDate>Tue, 08 Jul 2025 10:18:00 +0100</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.8/TunnelForge-1.0.0-beta.8.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.8/TunnelForge-1.0.0-beta.8.dmg" 
                        sparkle:version="172" 
                        sparkle:shortVersionString="1.0.0-beta.8" 
                        length="44748347" 
@@ -553,7 +553,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.7</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.7/TunnelForge-1.0.0-beta.7.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.7/TunnelForge-1.0.0-beta.7.dmg</link>
             <sparkle:version>170</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.7</sparkle:shortVersionString>
             <description><![CDATA[
@@ -676,7 +676,7 @@
                 </ul>
             ]]></description>
             <pubDate>Tue, 08 Jul 2025 02:35:00 +0100</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.7/TunnelForge-1.0.0-beta.7.dmg" 
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.7/TunnelForge-1.0.0-beta.7.dmg" 
                        sparkle:version="170" 
                        sparkle:shortVersionString="1.0.0-beta.7" 
                        length="33195103" 
@@ -685,7 +685,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.6</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.6/TunnelForge-1.0.0-beta.6.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.6/TunnelForge-1.0.0-beta.6.dmg</link>
             <sparkle:version>160</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.6</sparkle:shortVersionString>
             <description><![CDATA[
@@ -748,11 +748,11 @@
 </div>
             ]]></description>
             <pubDate>Wed, 03 Jul 2025 00:46:29 +0100</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.6/TunnelForge-1.0.0-beta.6.dmg" sparkle:version="160" sparkle:shortVersionString="1.0.0-beta.6" type="application/octet-stream" sparkle:edSignature="kFaJj5tSahAMZ1Sj5p3q7YkQ3n7G6yCLXpUAvcqjjOLV9r9vW2k4ByPUXdKQkHujuDmGhElk2oMucv/jp0QPDg==" length="35747713"/>
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.6/TunnelForge-1.0.0-beta.6.dmg" sparkle:version="160" sparkle:shortVersionString="1.0.0-beta.6" type="application/octet-stream" sparkle:edSignature="kFaJj5tSahAMZ1Sj5p3q7YkQ3n7G6yCLXpUAvcqjjOLV9r9vW2k4ByPUXdKQkHujuDmGhElk2oMucv/jp0QPDg==" length="35747713"/>
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.5</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.5/TunnelForge-1.0.0-beta.5.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.5/TunnelForge-1.0.0-beta.5.dmg</link>
             <sparkle:version>150</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.5</sparkle:shortVersionString>
             <description><![CDATA[
@@ -800,11 +800,11 @@
 </div>
             ]]></description>
             <pubDate>Sun, 30 Jun 2025 03:26:47 +0000</pubDate>
-            <enclosure url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.5/TunnelForge-1.0.0-beta.5.dmg" sparkle:version="150" sparkle:shortVersionString="1.0.0-beta.5" length="35714742" type="application/x-apple-diskimage" sparkle:edSignature="Kn1lcwGww8okqRz83fX3RpaFKXVbk2x7fV0mnuVzHRKvqJEcQeD7vQDoI+Yd5WAWyueVK9E+LPZ3ycjr5ufICw=="/>
+            <enclosure url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.5/TunnelForge-1.0.0-beta.5.dmg" sparkle:version="150" sparkle:shortVersionString="1.0.0-beta.5" length="35714742" type="application/x-apple-diskimage" sparkle:edSignature="Kn1lcwGww8okqRz83fX3RpaFKXVbk2x7fV0mnuVzHRKvqJEcQeD7vQDoI+Yd5WAWyueVK9E+LPZ3ycjr5ufICw=="/>
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.4</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.4/TunnelForge-1.0.0-beta.4.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.4/TunnelForge-1.0.0-beta.4.dmg</link>
             <sparkle:version>114</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.4</sparkle:shortVersionString>
             <description><![CDATA[
@@ -824,11 +824,11 @@
 <li>Fixed URL link detection for wrapped URLs on mobile terminals (#85)</li>
 <li>Split session view file for better code organization (#89)</li>
 </ul>
-<p><a href="https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md#100-beta4---2025-06-27">View full changelog</a></p></div>
+<p><a href="https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md#100-beta4---2025-06-27">View full changelog</a></p></div>
             ]]></description>
             <pubDate>Thu, 27 Jun 2025 00:31:41 +0000</pubDate>
             <enclosure 
-                url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.4/TunnelForge-1.0.0-beta.4.dmg"
+                url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.4/TunnelForge-1.0.0-beta.4.dmg"
                 length="35449335"
                 type="application/octet-stream"
                 sparkle:edSignature="dE/g2OqA2Gv/ZexRG43WudUWWhoKUi3XldlkZjR4kfgMaCIwvbtv4LyCVDRsJ094hqYZThomfGow6MgghsW6Dw=="
@@ -837,7 +837,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.3</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.3/TunnelForge-1.0.0-beta.3.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.3/TunnelForge-1.0.0-beta.3.dmg</link>
             <sparkle:version>110</sparkle:version>
             <sparkle:shortVersionString>1.0.0-beta.3</sparkle:shortVersionString>
             <description><![CDATA[
@@ -866,11 +866,11 @@
 <li>More resilient vt command-line tool with better error handling</li>
 <li>Ensured tunnelforge server properly terminates when Mac app is killed</li>
 </ul>
-<p><a href="https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md#100-beta3---2025-06-23">View full changelog</a></p></div>
+<p><a href="https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md#100-beta3---2025-06-23">View full changelog</a></p></div>
             ]]></description>
             <pubDate>Sun, 23 Jun 2025 04:30:00 +0000</pubDate>
             <enclosure 
-                url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0.0-beta.3/TunnelForge-1.0.0-beta.3.dmg"
+                url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0.0-beta.3/TunnelForge-1.0.0-beta.3.dmg"
                 length="20156342"
                 type="application/octet-stream"
                 sparkle:edSignature="d4G5pUTLuoRUMVg+SSHHaupV2QycU3fEXJhzFjXNSB79htcVo3mGn+oaABL1suvCMJTBK7shJJQS3mf7yDFQDg=="
@@ -879,7 +879,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0.0-beta.2</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0-beta.2/TunnelForge-1.0.0-beta.2.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0-beta.2/TunnelForge-1.0.0-beta.2.dmg</link>
             <sparkle:version>107</sparkle:version>
             <sparkle:shortVersionString>1.0-beta.2</sparkle:shortVersionString>
             <description><![CDATA[
@@ -899,11 +899,11 @@
 <li>Fixed PTY service enhancements with proper async operations</li>
 <li>Fixed race condition in session creation that caused frontend to open previous session</li>
 </ul>
-<p><a href="https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md#100-beta2-20250619">View full changelog</a></p></div>
+<p><a href="https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md#100-beta2-20250619">View full changelog</a></p></div>
             ]]></description>
             <pubDate>Thu, 19 Jun 2025 12:50:59 +0200</pubDate>
             <enclosure 
-                url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0-beta.2/TunnelForge-1.0.0-beta.2.dmg"
+                url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0-beta.2/TunnelForge-1.0.0-beta.2.dmg"
                 length="19720948"
                 type="application/octet-stream"
                 sparkle:edSignature="RozWTyloGPbgMZATl4QXzCmq5/dzSArV853syyn8JrGq+4lwgVoAXh7vBpDlJYKW3zJHvGNAjYZC4JVhoOyJAA=="
@@ -912,7 +912,7 @@
         </item>
         <item>
             <title>TunnelForge 1.0-beta.1</title>
-            <link>https://github.com/amantus-ai/tunnelforge/releases/download/v1.0-beta.1/TunnelForge-1.0-beta.1.dmg</link>
+            <link>https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0-beta.1/TunnelForge-1.0-beta.1.dmg</link>
             <sparkle:version>103</sparkle:version>
             <sparkle:shortVersionString>1.0-beta.1</sparkle:shortVersionString>
             <description><![CDATA[
@@ -961,11 +961,11 @@ This is the first public beta release of TunnelForge, ready for testing by early
 <li>Auto-update functionality is fully enabled</li>
 <li>All core features are stable and ready for daily use</li>
 </ul>
-<p><a href="https://github.com/amantus-ai/tunnelforge/blob/main/CHANGELOG.md#100-beta1-20250619">View full changelog</a></p></div>
+<p><a href="https://github.com/ferg-cod3s/tunnelforge/blob/main/CHANGELOG.md#100-beta1-20250619">View full changelog</a></p></div>
             ]]></description>
             <pubDate>Tue, 17 Jun 2025 01:09:18 +0200</pubDate>
             <enclosure 
-                url="https://github.com/amantus-ai/tunnelforge/releases/download/v1.0-beta.1/TunnelForge-1.0-beta.1.dmg"
+                url="https://github.com/ferg-cod3s/tunnelforge/releases/download/v1.0-beta.1/TunnelForge-1.0-beta.1.dmg"
                 length="17928597"
                 type="application/octet-stream"
                 sparkle:edSignature="9h7sCoJVawjj3PJePiyrIebQDNlMG3Kqp253QcMYdJEnXzWafTYBo5LUPNHosVisPW6dV3Gc0Il5bjGuizLXAw=="

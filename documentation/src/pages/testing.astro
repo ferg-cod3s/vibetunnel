@@ -1,0 +1,293 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Testing Guide - TunnelForge Documentation">
+  <div class="page-header">
+    <h1>Testing Guide</h1>
+    <p>Comprehensive testing strategies and guidelines for TunnelForge development.</p>
+  </div>
+
+  <div class="content">
+    <section class="overview">
+      <h2>Testing Overview</h2>
+      <p>TunnelForge follows a comprehensive testing strategy to ensure quality, reliability, and maintainability across all platforms and components.</p>
+    </section>
+
+    <section class="testing-strategy">
+      <h2>Testing Strategy</h2>
+      
+      <h3>Test Pyramid</h3>
+      <ul>
+        <li><strong>Unit Tests</strong> - Fast, isolated tests for individual functions and components</li>
+        <li><strong>Integration Tests</strong> - Tests for component interactions and API contracts</li>
+        <li><strong>End-to-End Tests</strong> - Full user workflow validation</li>
+        <li><strong>Performance Tests</strong> - Load testing and performance validation</li>
+      </ul>
+
+      <h3>Coverage Targets</h3>
+      <ul>
+        <li><strong>Unit Tests</strong> - 80%+ code coverage</li>
+        <li><strong>Integration Tests</strong> - All critical data flows</li>
+        <li><strong>E2E Tests</strong> - Critical user journeys</li>
+        <li><strong>Performance Tests</strong> - Load and stress testing</li>
+      </ul>
+    </section>
+
+    <section class="unit-testing">
+      <h2>Unit Testing</h2>
+      
+      <h3>Purpose</h3>
+      <p>Test individual functions and components in isolation to ensure they work correctly.</p>
+      
+      <h3>Coverage Target</h3>
+      <p>80%+ code coverage for all business logic</p>
+      
+      <h3>What to Test</h3>
+      <ul>
+        <li>Business logic functions</li>
+        <li>Utility functions</li>
+        <li>Component rendering</li>
+        <li>State management</li>
+        <li>Error handling</li>
+      </ul>
+      
+      <h3>Best Practices</h3>
+      <ul>
+        <li>Test one thing at a time</li>
+        <li>Use descriptive test names</li>
+        <li>Follow AAA pattern (Arrange, Act, Assert)</li>
+        <li>Mock external dependencies</li>
+        <li>Keep tests fast (&lt; 100ms each)</li>
+      </ul>
+    </section>
+
+    <section class="integration-testing">
+      <h2>Integration Testing</h2>
+      
+      <h3>Purpose</h3>
+      <p>Test component interactions and API contracts to ensure they work together correctly.</p>
+      
+      <h3>Coverage Target</h3>
+      <p>All critical data flows</p>
+      
+      <h3>What to Test</h3>
+      <ul>
+        <li>Service interactions</li>
+        <li>Database operations</li>
+        <li>API endpoints</li>
+        <li>Message passing</li>
+        <li>File I/O operations</li>
+      </ul>
+    </section>
+
+    <section class="e2e-testing">
+      <h2>End-to-End Testing</h2>
+      
+      <h3>Purpose</h3>
+      <p>Validate complete user workflows to ensure the application works as expected from a user perspective.</p>
+      
+      <h3>Coverage Target</h3>
+      <p>Critical user journeys</p>
+      
+      <h3>E2E Scenarios</h3>
+      <ul>
+        <li>User authentication flow</li>
+        <li>Session creation and management</li>
+        <li>Terminal interaction</li>
+        <li>Error recovery</li>
+        <li>Cross-browser compatibility</li>
+      </ul>
+    </section>
+
+    <section class="performance-testing">
+      <h2>Performance Testing</h2>
+      
+      <h3>Purpose</h3>
+      <p>Ensure system meets performance requirements under various load conditions.</p>
+      
+      <h3>Metrics</h3>
+      <p>Response time, throughput, resource usage</p>
+      
+      <h3>Performance Targets</h3>
+      <ul>
+        <li><strong>API response time</strong>: &lt; 200ms (p95)</li>
+        <li><strong>Terminal input latency</strong>: &lt; 50ms</li>
+        <li><strong>WebSocket round-trip</strong>: &lt; 100ms</li>
+        <li><strong>Page load time</strong>: &lt; 2s</li>
+        <li><strong>Memory usage</strong>: &lt; 100MB baseline</li>
+      </ul>
+    </section>
+
+    <section class="security-testing">
+      <h2>Security Testing</h2>
+      
+      <h3>Purpose</h3>
+      <p>Identify and prevent security vulnerabilities in the application.</p>
+      
+      <h3>Scope</h3>
+      <p>Authentication, authorization, data protection</p>
+      
+      <h3>Security Checks</h3>
+      <ul>
+        <li>Input validation</li>
+        <li>SQL injection prevention</li>
+        <li>XSS protection</li>
+        <li>CSRF tokens</li>
+        <li>Rate limiting</li>
+        <li>Dependency vulnerabilities</li>
+      </ul>
+    </section>
+
+    <section class="accessibility-testing">
+      <h2>Accessibility Testing</h2>
+      
+      <h3>Purpose</h3>
+      <p>Ensure WCAG 2.2 AA compliance for accessibility.</p>
+      
+      <h3>Tools</h3>
+      <p>axe-core, Pa11y, screen readers</p>
+      
+      <h3>Accessibility Requirements</h3>
+      <ul>
+        <li>Keyboard navigation</li>
+        <li>Screen reader compatibility</li>
+        <li>Color contrast (4.5:1 minimum)</li>
+        <li>Focus indicators</li>
+        <li>ARIA labels</li>
+      </ul>
+    </section>
+
+    <section class="running-tests">
+      <h2>Running Tests</h2>
+      
+      <h3>macOS Tests</h3>
+      <p>Run all tests via Xcode:</p>
+      <pre><code>xcodebuild test -project mac/TunnelForge.xcodeproj -scheme TunnelForge</code></pre>
+      
+      <p>Run specific test tags:</p>
+      <pre><code>xcodebuild test -project mac/TunnelForge.xcodeproj -scheme TunnelForge -only-testing:TunnelForgeTests/ServerManagerTests</code></pre>
+      
+      <h3>Node.js Tests</h3>
+      <p>Run all unit tests:</p>
+      <pre><code>cd web && pnpm run test</code></pre>
+      
+      <p>Run with coverage:</p>
+      <pre><code>pnpm run test:coverage</code></pre>
+      
+      <p>Run E2E tests:</p>
+      <pre><code>pnpm run test:e2e</code></pre>
+      
+      <h3>Playwright Tests</h3>
+      <p>Install browsers (first time):</p>
+      <pre><code>cd web && pnpm exec playwright install</code></pre>
+      
+      <p>Run all Playwright tests:</p>
+      <pre><code>pnpm run test:playwright</code></pre>
+      
+      <p>Run with UI mode:</p>
+      <pre><code>pnpm exec playwright test --ui</code></pre>
+    </section>
+
+    <div class="next-steps">
+      <h2>Next Steps</h2>
+      <p>Check out the <a href="/development">Development Guide</a> to learn more about setting up your development environment.</p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .content section {
+    margin-bottom: 3rem;
+  }
+
+  .content h2 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .content h3 {
+    color: #374151;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  ul, ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  pre {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  code {
+    background-color: #f3f4f6;
+    color: #dc2626;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.875em;
+  }
+
+  pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .next-steps {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .next-steps h2 {
+    margin-top: 0;
+    color: #1e40af;
+  }
+
+  .next-steps p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #1e40af;
+  }
+</style>

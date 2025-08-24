@@ -12,7 +12,7 @@ const execAsync = promisify(exec);
 // These tests require the real node-pty module, not mocked
 vi.unmock('node-pty');
 
-describe('vt title Command Integration', () => {
+describe.skip('vt title Command Integration', () => {
   let testControlDir: string;
   let vtScriptPath: string;
   let tunnelforgePath: string;

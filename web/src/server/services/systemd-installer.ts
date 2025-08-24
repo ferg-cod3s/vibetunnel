@@ -187,7 +187,7 @@ function getServiceTemplate(tunnelforgePath: string): string {
 
   return `[Unit]
 Description=TunnelForge - Terminal sharing server with web interface
-Documentation=https://github.com/amantus-ai/tunnelforge
+Documentation=https://github.com/ferg-cod3s/tunnelforge
 After=network.target
 Wants=network.target
 

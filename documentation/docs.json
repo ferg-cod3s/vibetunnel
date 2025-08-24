@@ -20,13 +20,13 @@
   ],
   "topbarCtaButton": {
     "name": "Download",
-    "url": "https://tunnelforge.com/download"
+    "url": "https://tunnelforge.dev/download"
   },
   "anchors": [
     {
       "name": "GitHub",
       "icon": "github",
-      "url": "https://github.com/johnferguson/tunnelforge"
+      "url": "https://github.com/ferg-cod3s/tunnelforge"
     },
     {
       "name": "Discord",
@@ -161,7 +161,7 @@
   },
   "footerSocials": {
     "twitter": "https://twitter.com/tunnelforge",
-    "github": "https://github.com/johnferguson/tunnelforge",
+    "github": "https://github.com/ferg-cod3s/tunnelforge",
     "discord": "https://discord.gg/tunnelforge"
   },
   "metadata": {

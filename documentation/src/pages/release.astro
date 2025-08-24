@@ -1,0 +1,253 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Release Guide - TunnelForge Documentation">
+  <div class="page-header">
+    <h1>Release Guide</h1>
+    <p>Complete guide to releasing TunnelForge across all platforms.</p>
+  </div>
+
+  <div class="content">
+    <section class="overview">
+      <h2>Release Overview</h2>
+      <p>
+        TunnelForge follows a structured release process to ensure quality and
+        consistency across all platforms. This guide covers the complete release
+        workflow from preparation to deployment.
+      </p>
+    </section>
+
+    <section class="release-process">
+      <h2>Release Process</h2>
+
+      <h3>1. Pre-Release Preparation</h3>
+      <ul>
+        <li>Update version numbers across all platforms</li>
+        <li>Run comprehensive test suites</li>
+        <li>Update documentation and changelog</li>
+        <li>Verify all dependencies are up to date</li>
+        <li>Check security vulnerabilities</li>
+      </ul>
+
+      <h3>2. Build Process</h3>
+      <ul>
+        <li><strong>macOS</strong>: Build via Xcode with proper signing</li>
+        <li><strong>iOS</strong>: Build and archive for App Store</li>
+        <li><strong>Web</strong>: Build production bundle</li>
+        <li><strong>CLI</strong>: Build cross-platform binaries</li>
+      </ul>
+
+      <h3>3. Testing & Validation</h3>
+      <ul>
+        <li>Run automated tests on all platforms</li>
+        <li>Manual testing of critical user flows</li>
+        <li>Performance and security testing</li>
+        <li>Cross-platform compatibility verification</li>
+      </ul>
+
+      <h3>4. Release & Deployment</h3>
+      <ul>
+        <li>Create GitHub release with assets</li>
+        <li>Update appcast files for auto-updates</li>
+        <li>Deploy web interface</li>
+        <li>Submit to app stores (iOS)</li>
+        <li>Publish npm packages</li>
+      </ul>
+    </section>
+
+    <section class="version-management">
+      <h2>Version Management</h2>
+
+      <h3>Versioning Scheme</h3>
+      <p>TunnelForge follows semantic versioning (SemVer):</p>
+      <ul>
+        <li><strong>Major</strong>: Breaking changes and major features</li>
+        <li><strong>Minor</strong>: New features and improvements</li>
+        <li><strong>Patch</strong>: Bug fixes and minor updates</li>
+      </ul>
+
+      <h3>Version Files</h3>
+      <ul>
+        <li><code>mac/TunnelForge/version.xcconfig</code> - macOS version</li>
+        <li><code>ios/TunnelForge/version.xcconfig</code> - iOS version</li>
+        <li><code>web/package.json</code> - Web package version</li>
+        <li><code>CHANGELOG.md</code> - Release notes</li>
+      </ul>
+    </section>
+
+    <section class="platform-specific">
+      <h2>Platform-Specific Releases</h2>
+
+      <h3>macOS Release</h3>
+      <ol>
+        <li>Update version in <code>mac/TunnelForge/version.xcconfig</code></li>
+        <li>Build signed application bundle</li>
+        <li>Create DMG installer</li>
+        <li>Generate appcast for Sparkle updates</li>
+        <li>Upload to GitHub releases</li>
+      </ol>
+
+      <h3>iOS Release</h3>
+      <ol>
+        <li>Update version in <code>ios/TunnelForge/version.xcconfig</code></li>
+        <li>Build and archive application</li>
+        <li>Test on multiple devices</li>
+        <li>Submit to App Store Connect</li>
+        <li>Wait for Apple review process</li>
+      </ol>
+
+      <h3>Web Release</h3>
+      <ol>
+        <li>Update version in <code>web/package.json</code></li>
+        <li>Build production bundle</li>
+        <li>Run performance tests</li>
+        <li>Deploy to hosting platform</li>
+        <li>Update CDN and cache</li>
+      </ol>
+    </section>
+
+    <section class="automation">
+      <h2>Release Automation</h2>
+
+      <h3>GitHub Actions</h3>
+      <p>Automated release workflows handle:</p>
+      <ul>
+        <li>Version bumping and tagging</li>
+        <li>Cross-platform building</li>
+        <li>Automated testing</li>
+        <li>Asset creation and upload</li>
+        <li>Release note generation</li>
+      </ul>
+
+      <h3>Scripts</h3>
+      <ul>
+        <li><code>scripts/sync-versions.js</code> - Version synchronization</li>
+        <li><code>mac/scripts/release.sh</code> - macOS release automation</li>
+        <li>
+          <code>mac/scripts/generate-appcast.sh</code> - Appcast generation
+        </li>
+        <li>
+          <code>scripts/validate-version-sync.js</code> - Version validation
+        </li>
+      </ul>
+    </section>
+
+    <section class="quality-assurance">
+      <h2>Quality Assurance</h2>
+
+      <h3>Testing Checklist</h3>
+      <ul>
+        <li>✅ All automated tests pass</li>
+        <li>✅ Manual testing completed</li>
+        <li>✅ Performance benchmarks met</li>
+        <li>✅ Security scan passed</li>
+        <li>✅ Documentation updated</li>
+        <li>✅ Changelog complete</li>
+        <li>✅ Version numbers consistent</li>
+      </ul>
+
+      <h3>Rollback Plan</h3>
+      <ul>
+        <li>Keep previous version assets</li>
+        <li>Maintain database migrations</li>
+        <li>Document rollback procedures</li>
+        <li>Test rollback process</li>
+        <li>Monitor post-release metrics</li>
+      </ul>
+    </section>
+
+    <div class="next-steps">
+      <h2>Next Steps</h2>
+      <p>
+        Check out the <a href="/contributing">Contributing Guide</a> to learn how
+        to participate in the release process and <a href="/testing"
+          >Testing Guide</a
+        > for quality assurance procedures.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .content section {
+    margin-bottom: 3rem;
+  }
+
+  .content h2 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .content h3 {
+    color: #374151;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  ul,
+  ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  code {
+    background-color: #f3f4f6;
+    color: #dc2626;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+      "Courier New", monospace;
+    font-size: 0.875em;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .next-steps {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .next-steps h2 {
+    margin-top: 0;
+    color: #1e40af;
+  }
+
+  .next-steps p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #1e40af;
+  }
+</style>

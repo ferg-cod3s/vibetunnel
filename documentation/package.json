@@ -1,0 +1,17 @@
+{
+  "name": "docs",
+  "type": "module",
+  "version": "0.0.1",
+  "packageManager": "bun@1.2.20",
+  "scripts": {
+    "dev": "bunx --bun astro dev",
+    "build": "bunx --bun astro build",
+    "preview": "bunx --bun astro preview",
+    "astro": "bunx --bun astro"
+  },
+  "dependencies": {
+    "@astrojs/svelte": "^7.1.0",
+    "astro": "^5.13.3",
+    "svelte": "^5.38.3"
+  }
+}

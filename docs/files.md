@@ -144,6 +144,7 @@ The project structure emphasizes modularity with separate build systems for each
 ### Documentation
 - `docs/API.md` - API documentation
 - `docs/ARCHITECTURE.md` - Architecture overview
+- `documentation/` - Documentation website (Astro)
 - `mac/Documentation/BunServerSupport.md` - Bun server documentation
 - `web/src/server/pty/README.md` - PTY implementation notes
 

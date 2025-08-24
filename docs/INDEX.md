@@ -7,8 +7,9 @@ This index provides a comprehensive overview of all documentation in the TunnelF
 ### Getting Started
 - [**README.md**](../README.md) - Project overview, quick start guide, and basic usage
 - [**PRD.md**](PRD.md) - Product Requirements Document with vision, features, and roadmap
-- [**introduction.mdx**](introduction.mdx) - Mintlify documentation landing page
-- [**docs.json**](../docs.json) - Mintlify documentation configuration
+- [**CONTRIBUTING.md**](CONTRIBUTING.md) - Contributing guidelines and development workflow
+- [**Documentation Structure**](documentation-structure.md) - How documentation is organized and maintained
+- [**Documentation Updates**](DOCUMENTATION_UPDATES.md) - Summary of recent documentation changes
 
 ### Architecture & Design
 - [**ARCHITECTURE.md**](ARCHITECTURE.md) - System architecture, component relationships, data flow
@@ -18,7 +19,6 @@ This index provides a comprehensive overview of all documentation in the TunnelF
 - [**ios-spec.md**](ios-spec.md) - iOS companion app specification
 
 ### Development Guides
-- [**CONTRIBUTING.md**](CONTRIBUTING.md) - Contributing guidelines and development workflow
 - [**development.md**](development.md) - Development setup, code style, patterns
 - [**build-system.md**](build-system.md) - Build system overview and usage
 - [**deployment.md**](deployment.md) - Deployment and distribution guide
@@ -44,6 +44,13 @@ This index provides a comprehensive overview of all documentation in the TunnelF
 - [**files.md**](files.md) - File catalog and organization
 - [**logging-style-guide.md**](logging-style-guide.md) - Logging conventions and style guide
 - [**CHANGELOG.md**](../CHANGELOG.md) - Project changelog
+
+## 🌐 Documentation Website
+
+The TunnelForge documentation website is built with Astro and located in the `../documentation/` folder:
+
+- [**Documentation Site**](../documentation/) - Interactive documentation website
+- [**Documentation README**](../documentation/README.md) - Documentation site development guide
 
 ## 🍎 Platform-Specific Documentation
 
@@ -94,23 +101,13 @@ These files provide specific instructions for Claude AI when working with differ
 When adding new documentation:
 
 1. **Location**: Place documentation in the most relevant directory
-   - General docs in `/docs`
+   - General project docs in `/docs`
+   - Documentation website files in `/documentation`
    - Platform-specific docs in their respective directories
    - Keep related documentation together
 
-2. **Naming**: Use clear, descriptive names
-   - UPPERCASE.md for important documents (README, CHANGELOG, etc.)
-   - lowercase-with-hyphens.md for regular documentation
-   - Include platform prefix when needed (ios-spec.md)
+2. **Documentation Website**: For user-facing documentation, add content to the Astro site in `/documentation/src/`
 
-3. **Content**: Follow consistent structure
-   - Start with a clear title and overview
-   - Include practical examples
-   - Add cross-references to related docs
-   - Keep content up-to-date with code changes
+3. **Project Documentation**: For developer and technical documentation, add files to `/docs/`
 
-4. **Maintenance**: Regular reviews
-   - Remove outdated documentation
-   - Update when features change
-   - Consolidate duplicate content
-   - Maintain this index when adding/removing docs
+4. **Cross-references**: Use relative paths when linking between documentation files

@@ -1,0 +1,365 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Development Guide - TunnelForge Documentation">
+  <div class="page-header">
+    <h1>Development Guide</h1>
+    <p>Complete guide to setting up and contributing to TunnelForge development.</p>
+  </div>
+
+  <div class="content">
+    <section class="overview">
+      <h2>Development Overview</h2>
+      <p>TunnelForge is a cross-platform application with components written in Swift (macOS/iOS), TypeScript (web), and Go (server). This guide covers setting up your development environment and understanding the codebase structure.</p>
+    </section>
+
+    <section class="prerequisites">
+      <h2>Prerequisites</h2>
+      
+      <h3>Required Tools</h3>
+      <ul>
+        <li><strong>macOS Development</strong>: Xcode 15+ with Command Line Tools</li>
+        <li><strong>Web Development</strong>: Node.js 18+ and Bun</li>
+        <li><strong>Go Development</strong>: Go 1.21+</li>
+        <li><strong>Git</strong>: Latest version with proper configuration</li>
+      </ul>
+
+      <h3>Optional Tools</h3>
+      <ul>
+        <li><strong>iOS Simulator</strong>: For testing iOS components</li>
+        <li><strong>Docker</strong>: For containerized development</li>
+        <li><strong>Postman/Insomnia</strong>: For API testing</li>
+      </ul>
+    </section>
+
+    <section class="setup">
+      <h2>Development Environment Setup</h2>
+      
+      <h3>1. Clone Repository</h3>
+      <pre><code>git clone https://github.com/ferg-cod3s/tunnelforge.git
+cd tunnelforge</code></pre>
+      
+      <h3>2. Install Dependencies</h3>
+      
+      <h4>Web Dependencies</h4>
+      <pre><code>cd web
+bun install</code></pre>
+      
+      <h4>macOS Dependencies</h4>
+      <pre><code>cd mac
+bun install</code></pre>
+      
+      <h4>iOS Dependencies</h4>
+      <pre><code>cd ios
+bun install</code></pre>
+      
+      <h3>3. Build and Test</h3>
+      
+      <h4>Web Application</h4>
+      <pre><code>cd web
+bun run dev</code></pre>
+      
+      <h4>macOS Application</h4>
+      <pre><code>cd mac
+./scripts/build.sh</code></pre>
+      
+      <h4>iOS Application</h4>
+      <pre><code>cd ios
+./run-tests.sh</code></pre>
+    </section>
+
+    <section class="architecture">
+      <h2>Architecture Overview</h2>
+      
+      <h3>Component Structure</h3>
+      <ul>
+        <li><strong>macOS App</strong>: Native SwiftUI application with Tauri integration</li>
+        <li><strong>iOS App</strong>: Native iOS application for mobile access</li>
+        <li><strong>Web Interface</strong>: React-based frontend with TypeScript</li>
+        <li><strong>Server</strong>: Go-based backend with WebSocket support</li>
+        <li><strong>CLI Tools</strong>: Command-line utilities for automation</li>
+      </ul>
+
+      <h3>Data Flow</h3>
+      <ol>
+        <li>User creates terminal session via web interface or CLI</li>
+        <li>Server spawns PTY process and manages session</li>
+        <li>WebSocket connections provide real-time terminal I/O</li>
+        <li>Multiple clients can connect to the same session</li>
+        <li>Session state is persisted and can survive disconnections</li>
+      </ol>
+    </section>
+
+    <section class="testing">
+      <h2>Testing Strategy</h2>
+      
+      <h3>Test Types</h3>
+      <ul>
+        <li><strong>Unit Tests</strong>: Individual component testing</li>
+        <li><strong>Integration Tests</strong>: Component interaction testing</li>
+        <li><strong>End-to-End Tests</strong>: Full workflow validation</li>
+        <li><strong>Performance Tests</strong>: Load and stress testing</li>
+      </ul>
+
+      <h3>Running Tests</h3>
+      
+      <h4>Web Tests</h4>
+      <pre><code>cd web
+bun run test</code></pre>
+      
+      <h4>macOS Tests</h4>
+      <pre><code>cd mac
+./scripts/test.sh</code></pre>
+      
+      <h4>iOS Tests</h4>
+      <pre><code>cd ios
+./run-tests.sh</code></pre>
+      
+      <h4>All Tests</h4>
+      <pre><code>./scripts/test-all-coverage.sh</code></pre>
+    </section>
+
+    <section class="code-quality">
+      <h2>Code Quality</h2>
+      
+      <h3>Linting and Formatting</h3>
+      
+      <h4>Web Code</h4>
+      <pre><code>cd web
+bun run check:fix</code></pre>
+      
+      <h4>macOS Code</h4>
+      <pre><code>cd mac
+./scripts/lint.sh</code></pre>
+      
+      <h3>Type Checking</h3>
+      <pre><code>cd web
+bun run typecheck</code></pre>
+    </section>
+
+    <section class="reference">
+      <h2>Reference</h2>
+      
+      <h3>File Organization</h3>
+      
+      <h4>Swift Packages</h4>
+      <ul>
+        <li><code>mac/TunnelForge/Core/</code> - Core business logic, protocols, services</li>
+        <li><code>mac/TunnelForge/Presentation/</code> - SwiftUI views and view models</li>
+        <li><code>mac/TunnelForge/Utilities/</code> - Helper classes and extensions</li>
+        <li><code>ios/TunnelForge/Services/</code> - iOS-specific services</li>
+        <li><code>ios/TunnelForge/Views/</code> - iOS UI components</li>
+      </ul>
+      
+      <h4>TypeScript Modules</h4>
+      <ul>
+        <li><code>web/src/client/</code> - Frontend components and utilities</li>
+        <li><code>web/src/server/</code> - Backend services and routes</li>
+        <li><code>web/src/server/pty/</code> - Terminal handling</li>
+        <li><code>web/src/test/</code> - Test files and utilities</li>
+      </ul>
+
+      <h3>Naming Conventions</h3>
+      
+      <h4>Swift</h4>
+      <ul>
+        <li><strong>Services</strong>: <code>*Manager</code>, <code>*Service</code> (e.g., <code>ServerManager</code>, <code>APIClient</code>)</li>
+        <li><strong>Protocols</strong>: <code>*Protocol</code>, <code>*able</code> (e.g., <code>TunnelForgeServer</code>, <code>HTTPClientProtocol</code>)</li>
+        <li><strong>Views</strong>: <code>*View</code> (e.g., <code>GeneralSettingsView</code>, <code>TerminalView</code>)</li>
+        <li><strong>Errors</strong>: <code>*Error</code> enum (e.g., <code>ServerError</code>, <code>APIError</code>)</li>
+      </ul>
+      
+      <h4>TypeScript</h4>
+      <ul>
+        <li><strong>Services</strong>: <code>*Service</code>, <code>*Manager</code> (e.g., <code>BufferAggregator</code>, <code>TerminalManager</code>)</li>
+        <li><strong>Components</strong>: <code>vibe-*</code> custom elements (e.g., <code>vibe-terminal-buffer</code>)</li>
+        <li><strong>Types</strong>: PascalCase interfaces (e.g., <code>BufferSnapshot</code>, <code>ServerConfig</code>)</li>
+      </ul>
+
+      <h3>Common Issues</h3>
+      <ul>
+        <li><strong>Port conflicts</strong> - Handled in <code>mac/TunnelForge/Core/Utilities/PortConflictResolver.swift</code></li>
+        <li><strong>Permission management</strong> - See <code>mac/TunnelForge/Core/Services/*PermissionManager.swift</code></li>
+        <li><strong>WebSocket reconnection</strong> - Implemented in <code>ios/TunnelForge/Services/BufferWebSocketClient.swift</code></li>
+        <li><strong>Terminal resizing</strong> - Handled in both Swift and TypeScript terminal components</li>
+      </ul>
+    </section>
+
+    <section class="cli-wrapper">
+      <h2>TunnelForge CLI Wrapper (tf)</h2>
+      
+      <p>The <code>tf</code> command is a bash wrapper script that allows users to run commands through TunnelForge's terminal forwarding. It's installed at <code>/usr/local/bin/vt</code> when the Mac app is built.</p>
+      
+      <h3>Source Location</h3>
+      <p><code>mac/TunnelForge/vt</code></p>
+      
+      <h3>Usage</h3>
+      <pre><code># Run a command through TunnelForge
+vt ls -la
+
+# Run an aliased command (e.g., if 'claude' is an alias)
+tf claude --version
+
+# Launch interactive shell
+vt --shell
+vt -i
+
+# Run command without shell wrapping (bypass alias resolution)
+vt --no-shell-wrap command
+vt -S command</code></pre>
+      
+      <h3>How it Works</h3>
+      <ol>
+        <li>Locates the TunnelForge.app bundle (checks standard locations and uses Spotlight if needed)</li>
+        <li>Finds the <code>tunnelforge</code> binary within the app bundle's Resources</li>
+        <li>Determines if the command is a binary or alias/function</li>
+        <li>For binaries: executes directly through <code>tunnelforge fwd</code></li>
+        <li>For aliases/functions: wraps in appropriate shell (<code>zsh -i -c</code> or <code>bash -c</code>) for proper resolution</li>
+      </ol>
+      
+      <h3>Technical Details</h3>
+      <ul>
+        <li>The <code>--</code> separator should not be passed to <code>fwd</code> as it was being misinterpreted as a command</li>
+        <li>Aliases require interactive shell mode to be resolved properly</li>
+        <li>The script prevents recursive TunnelForge sessions by checking <code>TUNNELFORGE_SESSION_ID</code></li>
+        <li>The <code>fwd</code> binary now properly handles <code>--</code> as an argument separator when needed</li>
+      </ul>
+    </section>
+
+    <section class="web-development">
+      <h2>Web Development</h2>
+      
+      <h3>Code Quality Tools</h3>
+      
+      <p>TunnelForge uses several tools to maintain code quality:</p>
+      
+      <h4>Running All Checks</h4>
+      
+      <p>To run all code quality checks (read-only checks run in parallel):</p>
+      
+      <pre><code>bun run check</code></pre>
+      
+      <p>This runs format checking, linting, and type checking in parallel and reports any issues.</p>
+      
+      <h4>Individual Tools</h4>
+      <pre><code># Format code
+bun run format
+
+# Lint code
+bun run lint
+
+# Type check
+bun run typecheck
+
+# Fix linting issues
+bun run lint:fix</code></pre>
+    </section>
+
+    <div class="next-steps">
+      <h2>Next Steps</h2>
+      <p>Check out the <a href="/testing">Testing Guide</a> to learn more about our testing strategies and <a href="/contributing">Contributing Guide</a> for how to submit changes.</p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .content section {
+    margin-bottom: 3rem;
+  }
+
+  .content h2 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .content h3 {
+    color: #374151;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  .content h4 {
+    color: #4b5563;
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  ul, ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  pre {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  code {
+    background-color: #f3f4f6;
+    color: #dc2626;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.875em;
+  }
+
+  pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .next-steps {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .next-steps h2 {
+    margin-top: 0;
+    color: #1e40af;
+  }
+
+  .next-steps p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #1e40af;
+  }
+</style>

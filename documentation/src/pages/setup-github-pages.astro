@@ -1,0 +1,522 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Setting Up GitHub Pages - TunnelForge Documentation">
+  <div class="page-header">
+    <h1>Setting Up GitHub Pages for TunnelForge Documentation</h1>
+    <p>
+      This guide will walk you through setting up GitHub Pages to host your
+      TunnelForge documentation automatically.
+    </p>
+  </div>
+
+  <div class="content">
+    <section class="quick-setup">
+      <h2>🚀 Quick Setup</h2>
+
+      <div class="setup-step">
+        <h3>1. Enable GitHub Pages</h3>
+        <ol>
+          <li><strong>Go to your repository</strong> on GitHub</li>
+          <li><strong>Click Settings</strong> tab</li>
+          <li><strong>Scroll down to "Pages"</strong> section</li>
+          <li>
+            <strong>Under "Source"</strong>, select <strong
+              >"Deploy from a branch"</strong
+            >
+          </li>
+          <li>
+            <strong>Choose branch:</strong>
+            <code>main</code> (or your default branch)
+          </li>
+          <li><strong>Choose folder:</strong> <code>/docs</code></li>
+          <li><strong>Click Save</strong></li>
+        </ol>
+      </div>
+
+      <div class="setup-step">
+        <h3>2. Configure Branch Protection (Optional but Recommended)</h3>
+        <ol>
+          <li><strong>Go to Settings > Branches</strong></li>
+          <li><strong>Add rule</strong> for your main branch</li>
+          <li>
+            <strong>Enable:</strong> "Require pull request reviews before merging"
+          </li>
+          <li>
+            <strong>Enable:</strong> "Require status checks to pass before merging"
+          </li>
+          <li>
+            <strong>Search for:</strong> "Deploy Documentation" (our workflow)
+          </li>
+          <li><strong>Click "Create"</strong></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="manual-setup">
+      <h2>🔧 Manual Setup Steps</h2>
+
+      <div class="setup-step">
+        <h3>Step 1: Repository Configuration</h3>
+        <p>Your repository should have this structure:</p>
+        <ul>
+          <li>
+            <code>docs/</code> - Documentation folder with Astro configuration
+          </li>
+          <li><code>docs/astro.config.mjs</code> - Astro configuration file</li>
+          <li><code>docs/package.json</code> - Node.js dependencies</li>
+          <li>
+            <code>docs/src/</code> - Source files (pages, layouts, components)
+          </li>
+          <li>
+            <code>.github/workflows/docs.yml</code> - GitHub Actions workflow
+          </li>
+        </ul>
+      </div>
+
+      <div class="setup-step">
+        <h3>Step 2: Verify Astro Configuration</h3>
+        <p>
+          Check that your <code>docs/astro.config.mjs</code> has the correct settings:
+        </p>
+        <ul>
+          <li>Site URL: <code>https://ferg-cod3s.github.io</code></li>
+          <li>Base path: <code>/tunnelforge</code></li>
+          <li>Svelte integration enabled</li>
+          <li>Build assets directory: <code>_assets</code></li>
+        </ul>
+      </div>
+
+      <div class="setup-step">
+        <h3>Step 3: Test Local Build</h3>
+        <p>Before pushing, test your documentation locally:</p>
+        <ol>
+          <li>Navigate to docs folder: <code>cd docs</code></li>
+          <li>Install dependencies: <code>npm install</code></li>
+          <li>Start local server: <code>npm run dev</code></li>
+          <li>Open <code>http://localhost:4321</code> in your browser</li>
+          <li>Build for production: <code>npm run build</code></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="automatic-deployment">
+      <h2>🚀 Automatic Deployment</h2>
+
+      <div class="deployment-info">
+        <h3>GitHub Actions Workflow</h3>
+        <p>The <code>.github/workflows/docs.yml</code> file automatically:</p>
+        <ol>
+          <li>
+            <strong>Builds documentation</strong> on every push to main branch
+          </li>
+          <li><strong>Tests the build</strong> to ensure it works</li>
+          <li><strong>Deploys to GitHub Pages</strong> automatically</li>
+          <li><strong>Provides previews</strong> for pull requests</li>
+        </ol>
+      </div>
+
+      <div class="deployment-info">
+        <h3>Workflow Triggers</h3>
+        <ul>
+          <li><strong>Push to main:</strong> Automatically deploys</li>
+          <li><strong>Push to development:</strong> Builds and tests</li>
+          <li>
+            <strong>Pull Request:</strong> Builds and provides preview info
+          </li>
+        </ul>
+      </div>
+
+      <div class="deployment-info">
+        <h3>Manual Deployment</h3>
+        <p>If you need to deploy manually:</p>
+        <ol>
+          <li><strong>Go to Actions tab</strong> in your repository</li>
+          <li><strong>Select "Deploy Documentation"</strong> workflow</li>
+          <li><strong>Click "Run workflow"</strong></li>
+          <li><strong>Select branch</strong> and click "Run workflow"</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="custom-domain">
+      <h2>🌐 Custom Domain (Optional)</h2>
+
+      <div class="domain-info">
+        <h3>Set Custom Domain</h3>
+        <ol>
+          <li><strong>Go to Settings > Pages</strong></li>
+          <li><strong>Under "Custom domain"</strong>, enter your domain</li>
+          <li><strong>Check "Enforce HTTPS"</strong></li>
+          <li><strong>Click Save</strong></li>
+        </ol>
+      </div>
+
+      <div class="domain-info">
+        <h3>DNS Configuration</h3>
+        <p>Add these records to your domain's DNS:</p>
+        <ul>
+          <li><strong>Type:</strong> CNAME</li>
+          <li><strong>Name:</strong> docs (or @ for root domain)</li>
+          <li><strong>Value:</strong> ferg-cod3s.github.io</li>
+        </ul>
+      </div>
+
+      <div class="domain-info">
+        <h3>SSL Certificate</h3>
+        <p>
+          GitHub automatically provides SSL certificates for custom domains.
+        </p>
+      </div>
+    </section>
+
+    <section class="mobile-optimization">
+      <h2>📱 Mobile Optimization</h2>
+
+      <div class="mobile-info">
+        <h3>Responsive Design</h3>
+        <p>The documentation is already mobile-optimized with:</p>
+        <ul>
+          <li><strong>Responsive grid layout</strong></li>
+          <li><strong>Mobile-friendly navigation</strong></li>
+          <li><strong>Touch-optimized interactions</strong></li>
+          <li><strong>Readable typography</strong> on small screens</li>
+        </ul>
+      </div>
+
+      <div class="mobile-info">
+        <h3>Testing Mobile</h3>
+        <p>Test your documentation on various devices:</p>
+        <ol>
+          <li><strong>Use browser dev tools</strong> to simulate mobile</li>
+          <li><strong>Test on actual devices</strong> when possible</li>
+          <li><strong>Check touch interactions</strong> and scrolling</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="search-seo">
+      <h2>🔍 Search and SEO</h2>
+
+      <div class="search-info">
+        <h3>Built-in Search</h3>
+        <p>The documentation includes:</p>
+        <ul>
+          <li><strong>Full-text search</strong> across all content</li>
+          <li><strong>Relevance scoring</strong> for better results</li>
+          <li><strong>Keyboard shortcuts</strong> (Cmd/Ctrl + K)</li>
+          <li><strong>Search highlighting</strong> and navigation</li>
+        </ul>
+      </div>
+
+      <div class="search-info">
+        <h3>SEO Optimization</h3>
+        <ul>
+          <li><strong>Meta tags</strong> for social sharing</li>
+          <li><strong>Open Graph</strong> and Twitter Card support</li>
+          <li><strong>Structured data</strong> for search engines</li>
+          <li><strong>Sitemap generation</strong> (automatic)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="troubleshooting">
+      <h2>🛠️ Troubleshooting</h2>
+
+      <div class="issue">
+        <h3>Build Fails</h3>
+        <ul>
+          <li>Check Node.js version (should be 18.0.0+)</li>
+          <li>Clear npm cache: <code>npm cache clean --force</code></li>
+          <li>
+            Reinstall dependencies: <code
+              >rm -rf node_modules package-lock.json && npm install</code
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="issue">
+        <h3>Pages Not Updating</h3>
+        <ul>
+          <li>Check GitHub Actions for build status</li>
+          <li>Verify branch protection rules</li>
+          <li>Wait 5-10 minutes for deployment</li>
+        </ul>
+      </div>
+
+      <div class="issue">
+        <h3>Styling Issues</h3>
+        <ul>
+          <li>Clear browser cache</li>
+          <li>Check CSS file paths</li>
+          <li>Verify asset compilation</li>
+        </ul>
+      </div>
+
+      <div class="issue">
+        <h3>Debug Mode</h3>
+        <p>Enable debug mode in Astro:</p>
+        <code>npm run dev -- --verbose</code>
+      </div>
+    </section>
+
+    <section class="analytics-monitoring">
+      <h2>📊 Analytics and Monitoring</h2>
+
+      <div class="analytics-info">
+        <h3>GitHub Analytics</h3>
+        <p>GitHub provides basic analytics:</p>
+        <ol>
+          <li><strong>Go to Insights > Traffic</strong></li>
+          <li><strong>View page views</strong> and unique visitors</li>
+          <li><strong>Check referrers</strong> and popular content</li>
+          <li><strong>Monitor clone counts</strong></li>
+        </ol>
+      </div>
+
+      <div class="analytics-info">
+        <h3>Custom Analytics</h3>
+        <p>
+          Add Google Analytics by including the tracking script in your layout
+          component.
+        </p>
+      </div>
+    </section>
+
+    <section class="maintenance">
+      <h2>🔄 Maintenance</h2>
+
+      <div class="maintenance-info">
+        <h3>Regular Updates</h3>
+        <ul>
+          <li><strong>Update dependencies</strong> monthly</li>
+          <li><strong>Review content</strong> quarterly</li>
+          <li><strong>Test functionality</strong> after major changes</li>
+          <li><strong>Monitor performance</strong> and user feedback</li>
+        </ul>
+      </div>
+
+      <div class="maintenance-info">
+        <h3>Content Management</h3>
+        <ul>
+          <li><strong>Use consistent formatting</strong> (see style guide)</li>
+          <li><strong>Keep navigation updated</strong> when adding pages</li>
+          <li><strong>Test all links</strong> regularly</li>
+          <li><strong>Update screenshots</strong> when UI changes</li>
+        </ul>
+      </div>
+
+      <div class="maintenance-info">
+        <h3>Performance Optimization</h3>
+        <ul>
+          <li><strong>Optimize images</strong> before adding</li>
+          <li><strong>Minimize JavaScript</strong> and CSS</li>
+          <li><strong>Use lazy loading</strong> for heavy content</li>
+          <li><strong>Monitor page load times</strong></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="additional-resources">
+      <h2>📚 Additional Resources</h2>
+
+      <div class="resources-info">
+        <h3>Documentation</h3>
+        <ul>
+          <li>
+            <a href="https://docs.github.com/en/pages" target="_blank"
+              >GitHub Pages Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://docs.astro.build/" target="_blank"
+              >Astro Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://svelte.dev/docs" target="_blank"
+              >Svelte Documentation</a
+            >
+          </li>
+          <li>
+            <a href="https://docs.github.com/en/actions" target="_blank"
+              >GitHub Actions Documentation</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resources-info">
+        <h3>Community</h3>
+        <ul>
+          <li>
+            <a
+              href="https://github.com/orgs/community/discussions"
+              target="_blank">GitHub Community</a
+            >
+          </li>
+          <li>
+            <a href="https://astro.build/chat" target="_blank">Astro Discord</a>
+          </li>
+          <li>
+            <a href="https://discord.gg/svelte" target="_blank"
+              >Svelte Discord</a
+            >
+          </li>
+          <li>
+            <a href="https://discord.gg/3Ub3EUwrcR" target="_blank"
+              >TunnelForge Discord</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resources-info">
+        <h3>Tools</h3>
+        <ul>
+          <li>
+            <a
+              href="https://github.com/withastro/astro/tree/main/packages/integrations/svelte"
+              target="_blank">Astro Svelte Integration</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://github.com/withastro/astro/tree/main/packages/integrations/tailwind"
+              target="_blank">Astro Tailwind Integration</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://github.com/withastro/astro/tree/main/packages/integrations/image"
+              target="_blank">Astro Image Optimization</a
+            >
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="next-steps">
+      <h2>Next Steps</h2>
+      <p>
+        Your documentation is now set up with Astro and Svelte! Check out the <a
+          href="/cli-reference">CLI Reference</a
+        > to continue building your documentation.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .content section {
+    margin-bottom: 3rem;
+  }
+
+  .content h2 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .content h3 {
+    color: #374151;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  .setup-step,
+  .deployment-info,
+  .domain-info,
+  .mobile-info,
+  .search-info,
+  .issue,
+  .analytics-info,
+  .maintenance-info,
+  .resources-info {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .setup-step h3,
+  .deployment-info h3,
+  .domain-info h3,
+  .mobile-info h3,
+  .search-info h3,
+  .issue h3,
+  .analytics-info h3,
+  .maintenance-info h3,
+  .resources-info h3 {
+    margin-top: 0;
+    color: #1f2937;
+  }
+
+  code {
+    background-color: #f3f4f6;
+    color: #dc2626;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+      "Courier New", monospace;
+    font-size: 0.875em;
+  }
+
+  ul,
+  ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .next-steps {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .next-steps h2 {
+    margin-top: 0;
+    color: #1e40af;
+  }
+
+  .next-steps p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #1e40af;
+  }
+</style>

@@ -1,9 +1,26 @@
-<!-- Generated: 2025-08-23 -->
-# TunnelForge Architecture (formerly VibeTunnel)
+<!-- Generated: 2025-01-27 -->
+# TunnelForge Architecture
 
-TunnelForge is a modern cross-platform terminal multiplexer with a high-performance Go server backend, pure Bun web interface, and Tauri v2 desktop applications. The architecture prioritizes performance, security, and consistent cross-platform experience through WebSocket-based communication and modern web technologies.
+> **🔄 Refactoring in Progress**: TunnelForge is currently being refactored from the legacy Node.js + SwiftUI architecture to a modern Go + Bun + Tauri architecture. **Note: This document describes the TARGET ARCHITECTURE being planned, not the current implementation.**
 
-The system consists of three main components: a high-performance Go server handling terminal sessions and APIs, a pure Bun web interface for browser-based interaction, and cross-platform Tauri v2 desktop applications for native desktop experience. These components communicate through a well-defined REST API and WebSocket protocol for real-time terminal I/O streaming.
+## Current Status
+
+**Legacy Implementation** (Currently Working):
+- Node.js server with Express routing
+- SwiftUI macOS app with menu bar integration
+- Port 4020
+
+**Target Implementation** (Planned, Not Yet Implemented):
+- Go server backend for high-performance terminal management
+- Bun web server for modern TypeScript frontend
+- Tauri v2 desktop apps for cross-platform support
+- Port 4021 (Go server) + 3001 (Bun web)
+
+## Target Architecture
+
+TunnelForge is being refactored into a modern cross-platform terminal multiplexer with a high-performance Go server backend, pure Bun web interface, and Tauri v2 desktop applications. The new architecture prioritizes performance, security, and consistent cross-platform experience through WebSocket-based communication and modern web technologies.
+
+**Note**: The Go + Bun + Tauri implementation has not been started yet. Only the planning, architecture design, and documentation exist.
 
 ## Component Map
 
@@ -38,37 +55,37 @@ The system consists of three main components: a high-performance Go server handl
 ## Key Files
 
 **Go Server Core**
-- server/cmd/server/main.go - Entry point with graceful shutdown
-- server/internal/server/server.go - HTTP server setup
-- server/go.mod - Go dependencies and module definition
+- development/go-server/cmd/server/main.go - Entry point with graceful shutdown
+- development/go-server/internal/server/server.go - HTTP server setup
+- development/go-server/go.mod - Go dependencies and module definition
 
 **Session Management**
-- server/internal/session/manager.go - Thread-safe session management
-- server/internal/terminal/pty.go - PTY process management
-- server/pkg/types/session.go - Session data structures
+- development/go-server/internal/session/manager.go - Thread-safe session management
+- development/go-server/internal/terminal/pty.go - PTY process management
+- development/go-server/pkg/types/session.go - Session data structures
 
 **Authentication & Security**
-- server/internal/auth/jwt.go - JWT authentication
-- server/internal/middleware/security.go - Security middleware
-- server/internal/middleware/auth.go - Authentication middleware
+- development/go-server/internal/auth/jwt.go - JWT authentication
+- development/go-server/internal/middleware/security.go - Security middleware
+- development/go-server/internal/middleware/auth.go - Authentication middleware
 
 **Bun Web Server**
-- web/src/server.ts - Bun server with API proxy
-- web/package.json - Bun dependencies
-- web/public/ - Static web assets
+- development/bun-web/src/server.ts - Bun server with API proxy
+- development/bun-web/package.json - Bun dependencies
+- development/bun-web/public/ - Static web assets
 
 ## Data Flow
 
 **Session Creation Flow**
 1. Client request → POST /api/sessions (Go server HTTP handler)
-2. SessionManager.CreateSession() (server/internal/session/manager.go)
-3. Terminal.NewPTY() (server/internal/terminal/pty.go) - Spawns PTY using creack/pty
+2. SessionManager.CreateSession() (development/go-server/internal/session/manager.go)
+3. Terminal.NewPTY() (development/go-server/internal/terminal/pty.go) - Spawns PTY using creack/pty
 4. Session stored in thread-safe manager with UUID
 5. Response with session ID and WebSocket upgrade URL
 
 **Terminal I/O Stream**
 1. User input → WebSocket message to /ws?sessionId={id}
-2. WebSocket handler processes input (server/internal/websocket/handler.go)
+2. WebSocket handler processes input (development/go-server/internal/websocket/handler.go)
 3. PTY process receives input via pty.Write()
 4. PTY output → WebSocket handler streams to client
 5. Raw terminal output streamed over WebSocket
@@ -100,3 +117,25 @@ The system consists of three main components: a high-performance Go server handl
 - Rate limiting: 100 requests/minute per IP
 - Security headers: HSTS, CSP, X-Frame-Options
 - Input validation and sanitization
+
+## Migration Path
+
+**Phase 1: Go Server Development** ✅ (In Progress)
+- Implement Go server with PTY management
+- Add WebSocket communication
+- Implement session management
+
+**Phase 2: Bun Web Server** 🔄 (Next)
+- Create Bun server with API proxy
+- Migrate frontend to Bun runtime
+- Test integration with Go server
+
+**Phase 3: Tauri Desktop Apps** 📋 (Planned)
+- Implement Tauri v2 desktop applications
+- Add cross-platform support
+- Migrate from SwiftUI macOS app
+
+**Phase 4: Legacy Cleanup** 📋 (Planned)
+- Remove Node.js server code
+- Remove SwiftUI macOS app
+- Update all documentation and tooling

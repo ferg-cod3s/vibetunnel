@@ -57,7 +57,7 @@ Swift Testing framework tests covering core functionality:
 
 ```swift
 // From mac/TunnelForgeTests/ServerManagerTests.swift:14-40
-@Test("Starting and stopping Bun server", .tags(.critical))
+@Test("Starting and stopping Node.js server", .tags(.critical))
 func serverLifecycle() async throws {
     let manager = ServerManager.shared
     await manager.stop()

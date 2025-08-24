@@ -17,7 +17,7 @@ npm install -g tunnelforge
 
 ### From Source
 ```bash
-git clone https://github.com/amantus-ai/tunnelforge.git
+git clone https://github.com/ferg-cod3s/tunnelforge.git
 cd tunnelforge/web
 pnpm install
 pnpm run build
@@ -214,7 +214,7 @@ This npm package includes:
 
 - macOS (Intel and Apple Silicon)
 - Linux (x64 and ARM64)
-- Windows: Not yet supported ([#252](https://github.com/amantus-ai/tunnelforge/issues/252))
+- Windows: Not yet supported ([#252](https://github.com/ferg-cod3s/tunnelforge/issues/252))
 
 ## Troubleshooting
 
@@ -299,7 +299,7 @@ pnpm run build
 
 ## Documentation
 
-See the main repository for complete documentation: https://github.com/amantus-ai/tunnelforge
+See the main repository for complete documentation: https://github.com/ferg-cod3s/tunnelforge
 
 ## License
 

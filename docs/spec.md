@@ -1,5 +1,7 @@
 # TunnelForge Technical Specification (formerly VibeTunnel)
 
+> **🔄 Refactoring in Progress**: This document describes the **TARGET ARCHITECTURE** being implemented. TunnelForge is currently being refactored from Node.js + SwiftUI to Go + Bun + Tauri. The current implementation uses Node.js + SwiftUI, but this spec shows the planned Go + Bun + Tauri architecture.
+
 ## Table of Contents
 
 1. [Executive Summary](#executive-summary)
@@ -20,7 +22,7 @@
 16. [Testing Strategy](#testing-strategy)
 17. [Performance Requirements](#performance-requirements)
 18. [Error Handling](#error-handling)
-19. [Update System](#update-system)
+19. [Update System](#update-system]
 20. [Platform Integration](#platform-integration)
 21. [Data Formats](#data-formats)
 
@@ -32,9 +34,9 @@ TunnelForge is a modern cross-platform terminal multiplexer that provides browse
 
 ### Key Features
 
-- **High-Performance Go Server**: <1ms response time, 1000+ concurrent connections
-- **Cross-Platform Desktop Apps**: Native applications for macOS, Windows, and Linux via Tauri v2
-- **Pure Bun Web Interface**: Fast web server with API proxy capabilities  
+- **High-Performance Node.js Server**: <10ms response time, 100+ concurrent connections
+- **Native macOS App**: SwiftUI application with menu bar integration
+- **TypeScript Web Interface**: Fast web server with Express routing
 - **Zero-Configuration Access**: Launch terminals with simple commands
 - **Real-Time Streaming**: WebSocket-based terminal I/O with optimal performance
 - **Enterprise Security**: JWT authentication, bcrypt hashing, CSRF protection, rate limiting
@@ -43,13 +45,13 @@ TunnelForge is a modern cross-platform terminal multiplexer that provides browse
 
 ### Technical Stack
 
-- **Go Server Backend**: Go 1.23+ with Gorilla Mux, WebSocket, creack/pty
-- **Bun Web Interface**: Pure Bun runtime with TypeScript
-- **Tauri v2 Desktop Apps**: Rust backend + web frontend for cross-platform native apps
+- **Node.js Server Backend**: Node.js 20+ with Express, WebSocket, node-pty
+- **TypeScript Web Interface**: Node.js runtime with TypeScript
+- **SwiftUI macOS App**: Native Swift application with system integration
 - **Web Frontend**: TypeScript, LitElement, xterm.js, Tailwind CSS
-- **Legacy iOS App**: Swift 6.0, SwiftUI, iOS 17.0+ (to be updated)
+- **iOS Companion App**: Swift 6.0, SwiftUI, iOS 17.0+
 - **Terminal Emulation**: xterm.js with custom buffer optimization
-- **Build System**: Xcode, Swift Package Manager, npm/Bun
+- **Build System**: Xcode, Swift Package Manager, npm/pnpm
 - **Distribution**: Signed/notarized DMG with Sparkle updates
 
 ## System Architecture
@@ -58,19 +60,19 @@ TunnelForge is a modern cross-platform terminal multiplexer that provides browse
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                Tauri v2 Desktop Applications                 │
-│               (macOS, Windows, Linux)                       │
+│                SwiftUI macOS Application                     │
+│                    (macOS 14.0+)                           │
 │  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │ System Tray │  │ Process      │  │ Native System    │  │
-│  │ UI (Web)    │──│ Manager      │──│ Integration      │  │
+│  │ Menu Bar    │  │ Process      │  │ Native System    │  │
+│  │ UI (Swift)  │──│ Manager      │──│ Integration      │  │
 │  └─────────────┘  └──────────────┘  └──────────────────┘  │
 │                           │                                  │
 │  ┌─────────────────────────────────────────────────────┐  │
-│  │             Go Server Subprocess                     │  │
+│  │             Node.js Server Subprocess                 │  │
 │  │  ┌──────────────────────────────────────────────┐   │  │
-│  │  │ High-performance Go binary with PTY mgmt     │   │  │
-│  │  │ JWT auth, WebSocket, creack/pty (Port 4021)  │   │  │
-│  │  └──────────────────────────────────────────────┘   │  │
+│  │  │ High-performance Node.js with PTY mgmt       │   │
+│  │  │ JWT auth, WebSocket, node-pty (Port 4020)   │   │
+│  │  └──────────────────────────────────────────────┘   │
 │  └─────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
                                │
@@ -81,11 +83,11 @@ TunnelForge is a modern cross-platform terminal multiplexer that provides browse
 ┌──────────────────────────────┴──────────────────────────────┐
 │                    Client Access Methods                     │
 ├─────────────────────────────────────────────────────────────┤
-│  Bun Web Interface              Legacy iOS App             │
+│  Web Interface                  iOS Companion App           │
 │  ┌──────────────┐              ┌──────────────┐           │
 │  │ Static Files │              │ WebSocket    │           │
-│  │ API Proxy    │              │ Client       │           │
-│  │ (Port 3000)  │              │ (iOS 17.0+)  │           │
+│  │ API Routes   │              │ Client       │           │
+│  │ (Port 4020)  │              │ (iOS 17.0+)  │           │
 │  └──────────────┘              └──────────────┘           │
 ├─────────────────────────────────────────────────────────────┤
 │                    Web Browsers                             │
@@ -470,15 +472,12 @@ export interface Session {
 
 ## CLI Integration
 
-### tf Command (vt remains as legacy alias)
-
-**Installation**:
-The `tf` command is preferred; `vt` remains a legacy alias. The wrapper script automatically prepends 'fwd' to commands when using the Bun server.
+### vt Command Wrapper
 
 **Script Location**: `/usr/local/bin/vt`
 ```bash
 #!/bin/bash
-# TunnelForge CLI wrapper for Bun server
+# TunnelForge CLI wrapper for Node.js server
 exec /usr/local/bin/tunnelforge fwd "$@"
 ```
 
@@ -678,7 +677,7 @@ The binary buffer protocol optimizes terminal data transmission by sending full 
 - Debug logging
 
 **Debug Tab** (hidden by default):
-- Server type display (Bun only)
+- Server type display (Node.js only)
 - Console log viewer
 - Diagnostic information
 
@@ -720,7 +719,7 @@ cleanupOnStartup: Bool = true
 **Requirements**:
 - Xcode 16.0+
 - macOS 14.0+ SDK
-- Go 1.23+ and Bun runtime
+- Node.js 20+ runtime
 
 **Build Process**:
 ```bash
@@ -732,9 +731,9 @@ cd mac && ./scripts/build.sh --configuration Debug
 ```
 
 **Build Phases**:
-1. Build Bun executable from web sources
+1. Build Node.js server from web sources
 2. Compile Swift application
-3. Copy resources (Bun binary, web assets)
+3. Copy resources (Node.js binary, web assets)
 4. Code sign application
 5. Create DMG for distribution
 
@@ -763,7 +762,7 @@ cd mac && ./scripts/build.sh --configuration Debug
 
 **Package Contents**:
 - ARM64-only binary (Apple Silicon required)
-- Embedded Bun server executable
+- Embedded Node.js server executable
 - Web assets and resources
 - Sparkle update framework
 
@@ -794,21 +793,22 @@ mac/TunnelForgeTests/
 - `.concurrency` - Async operations
 - `.security` - Security features
 
-### Go Server Tests
+### Node.js Server Tests
 
-**Framework**: Go testing package
+**Framework**: Vitest testing package
 
 **Test Structure**:
 ```
-server/
-├── internal/
-│   ├── auth/auth_test.go
-│   ├── session/manager_test.go
-│   ├── terminal/pty_test.go
-│   └── websocket/handler_test.go
-└── test/
-    ├── integration_test.go
-    └── security_test.go
+web/
+├── src/
+│   ├── server/
+│   │   ├── services/
+│   │   ├── routes/
+│   │   └── middleware/
+└── tests/
+    ├── unit/
+    ├── integration/
+    └── e2e/
 ```
 
 **Coverage Requirements**:
@@ -834,7 +834,7 @@ server/
 
 **Memory**:
 - macOS app idle: < 50MB
-- Bun server idle: < 100MB
+- Node.js server idle: < 100MB
 - Per session: < 10MB
 - Buffer cache: 64KB per session
 
@@ -959,7 +959,8 @@ Sessions are ephemeral and exist only in server memory. Recordings are stored te
 
 ## Conclusion
 
-VibeTunnel achieves its goal of simple, secure terminal access through a carefully architected system combining cross-platform desktop applications with modern server technologies. The high-performance Go server backend with Bun web interface provides excellent performance while maintaining simplicity.
+TunnelForge achieves its goal of simple, secure terminal access through a carefully architected system combining native macOS applications with modern web technologies. The high-performance Node.js server backend with TypeScript web interface provides excellent performance while maintaining simplicity.
 
 The binary buffer protocol ensures efficient terminal streaming, while the clean architectural boundaries enable independent evolution of components. With careful attention to macOS platform conventions and user expectations, TunnelForge delivers a professional-grade solution for terminal access needs.
+
 This specification serves as the authoritative reference for understanding, maintaining, and extending the TunnelForge project.

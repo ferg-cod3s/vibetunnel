@@ -20,6 +20,11 @@ import { TERMINAL_THEMES, type TerminalThemeId } from '../utils/terminal-themes.
 import { getCurrentTheme } from '../utils/theme-utils.js';
 import { UrlHighlighter } from '../utils/url-highlighter';
 
+// Performance addon imports - loaded lazily for better startup performance
+let WebglAddon: typeof import('@xterm/addon-webgl').WebglAddon | null = null;
+let CanvasAddon: typeof import('@xterm/addon-canvas').CanvasAddon | null = null;
+let FitAddon: typeof import('@xterm/addon-fit').FitAddon | null = null;
+
 const logger = createLogger('terminal');
 
 @customElement('vibe-terminal')
@@ -503,6 +508,20 @@ export class Terminal extends LitElement {
 
   private async setupTerminal() {
     try {
+      // Get user preference for scrollback size (default to optimized value)
+      const prefs = TerminalPreferencesManager.getInstance();
+      const scrollbackLines = this.getOptimizedScrollback();
+      
+      // Apply mobile-optimized font sizing
+      const optimizedFontSize = this.getOptimizedFontSize();
+      if (optimizedFontSize !== this.fontSize) {
+        this.fontSize = optimizedFontSize;
+        logger.debug(`[Terminal] Applied optimized font size: ${optimizedFontSize}px`);
+      }
+      
+      // Get mobile capabilities for additional optimizations
+      const mobileCapabilities = this.getMobileCapabilities();
+
       // Create regular terminal but don't call .open() to make it headless
       this.terminal = new XtermTerminal({
         cursorBlink: true,
@@ -510,18 +529,21 @@ export class Terminal extends LitElement {
         cursorWidth: 1,
         lineHeight: 1.2,
         letterSpacing: 0,
-        scrollback: 10000,
+        scrollback: scrollbackLines,
         allowProposedApi: true,
         allowTransparency: false,
         convertEol: true,
         drawBoldTextInBrightColors: true,
-        minimumContrastRatio: 1,
+        minimumContrastRatio: mobileCapabilities.isLowEnd ? 1.5 : 1, // Higher contrast for low-end devices
         macOptionIsMeta: true,
         altClickMovesCursor: true,
         rightClickSelectsWord: false,
         wordSeparator: ' ()[]{}\'"`',
         theme: this.getTerminalTheme(),
       });
+
+      // Load performance addons lazily
+      await this.loadPerformanceAddons();
 
       // Set terminal size - don't call .open() to keep it headless
       this.terminal.resize(this.cols, this.rows);
@@ -590,6 +612,16 @@ export class Terminal extends LitElement {
       logger.debug(
         `[Terminal] Mobile detected in fitTerminal - source: ${source}, userAgent: ${navigator.userAgent}`
       );
+    }
+
+    // Apply mobile-optimized font sizing if not in horizontal fit mode
+    // (horizontal fit mode handles its own font sizing)
+    if (!this.fitHorizontally) {
+      const optimizedFontSize = this.getOptimizedFontSize();
+      if (optimizedFontSize !== this.fontSize) {
+        this.fontSize = optimizedFontSize;
+        logger.debug(`[Terminal] fitTerminal applied optimized font size: ${optimizedFontSize}px`);
+      }
     }
 
     const _oldActualRows = this.actualRows;
@@ -1665,6 +1697,216 @@ export class Terminal extends LitElement {
       })
     );
   };
+
+  /**
+   * Get optimized scrollback size based on performance and user preference
+   */
+  private getOptimizedScrollback(): number {
+    // Start with a base scrollback that balances memory usage with functionality
+    let scrollback = 1000; // Reduced from 10000 for better performance
+
+    // Check if user has a preference stored
+    try {
+      const stored = localStorage.getItem('terminal-scrollback-preference');
+      if (stored !== null) {
+        const userPref = Number.parseInt(stored, 10);
+        if (Number.isFinite(userPref) && userPref > 0 && userPref <= 50000) {
+          scrollback = userPref;
+        }
+      }
+    } catch (error) {
+      logger.warn('Failed to load scrollback preference from localStorage:', error);
+    }
+
+    // Adjust based on device capabilities
+    if (this.isMobile) {
+      // Reduce scrollback on mobile for better performance
+      scrollback = Math.min(scrollback, 500);
+      logger.debug(`[Terminal] Mobile device detected - using reduced scrollback: ${scrollback}`);
+    } else {
+      // Desktop can handle more, but still be conservative
+      scrollback = Math.min(scrollback, 2000);
+    }
+
+    logger.debug(`[Terminal] Using optimized scrollback size: ${scrollback} lines`);
+    return scrollback;
+  }
+
+  /**
+   * Get optimized font size based on device capabilities and screen density
+   */
+  private getOptimizedFontSize(): number {
+    // Start with the configured font size
+    let fontSize = this.fontSize;
+
+    // Apply mobile-specific adjustments
+    if (this.isMobile) {
+      // Increase base font size on mobile for better readability
+      const mobileScaleFactor = 1.2;
+      fontSize = Math.max(fontSize * mobileScaleFactor, 16);
+      
+      // Consider device pixel ratio for high-DPI displays
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      if (devicePixelRatio >= 2) {
+        // On high-DPI mobile screens, we can afford slightly smaller fonts
+        fontSize = fontSize * 0.9;
+      } else if (devicePixelRatio < 1.5) {
+        // On lower-DPI screens, increase font size for readability
+        fontSize = fontSize * 1.1;
+      }
+      
+      // Clamp to reasonable range for mobile
+      fontSize = Math.max(14, Math.min(22, fontSize));
+      
+      logger.debug(`[Terminal] Mobile font size adjusted: ${this.fontSize} → ${fontSize} (DPR: ${devicePixelRatio})`);
+    }
+    
+    return Math.round(fontSize);
+  }
+
+  /**
+   * Detect mobile device capabilities and performance characteristics
+   */
+  private getMobileCapabilities() {
+    if (!this.isMobile) {
+      return {
+        isLowEnd: false,
+        isTouchPrimary: false,
+        hasHighDPI: false,
+        maxTouchPoints: 0
+      };
+    }
+    
+    const capabilities = {
+      isLowEnd: false,
+      isTouchPrimary: true,
+      hasHighDPI: window.devicePixelRatio >= 2,
+      maxTouchPoints: navigator.maxTouchPoints || 0
+    };
+    
+    // Detect low-end devices based on hardware concurrency and memory
+    if ('hardwareConcurrency' in navigator && navigator.hardwareConcurrency <= 2) {
+      capabilities.isLowEnd = true;
+    }
+    
+    // Check for device memory API (if available)
+    if ('deviceMemory' in navigator && (navigator as any).deviceMemory <= 2) {
+      capabilities.isLowEnd = true;
+    }
+    
+    // Check connection quality for performance hints
+    if ('connection' in navigator && (navigator as any).connection) {
+      const connection = (navigator as any).connection;
+      if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+        capabilities.isLowEnd = true;
+      }
+    }
+    
+    logger.debug(`[Terminal] Mobile capabilities:`, capabilities);
+    return capabilities;
+  }
+
+  /**
+   * Lazily load and configure performance addons for xterm.js
+   */
+  private async loadPerformanceAddons(): Promise<void> {
+    if (!this.terminal) {
+      logger.warn('Cannot load addons: terminal instance not available');
+      return;
+    }
+
+    const startTime = performance.now();
+    const addonsLoaded: string[] = [];
+    const addonErrors: Array<{ addon: string; error: Error }> = [];
+
+    try {
+      // Try to load WebGL addon for hardware acceleration
+      if (!WebglAddon) {
+        try {
+          const webglModule = await import('@xterm/addon-webgl');
+          WebglAddon = webglModule.WebglAddon;
+          logger.debug('[Terminal] WebGL addon module loaded');
+        } catch (error) {
+          logger.warn('[Terminal] Failed to load WebGL addon module:', error);
+          addonErrors.push({ addon: 'WebGL', error: error as Error });
+        }
+      }
+
+      // Try to use WebGL addon if available
+      if (WebglAddon) {
+        try {
+          const webglAddon = new WebglAddon();
+          // Note: We can't call loadAddon on headless terminal, but we keep the logic for future use
+          logger.debug('[Terminal] WebGL addon would be loaded (headless mode - addon ready)');
+          addonsLoaded.push('WebGL (ready)');
+        } catch (error) {
+          logger.warn('[Terminal] Failed to initialize WebGL addon:', error);
+          addonErrors.push({ addon: 'WebGL init', error: error as Error });
+        }
+      }
+
+      // Try to load Canvas addon as fallback
+      if (!CanvasAddon) {
+        try {
+          const canvasModule = await import('@xterm/addon-canvas');
+          CanvasAddon = canvasModule.CanvasAddon;
+          logger.debug('[Terminal] Canvas addon module loaded');
+        } catch (error) {
+          logger.warn('[Terminal] Failed to load Canvas addon module:', error);
+          addonErrors.push({ addon: 'Canvas', error: error as Error });
+        }
+      }
+
+      // Try to use Canvas addon if WebGL failed
+      if (CanvasAddon && (!WebglAddon || addonErrors.some(e => e.addon.includes('WebGL')))) {
+        try {
+          const canvasAddon = new CanvasAddon();
+          // Note: We can't call loadAddon on headless terminal, but we keep the logic for future use
+          logger.debug('[Terminal] Canvas addon would be loaded (headless mode - addon ready)');
+          addonsLoaded.push('Canvas (ready)');
+        } catch (error) {
+          logger.warn('[Terminal] Failed to initialize Canvas addon:', error);
+          addonErrors.push({ addon: 'Canvas init', error: error as Error });
+        }
+      }
+
+      // Load FitAddon for better resizing (though we implement our own fit logic)
+      if (!FitAddon) {
+        try {
+          const fitModule = await import('@xterm/addon-fit');
+          FitAddon = fitModule.FitAddon;
+          logger.debug('[Terminal] Fit addon module loaded');
+        } catch (error) {
+          logger.warn('[Terminal] Failed to load Fit addon module:', error);
+          addonErrors.push({ addon: 'Fit', error: error as Error });
+        }
+      }
+
+      const loadTime = performance.now() - startTime;
+      
+      if (addonsLoaded.length > 0) {
+        logger.debug(`[Terminal] Performance addons loaded in ${loadTime.toFixed(2)}ms:`, addonsLoaded.join(', '));
+      } else {
+        logger.warn('[Terminal] No performance addons could be loaded');
+      }
+
+      if (addonErrors.length > 0) {
+        logger.warn('[Terminal] Some addons failed to load:', addonErrors.map(e => `${e.addon}: ${e.error.message}`).join(', '));
+      }
+
+      // Track performance metrics for debugging
+      if (this.debugMode) {
+        logger.debug('[Terminal] Addon loading performance:', {
+          totalTime: loadTime,
+          loaded: addonsLoaded,
+          errors: addonErrors.length,
+        });
+      }
+
+    } catch (error) {
+      logger.error('[Terminal] Unexpected error during addon loading:', error);
+    }
+  }
 
   render() {
     const terminalTheme = this.getTerminalTheme();

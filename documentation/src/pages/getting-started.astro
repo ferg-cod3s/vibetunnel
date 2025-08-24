@@ -1,0 +1,517 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Getting Started - TunnelForge Documentation">
+  <div class="page-header">
+    <h1>Getting Started with TunnelForge</h1>
+    <p>
+      Welcome to TunnelForge! This guide will walk you through creating your
+      first terminal session and getting familiar with the interface.
+    </p>
+  </div>
+
+  <div class="content">
+    <section class="first-steps">
+      <h2>🚀 First Steps</h2>
+
+      <div class="step">
+        <h3>1. Launch TunnelForge</h3>
+
+        <div class="platform-specific">
+          <div class="platform">
+            <h4>macOS Users:</h4>
+            <ul>
+              <li>Open TunnelForge from your Applications folder</li>
+              <li>Look for the TunnelForge icon in your menu bar</li>
+              <li>Click the icon to open the main interface</li>
+            </ul>
+          </div>
+
+          <div class="platform">
+            <h4>Linux Users:</h4>
+            <pre><code># Start the server
+tunnelforge start
+
+# Or if running from source
+cd web
+npm start</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <h3>2. Access the Web Interface</h3>
+        <ol>
+          <li>Open your web browser</li>
+          <li>Navigate to <code>http://localhost:4020</code></li>
+          <li>You should see the TunnelForge welcome screen</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="creating-sessions">
+      <h2>🖥️ Creating Your First Session</h2>
+
+      <div class="method">
+        <h3>Method 1: Web Interface (Recommended)</h3>
+        <ol>
+          <li><strong>Click "New Session"</strong> on the main dashboard</li>
+          <li>
+            <strong>Choose your shell:</strong>
+            <ul>
+              <li><code>bash</code> (default)</li>
+              <li><code>zsh</code> (macOS default)</li>
+              <li><code>fish</code> (if installed)</li>
+              <li>Custom command</li>
+            </ul>
+          </li>
+          <li><strong>Set a session name</strong> (optional but helpful)</li>
+          <li><strong>Click "Create Session"</strong></li>
+        </ol>
+      </div>
+
+      <div class="method">
+        <h3>Method 2: Command Line</h3>
+        <pre><code># Using the vt command
+vt start bash "My First Session"
+
+# Using tunnelforge CLI
+tunnelforge start --shell bash --name "My First Session"</code></pre>
+      </div>
+    </section>
+
+    <section class="understanding-interface">
+      <h2>🎯 Understanding the Interface</h2>
+
+      <div class="interface-section">
+        <h3>Session Dashboard</h3>
+        <ul>
+          <li>
+            <strong>Active Sessions</strong> - Currently running terminal sessions
+          </li>
+          <li>
+            <strong>Session Status</strong> - Running, stopped, or error states
+          </li>
+          <li>
+            <strong>Quick Actions</strong> - Start, stop, restart sessions
+          </li>
+        </ul>
+      </div>
+
+      <div class="interface-section">
+        <h3>Terminal View</h3>
+        <ul>
+          <li>
+            <strong>Terminal Window</strong> - Your actual terminal session
+          </li>
+          <li>
+            <strong>Toolbar</strong> - Copy, paste, clear, and resize options
+          </li>
+          <li>
+            <strong>Status Bar</strong> - Session info and connection status
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sharing-sessions">
+      <h2>🔗 Sharing Sessions</h2>
+
+      <div class="sharing-method">
+        <h3>Share with Team Members</h3>
+        <ol>
+          <li><strong>Copy Session ID</strong> from the session list</li>
+          <li>
+            <strong>Share the ID</strong> via chat, email, or your preferred method
+          </li>
+          <li><strong>Team members</strong> can join using the session ID</li>
+        </ol>
+      </div>
+
+      <div class="sharing-method">
+        <h3>Join a Shared Session</h3>
+        <ol>
+          <li><strong>Click "Join Session"</strong> on the dashboard</li>
+          <li>
+            <strong>Enter the Session ID</strong> provided by your teammate
+          </li>
+          <li><strong>Click "Connect"</strong> to join the session</li>
+        </ol>
+      </div>
+
+      <div class="sharing-method">
+        <h3>Session Permissions</h3>
+        <ul>
+          <li><strong>Read-Only:</strong> View the terminal output</li>
+          <li>
+            <strong>Interactive:</strong> Type commands and interact with the terminal
+          </li>
+          <li><strong>Admin:</strong> Full control over the session</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="using-terminal">
+      <h2>⌨️ Using the Terminal</h2>
+
+      <div class="terminal-section">
+        <h3>Basic Commands</h3>
+        <pre><code># Check your current directory
+pwd
+
+# List files
+ls -la
+
+# Navigate to a directory
+cd /path/to/directory
+
+# Check system information
+uname -a
+
+# View running processes
+ps aux</code></pre>
+      </div>
+
+      <div class="terminal-section">
+        <h3>Terminal Features</h3>
+        <ul>
+          <li><strong>Copy/Paste:</strong> Use Cmd/Ctrl+C and Cmd/Ctrl+V</li>
+          <li>
+            <strong>Resize:</strong> Drag the terminal edges or use the resize button
+          </li>
+          <li>
+            <strong>Clear:</strong> Click the clear button or type <code
+              >clear</code
+            > in the terminal
+          </li>
+          <li>
+            <strong>Fullscreen:</strong> Click the fullscreen button for distraction-free
+            coding
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="customizing">
+      <h2>🔧 Customizing Your Experience</h2>
+
+      <div class="customization-section">
+        <h3>Terminal Settings</h3>
+        <ol>
+          <li>
+            <strong>Click the Settings icon</strong> (gear) in the toolbar
+          </li>
+          <li>
+            <strong>Adjust preferences:</strong>
+            <ul>
+              <li>Font size and family</li>
+              <li>Color scheme</li>
+              <li>Terminal size</li>
+              <li>Keyboard shortcuts</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+
+      <div class="customization-section">
+        <h3>Session Configuration</h3>
+        <ul>
+          <li>
+            <strong>Auto-start:</strong> Sessions that start automatically
+          </li>
+          <li>
+            <strong>Persistent:</strong> Sessions that survive server restarts
+          </li>
+          <li><strong>Environment:</strong> Custom environment variables</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mobile-access">
+      <h2>📱 Mobile Access</h2>
+
+      <div class="mobile-section">
+        <h3>iOS App</h3>
+        <ol>
+          <li>Download TunnelForge from the App Store</li>
+          <li>Configure your server connection</li>
+          <li>Access sessions on the go</li>
+        </ol>
+      </div>
+
+      <div class="mobile-section">
+        <h3>Mobile Web</h3>
+        <ul>
+          <li>Use any mobile browser</li>
+          <li>Touch-optimized interface</li>
+          <li>Swipe gestures for navigation</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="troubleshooting">
+      <h2>🚨 Troubleshooting Common Issues</h2>
+
+      <div class="issue">
+        <h3>Session Won't Start</h3>
+        <pre><code># Check if the server is running
+tunnelforge status
+
+# Check logs for errors
+tunnelforge logs
+
+# Verify port availability
+netstat -an | grep 4020</code></pre>
+      </div>
+
+      <div class="issue">
+        <h3>Can't Connect to Shared Session</h3>
+        <ul>
+          <li>Verify the session ID is correct</li>
+          <li>Check if the session is still active</li>
+          <li>Ensure your server is accessible to team members</li>
+        </ul>
+      </div>
+
+      <div class="issue">
+        <h3>Terminal is Unresponsive</h3>
+        <ul>
+          <li>Try refreshing the page</li>
+          <li>Check your internet connection</li>
+          <li>Restart the session if needed</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="next-steps">
+      <h2>🎓 Next Steps</h2>
+
+      <div class="learn-more">
+        <h3>Learn More</h3>
+        <ul>
+          <li>
+            <a href="/cli-reference">CLI Reference</a> - Master the command-line
+            tools
+          </li>
+          <li>
+            <a href="/web-interface">Web Interface</a> - Explore advanced web features
+          </li>
+          <li>
+            <a href="/api-reference">API Reference</a> - Integrate with your own
+            tools
+          </li>
+        </ul>
+      </div>
+
+      <div class="advanced-features">
+        <h3>Advanced Features</h3>
+        <ul>
+          <li>
+            <strong>Session Recording</strong> - Save terminal sessions for later
+            review
+          </li>
+          <li>
+            <strong>Team Management</strong> - Organize users and permissions
+          </li>
+          <li>
+            <strong>Automation</strong> - Script common tasks and workflows
+          </li>
+        </ul>
+      </div>
+
+      <div class="get-help">
+        <h3>Get Help</h3>
+        <ul>
+          <li>
+            <strong>Documentation</strong> - Browse the full documentation
+          </li>
+          <li>
+            <strong>GitHub Issues</strong> - Report bugs and request features
+          </li>
+          <li><strong>Discord Community</strong> - Connect with other users</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="congratulations">
+      <h2>🎉 Congratulations!</h2>
+      <p>
+        You've successfully created your first TunnelForge session. The terminal
+        is now ready for collaborative development, debugging, and team
+        collaboration.
+      </p>
+      <p>
+        <strong>Ready to explore more?</strong> Check out the <a
+          href="/cli-reference">CLI Reference</a
+        > to master the command-line tools!
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+  }
+
+  .page-header p {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .content section {
+    margin-bottom: 3rem;
+  }
+
+  .content h2 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .content h3 {
+    color: #374151;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  .content h4 {
+    color: #4b5563;
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .step,
+  .method,
+  .interface-section,
+  .sharing-method,
+  .terminal-section,
+  .customization-section,
+  .mobile-section,
+  .issue,
+  .learn-more,
+  .advanced-features,
+  .get-help {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .step h3,
+  .method h3,
+  .interface-section h3,
+  .sharing-method h3,
+  .terminal-section h3,
+  .customization-section h3,
+  .mobile-section h3,
+  .issue h3,
+  .learn-more h3,
+  .advanced-features h3,
+  .get-help h3 {
+    margin-top: 0;
+    color: #1f2937;
+  }
+
+  .platform-specific {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .platform {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+  }
+
+  .platform h4 {
+    margin-top: 0;
+    color: #374151;
+  }
+
+  pre {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  code {
+    background-color: #f3f4f6;
+    color: #dc2626;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+      "Courier New", monospace;
+    font-size: 0.875em;
+  }
+
+  pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  ul,
+  ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .congratulations {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .congratulations h2 {
+    margin-top: 0;
+    color: white;
+  }
+
+  .congratulations p {
+    margin: 0.5rem 0;
+    font-size: 1.125rem;
+  }
+
+  .congratulations a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .platform-specific {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

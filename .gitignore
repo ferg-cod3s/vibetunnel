@@ -122,10 +122,21 @@ server/test-server
 linux/tunnelforge
 *.o
 
-
 # Rust build artifacts
 tty-fwd/target/
 tty-fwd/Cargo.lock
+
+# Tauri build artifacts
+desktop/src-tauri/target/
+desktop/src-tauri/dist/
+desktop/src-tauri/Cargo.lock
+*.rlib
+*.rmeta
+*.dylib
+*.d
+*.so
+*.dll
+*.exe
 
 # Bun prebuilt executables (should be built during build process)
 mac/Resources/BunPrebuilts/
@@ -167,3 +178,32 @@ mac/build-test/
 .aider*
 /.crush
 /.grok
+
+# Go build artifacts
+server/tunnelforge*
+server/bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Bun build artifacts
+web/dist/
+web/build/
+web/.bun/
+
+# TypeScript build artifacts
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
