@@ -321,6 +321,9 @@ func (s *Server) setupRoutes() {
 		s.pushHandler.RegisterRoutes(r)
 	}
 
+	// Control stream route (for frontend compatibility)
+	sessionRouter.HandleFunc("/control/stream", s.handleControlStream).Methods("GET")
+
 	// Static file serving (serve embedded frontend files)
 	staticHandler, err := static.GetStaticHandler()
 	if err != nil {
@@ -337,11 +340,7 @@ func (s *Server) setupRoutes() {
 				return
 			}
 			
-			// For root path, serve index.html
-			if r.URL.Path == "/" {
-				r.URL.Path = "/index.html"
-			}
-			
+			// The static handler now handles the root path internally
 			staticHandler.ServeHTTP(w, r)
 		}))
 	}
@@ -360,16 +359,20 @@ func (s *Server) setupRoutes() {
 	// Apply CORS first (innermost)
 	corsHandler := c.Handler(handler)
 
-	// Apply compression and security headers, but skip for WebSocket routes
+	// Apply compression and security headers, but skip for WebSocket and SSE routes
 	handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		// Skip compression and security headers for WebSocket endpoints
-		if req.URL.Path == "/ws" || req.URL.Path == "/buffers" {
-			// WebSocket endpoints need direct access to the connection
+		// Skip compression and security headers for WebSocket and SSE endpoints
+		if req.URL.Path == "/ws" || 
+		   req.URL.Path == "/buffers" || 
+		   req.URL.Path == "/api/events" ||
+		   req.URL.Path == "/api/control/stream" ||
+		   strings.Contains(req.URL.Path, "/stream") {
+			// SSE and WebSocket endpoints need direct access to the connection
 			corsHandler.ServeHTTP(w, req)
 			return
 		}
 
-		// Apply compression and security headers for non-WebSocket routes
+		// Apply compression and security headers for non-streaming routes
 		compressionHandler := middleware.Compression()(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			securityHandler := middleware.SecurityHeaders()(corsHandler)
 			securityHandler.ServeHTTP(w, req)
@@ -377,31 +380,39 @@ func (s *Server) setupRoutes() {
 		compressionHandler.ServeHTTP(w, req)
 	})
 
-	// Apply rate limiting if enabled, but skip for WebSocket endpoints
+	// Apply rate limiting if enabled, but skip for WebSocket and SSE endpoints
 	if s.config.EnableRateLimit {
 		rateLimiter := middleware.NewRateLimiter(s.config.RateLimitPerMin, time.Minute)
 		prevHandler := handler // Capture current handler before redefining
 		handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			// Skip rate limiting for WebSocket endpoints to avoid hijacking interference
-			if req.URL.Path == "/ws" || req.URL.Path == "/buffers" {
+			// Skip rate limiting for WebSocket and SSE endpoints to avoid hijacking interference
+			if req.URL.Path == "/ws" || 
+			   req.URL.Path == "/buffers" ||
+			   req.URL.Path == "/api/events" ||
+			   req.URL.Path == "/api/control/stream" ||
+			   strings.Contains(req.URL.Path, "/stream") {
 				prevHandler.ServeHTTP(w, req)
 				return
 			}
-			// Apply rate limiting for non-WebSocket routes
+			// Apply rate limiting for non-streaming routes
 			rateLimiter.Middleware(prevHandler).ServeHTTP(w, req)
 		})
 	}
 
-	// Apply request logging if enabled, but skip for WebSocket endpoints
+	// Apply request logging if enabled, but skip for WebSocket and SSE endpoints
 	if s.config.EnableRequestLog {
 		prevHandler := handler // Capture current handler before redefining
 		handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			// Skip request logging for WebSocket endpoints to avoid hijacking interference
-			if req.URL.Path == "/ws" || req.URL.Path == "/buffers" {
+			// Skip request logging for WebSocket and SSE endpoints to avoid hijacking interference
+			if req.URL.Path == "/ws" || 
+			   req.URL.Path == "/buffers" ||
+			   req.URL.Path == "/api/events" ||
+			   req.URL.Path == "/api/control/stream" ||
+			   strings.Contains(req.URL.Path, "/stream") {
 				prevHandler.ServeHTTP(w, req)
 				return
 			}
-			// Apply request logging for non-WebSocket routes
+			// Apply request logging for non-streaming routes
 			middleware.RequestLogger()(prevHandler).ServeHTTP(w, req)
 		})
 	}
@@ -1246,4 +1257,41 @@ func isLocalhost(ip string) bool {
 		   ip == "127.0.0.1" || 
 		   ip == "::1" || 
 		   ip == "localhost"
+}
+
+// handleControlStream provides a Server-Sent Events stream for control events
+func (s *Server) handleControlStream(w http.ResponseWriter, r *http.Request) {
+	// Set SSE headers
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		s.writeJSONError(w, "Streaming unsupported", http.StatusInternalServerError)
+		return
+	}
+
+	// Send initial connection message
+	w.Write([]byte(":ok\n\n"))
+	flusher.Flush()
+
+	log.Printf("Control event stream connected")
+
+	// Send periodic heartbeat to keep connection alive
+	heartbeatTicker := time.NewTicker(30 * time.Second)
+	defer heartbeatTicker.Stop()
+
+	// Keep connection alive until client disconnects
+	for {
+		select {
+		case <-heartbeatTicker.C:
+			w.Write([]byte(":heartbeat\n\n"))
+			flusher.Flush()
+		case <-r.Context().Done():
+			log.Printf("Control event stream disconnected")
+			return
+		}
+	}
 }
