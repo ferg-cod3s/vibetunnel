@@ -1,50 +1,80 @@
-# Missing macOS App Features in Go + Bun Implementation
+# Missing Features: Alternative Implementations vs Production Mac App
 
 ## Overview
 
-The TunnelForge macOS app had several important features that are currently missing from the Go + Bun implementation. This document outlines what's missing and what needs to be implemented to achieve full feature parity.
+TunnelForge has multiple implementations: the **production SwiftUI Mac app** (current, stable), **Go + Bun alternative implementations** (functional), and **future Tauri cross-platform apps** (in development). This document outlines feature gaps between implementations.
 
-## 🚨 **Critical Missing Features**
+## 🍎 **Production Mac App Features** (Reference Implementation)
+
+The SwiftUI Mac app with Node.js server (port 4020) is the reference implementation with all features:
+
+### ✅ **Complete Feature Set**
+- **Power Management**: Prevents Mac from sleeping during active sessions
+- **Menu Bar Integration**: Native macOS menu bar with system notifications  
+- **Tunnel Integration**: Cloudflare, ngrok, and Tailscale remote access
+- **Advanced Session Management**: Session multiplexing and organization
+- **Activity Monitoring**: Usage analytics and performance metrics
+- **Auto-Updates**: Sparkle framework integration for seamless updates
+- **Native Integration**: File system access, notifications, system tray
+
+## 🚀 **Go + Bun Alternative Implementation Status**
+
+The Go server (port 4021) + Bun web server (port 3001) provides high-performance alternatives with most core features:
+
+### ✅ **IMPLEMENTED AND WORKING**
+- **Core Terminal Functionality**: Session creation, management, and termination
+- **WebSocket Communication**: Real-time I/O with binary buffer streaming
+- **Authentication & Security**: JWT tokens, rate limiting, CSRF protection
+- **Git Integration**: Status, branches, follow mode, event broadcasting
+- **File System Operations**: Safe file operations with path validation
+- **Push Notifications**: Web Push API with VAPID keys and subscription management
+- **Performance**: Superior to Node.js with <1ms response times and lower memory usage
+
+## 🚨 **Missing Features in Alternative Implementation**
 
 ### **1. Power Management (Sleep Prevention)**
 
-**What the macOS app had**:
+**What the production Mac app has**:
 - **PowerManagementService**: Prevents Mac from sleeping when TunnelForge is running
 - **IOKit Integration**: Uses `IOPMAssertionCreateWithName` to create power assertions
 - **Automatic Management**: Prevents sleep when server is running, allows sleep when stopped
 - **User Preference**: Toggle in settings to enable/disable sleep prevention
 
-**Current Status**: ❌ **NOT IMPLEMENTED** in Go server or Bun web interface
+**Status in Alternative Implementation**: ❌ **NOT IMPLEMENTED** in Go server or Bun web interface
 
 **Impact**: Users can't rely on long-running terminal sessions - Mac may sleep and disconnect them
 
-**Implementation Priority**: 🔴 **HIGH** - Core functionality for reliable terminal access
+**Implementation Priority**: 🔴 **HIGH** - Essential for reliable terminal access
 
-**What needs to be implemented**:
-```go
-// In Go server - cross-platform power management
-type PowerManagementService struct {
-    isSleepPrevented bool
-    // Platform-specific implementations
-}
+**Implementation Notes**: Would need cross-platform power management (macOS: IOKit, Linux: systemd-inhibit, Windows: SetThreadExecutionState)
 
-func (p *PowerManagementService) PreventSleep() error
-func (p *PowerManagementService) AllowSleep() error
-func (p *PowerManagementService) UpdateSleepPrevention(enabled bool, serverRunning bool) error
-```
+### **2. Native Desktop Integration**
 
-### **2. Tunnel Integration Services**
+**What the production Mac app has**:
+- **Menu Bar Integration**: System menu bar with native macOS integration
+- **System Notifications**: Native macOS notifications and alerts
+- **Auto-Updates**: Sparkle framework integration for seamless updates
+- **Launch at Login**: Automatic startup with macOS
+- **Native File Access**: Full file system access and permissions
+
+**Status in Alternative Implementation**: ❌ **NOT IMPLEMENTED** - Web-based interface only
+
+**Impact**: Users lose native desktop experience and system-level integrations
+
+**Implementation Priority**: 🟡 **MEDIUM** - Important for user experience, addressed by future Tauri apps
+
+### **3. Tunnel Integration Services**
 
 #### **Cloudflare Integration**
 
-**What the macOS app had**:
+**What the production Mac app has**:
 - **CloudflareService**: Manages cloudflared CLI integration
 - **Quick Tunnels**: Creates public URLs without auth tokens
 - **Status Monitoring**: Checks if cloudflared is installed and running
 - **Process Management**: Starts/stops cloudflared tunnels
 - **Public URL Access**: Provides public URLs for remote access
 
-**Current Status**: ❌ **NOT IMPLEMENTED** in Go server
+**Status in Alternative Implementation**: ❌ **NOT IMPLEMENTED** in Go server
 
 **Impact**: Users can't create public tunnels for remote access
 
