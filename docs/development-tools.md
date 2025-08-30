@@ -1,6 +1,6 @@
 # Development Tools
 
-> **🔄 Refactoring in Progress**: This document covers development tools for both the current Node.js + SwiftUI implementation and the target Go + Bun + Tauri architecture. Tool requirements will change as the refactoring progresses.
+> **🛠️ Development Tools**: This document covers development tools for TunnelForge's multiple implementations: production SwiftUI + Node.js, functional Go + Bun alternatives, and future Tauri cross-platform apps.
 
 ## Overview
 

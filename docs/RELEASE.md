@@ -1,6 +1,6 @@
 # Release Process
 
-> **🔄 Refactoring in Progress**: This document covers release processes for both the current Node.js + SwiftUI implementation and the target Go + Bun + Tauri architecture. Build tools and processes will change as the refactoring progresses.
+> **📦 Release Guide**: This document covers release processes for TunnelForge's production implementation (SwiftUI + Node.js). Future implementations will have their own release processes documented separately.
 
 ## Overview
 
