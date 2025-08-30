@@ -1,6 +1,6 @@
 # Bun Usage Guidelines for TunnelForge
 
-> **🔄 Refactoring in Progress**: Bun usage is planned for the target Go + Bun + Tauri architecture. The current implementation uses Node.js + npm/pnpm. This document describes how Bun will be used in the refactored version.
+> **🧄 Bun Implementation**: Bun is used in TunnelForge's alternative Go + Bun architecture. The production implementation uses Node.js + npm/pnpm, while the functional Bun implementation (`web/src/bun-server.ts`) provides enhanced performance.
 
 ## Overview
 

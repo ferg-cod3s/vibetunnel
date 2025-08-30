@@ -35,7 +35,7 @@
   <a href="https://twitter.com/tunnelforge">Twitter</a>
 </p>
 
-> **🔄 Refactoring in Progress**: TunnelForge is currently being refactored from the legacy Node.js + SwiftUI architecture to a modern Go + Bun + Tauri architecture. The current app still works, but a major upgrade is underway!
+> **📱 Current Status**: TunnelForge is stable and actively developed! The current Mac app uses SwiftUI + Node.js (port 4020). We also have functional Go server + Bun web implementations (ports 4021/3001) and are developing Tauri cross-platform desktop apps.
 
 ## Table of Contents
 
@@ -65,34 +65,45 @@ Ever wanted to check on your AI agents while you're away? Need to monitor that l
 
 ## Current Status
 
-**🔄 Refactoring in Progress**: TunnelForge is actively being refactored to improve performance and add cross-platform support.
+**🚀 Stable and Production-Ready**: TunnelForge is actively maintained and production-ready!
 
-**Current Implementation (Legacy)**:
-- Node.js server with Express routing (port 4020)
-- SwiftUI macOS app with menu bar integration
-- Stable, working terminal sharing functionality
+**Current Implementation (Working)**:
+- **macOS App**: SwiftUI-based native Mac app with menu bar integration
+- **Server**: Node.js server with Express routing (port 4020)
+- **Status**: Stable, feature-complete terminal sharing functionality
 
-**Target Implementation (In Development)**:
-- Go server backend for high-performance terminal management (port 4021)
-- Bun web server for modern TypeScript frontend (port 3001)
-- Tauri v2 desktop apps for cross-platform support (macOS, Windows, Linux)
+**Alternative Implementations (Functional)**:
+- **Go Server**: High-performance Go backend with advanced features (port 4021)
+- **Bun Web Server**: Modern TypeScript frontend with Bun runtime (port 3001)
+- **Status**: Functional implementations with some missing features compared to main app
 
-**Migration Phases**:
-1. ✅ **Phase 1: Go Server** - In development
-2. 🔄 **Phase 2: Bun Web Server** - Next
-3. 📋 **Phase 3: Tauri Desktop Apps** - Planned
-4. 📋 **Phase 4: Legacy Cleanup** - Planned
+**Future Implementations (In Development)**:
+- **Tauri Desktop Apps**: Cross-platform desktop apps for macOS, Windows, Linux
+- **Status**: In development for true cross-platform support
+
+**Development Phases**:
+1. ✅ **Phase 1: Core Platform** - SwiftUI Mac app (current, stable)
+2. ✅ **Phase 2: Alternative Backend** - Go server implementation (functional)
+3. ✅ **Phase 3: Modern Frontend** - Bun web server (functional)
+4. 🔄 **Phase 4: Cross-Platform** - Tauri desktop apps (in development)
 
 ## Installation Options
 
 ### Current: macOS App (Native SwiftUI)
-The current SwiftUI macOS app provides a stable experience on macOS:
+The current **production-ready** SwiftUI macOS app provides a stable experience on macOS:
 - **Menu Bar Integration**: Quick access from the system menu bar
 - **Native Notifications**: System-level notifications and alerts
 - **Auto-Start**: Automatic server management and lifecycle
 - **System Integration**: Native file access and permissions
 
 [Download the latest release](https://github.com/ferg-cod3s/tunnelforge/releases/latest) for macOS.
+
+### Alternative: Go + Bun Implementation (Functional)
+High-performance alternative backend and frontend implementations:
+- **Go Server**: Blazing fast terminal session management (port 4021)
+- **Bun Web Server**: Modern TypeScript runtime with hot reload (port 3001)
+- **Status**: Functional with most features implemented
+- **Use Case**: Development, testing, or when you need the extra performance
 
 ### Future: Cross-Platform Desktop Apps (Tauri v2)
 Coming soon - cross-platform desktop applications:
@@ -220,9 +231,9 @@ Visit [http://localhost:4020](http://localhost:4020) to see all your terminal se
 
 ## Architecture
 
-> **🔄 Refactoring in Progress**: TunnelForge is being refactored from the current Node.js + SwiftUI architecture to a modern Go + Bun + Tauri architecture for better performance and cross-platform support.
+TunnelForge has multiple implementations to serve different needs: a production-ready SwiftUI Mac app, high-performance Go + Bun alternative implementations, and upcoming cross-platform Tauri desktop apps.
 
-### Current Architecture (Legacy - Being Replaced)
+### Current Production Architecture (Stable)
 
 **Core Components**:
 
@@ -256,13 +267,13 @@ Visit [http://localhost:4020](http://localhost:4020) to see all your terminal se
 - **Maintainability**: Clear separation of concerns with well-defined interfaces
 - **Cross-platform**: Web interface works on any device with a modern browser
 
-### Target Architecture (In Development)
+### Alternative Implementation Architecture (Functional)
 
 **Core Components**:
 
 1. **Go Server Backend** - High-performance Go server
    - Written in Go for excellent concurrency and low memory usage
-   - WebSocket-based real-time communication
+   - WebSocket-based real-time communication  
    - Built-in session persistence and event broadcasting
    - Native terminal emulation via creack/pty
 
@@ -272,13 +283,41 @@ Visit [http://localhost:4020](http://localhost:4020) to see all your terminal se
    - API proxy to Go server backend
    - Static file serving with caching
 
-3. **Tauri v2 Desktop Apps** - Cross-platform desktop applications
+3. **Web Frontend** - Modern responsive interface
+   - Lit components for lightweight, fast UI
+   - xterm.js for terminal rendering
+   - Real-time session updates via WebSocket
+   - Progressive Web App capabilities
+
+**Alternative Architecture Benefits**:
+- **Performance**: Go server + Bun runtime = blazing fast execution
+- **Modern**: Latest tech stack with Go 1.21+, and Bun 1.0+
+- **Efficient**: Lower memory usage and faster startup times
+- **Scalable**: Better concurrent connection handling
+
+### Target Architecture (In Development)
+
+**Core Components**:
+
+1. **Go Server Backend** - High-performance Go server (already functional)
+   - Written in Go for excellent concurrency and low memory usage
+   - WebSocket-based real-time communication
+   - Built-in session persistence and event broadcasting
+   - Native terminal emulation via creack/pty
+
+2. **Bun Web Server** - Modern TypeScript-based web interface (already functional)
+   - Uses Bun for superior startup time and performance
+   - Native TypeScript support without transpilation overhead
+   - API proxy to Go server backend
+   - Static file serving with caching
+
+3. **Tauri v2 Desktop Apps** - Cross-platform desktop applications (in development)
    - Built with Rust and Tauri v2 for native performance
    - ~10-15MB bundle size (vs 100MB+ with Electron)
    - Supports Mac, Linux, and Windows from single codebase
    - System tray integration and native notifications
 
-4. **Web Frontend** - Modern responsive interface
+4. **Web Frontend** - Modern responsive interface (already functional)
    - Lit components for lightweight, fast UI
    - xterm.js for terminal rendering
    - Real-time session updates via WebSocket
@@ -291,27 +330,24 @@ Visit [http://localhost:4020](http://localhost:4020) to see all your terminal se
 - **Modern**: Latest tech stack with Tauri v2, Go 1.21+, and Bun 1.0+
 - **Maintainable**: Clear separation of concerns with well-defined interfaces
 
-### Migration Timeline
+### Development Timeline
 
-**Phase 1: Go Server Development** ✅ (In Progress)
-- Implement Go server with PTY management
-- Add WebSocket communication
-- Implement session management
+**Current Status: Multiple Working Implementations** ✅
 
-**Phase 2: Bun Web Server** 🔄 (Next)
-- Create Bun server with API proxy
-- Migrate frontend to Bun runtime
-- Test integration with Go server
+**Production Implementation**: SwiftUI Mac app + Node.js server ✅ (port 4020)
+- Fully functional and stable
+- All features implemented
+- Production-ready for daily use
 
-**Phase 3: Tauri Desktop Apps** 📋 (Planned)
-- Implement Tauri v2 desktop applications
-- Add cross-platform support
-- Migrate from SwiftUI macOS app
+**Alternative Implementation**: Go server + Bun web server ✅ (ports 4021/3001)  
+- Core functionality implemented
+- Most features working
+- Ready for testing and development use
 
-**Phase 4: Legacy Cleanup** 📋 (Planned)
-- Remove Node.js server code
-- Remove SwiftUI macOS app
-- Update all documentation and tooling
+**Future Implementation**: Tauri cross-platform apps 🔄 (in progress)
+- Desktop apps for macOS, Windows, Linux
+- Will leverage existing Go server backend
+- Target: unified cross-platform experience
 
 ## Remote Access Options
 

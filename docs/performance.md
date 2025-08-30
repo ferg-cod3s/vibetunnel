@@ -1,6 +1,6 @@
 # Performance Best Practices
 
-> **🔄 Refactoring in Progress**: This document covers performance practices for both the current Node.js + SwiftUI implementation and the target Go + Bun + Tauri architecture. Performance targets will improve significantly with the new architecture.
+> **📊 Performance Guide**: This document covers performance practices for TunnelForge's multiple implementations: production SwiftUI + Node.js, functional Go + Bun alternatives, and future Tauri cross-platform apps. Different implementations have different performance characteristics.
 
 TunnelForge prioritizes performance across all platforms to ensure responsive terminal sessions and minimal resource usage.
 

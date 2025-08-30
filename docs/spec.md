@@ -1,6 +1,6 @@
 # TunnelForge Technical Specification (formerly VibeTunnel)
 
-> **🔄 Refactoring in Progress**: This document describes the **TARGET ARCHITECTURE** being implemented. TunnelForge is currently being refactored from Node.js + SwiftUI to Go + Bun + Tauri. The current implementation uses Node.js + SwiftUI, but this spec shows the planned Go + Bun + Tauri architecture.
+> **📋 Technical Specification**: This document describes the technical specifications for TunnelForge's multiple implementations. The production SwiftUI + Node.js implementation is the reference, with Go + Bun alternatives providing enhanced performance.
 
 ## Table of Contents
 
