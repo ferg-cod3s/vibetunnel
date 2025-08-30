@@ -1,6 +1,6 @@
-# TunnelForge Technical Roadmap
+# TunnelForge Roadmap
 
-> **🔄 Refactoring in Progress**: This roadmap reflects the current refactoring plans from Node.js + SwiftUI to Go + Bun + Tauri architecture. **Note: Implementation has not started yet - only planning and documentation exist.**
+> **🗺️ Development Roadmap**: This roadmap covers the development plans for TunnelForge's multiple implementations and future features. Current production app is stable, with ongoing development of alternative implementations and cross-platform support.
 
 ## Overview
 

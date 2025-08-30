@@ -17,20 +17,51 @@ The SwiftUI Mac app with Node.js server (port 4020) is the reference implementat
 - **Auto-Updates**: Sparkle framework integration for seamless updates
 - **Native Integration**: File system access, notifications, system tray
 
-## 🚀 **Go + Bun Alternative Implementation Status**
+## 🚀 **Current Implementation Status Summary**
 
-The Go server (port 4021) + Bun web server (port 3001) provides high-performance alternatives with most core features:
+### ✅ **Production Mac App Features** (Complete)
+- **Power Management**: IOKit integration prevents sleep during active sessions
+- **Tunnel Integration**: Full Cloudflare, ngrok, and Tailscale support with UI
+- **Native Desktop**: Menu bar, notifications, auto-updates, file system access
+- **All Core Features**: Complete terminal functionality with advanced session management
 
-### ✅ **IMPLEMENTED AND WORKING**
-- **Core Terminal Functionality**: Session creation, management, and termination
-- **WebSocket Communication**: Real-time I/O with binary buffer streaming
-- **Authentication & Security**: JWT tokens, rate limiting, CSRF protection
-- **Git Integration**: Status, branches, follow mode, event broadcasting
-- **File System Operations**: Safe file operations with path validation
-- **Push Notifications**: Web Push API with VAPID keys and subscription management
-- **Performance**: Superior to Node.js with <1ms response times and lower memory usage
+### ✅ **Node.js Web Implementation** (Complete Core + Some Advanced)
+- **Core Terminal**: Full session management and terminal functionality  
+- **Tailscale Integration**: `tailscale-serve-service.ts` provides Tailscale Serve support
+- **Advanced Features**: Push notifications, git integration, multiplexer support
+- **Missing**: Power management (web can't control system sleep), ngrok/Cloudflare integration
 
-## 🚨 **Missing Features in Alternative Implementation**
+### 🚧 **Go + Bun Alternative Implementation** (Core Complete, Missing Advanced)
+- **Core Terminal**: ✅ Full session management and terminal functionality
+- **Performance**: ✅ Superior performance vs Node.js (lower memory, faster response)
+- **Git Integration**: ✅ Status, branches, follow mode
+- **Push Notifications**: ✅ Web Push API implementation
+- **Missing Advanced**: Power management, tunnel integrations, some monitoring features
+
+### 📋 **Future Tauri Implementation** (In Development)
+- **Cross-Platform**: Desktop apps for macOS, Windows, Linux
+- **Will leverage**: Existing Go server backend for core functionality
+- **Target**: Native desktop experience with cross-platform support
+
+## 🔍 **Detailed Feature Comparison**
+
+| Feature Category | Mac App | Node.js Web | Go + Bun | Tauri Future |
+|------------------|---------|-------------|----------|--------------|
+| **Core Terminal** | ✅ Complete | ✅ Complete | ✅ Complete | 🔄 Planned |
+| **Power Management** | ✅ IOKit | ❌ N/A (web) | ❌ Missing | 🔄 Planned |
+| **Tailscale** | ✅ Full UI | ✅ Serve only | ❌ Missing | 🔄 Planned |
+| **Ngrok** | ✅ Full UI | ❌ Missing | ❌ Missing | 🔄 Planned |
+| **Cloudflare** | ✅ Full UI | ❌ Missing | ❌ Missing | 🔄 Planned |
+| **Desktop Integration** | ✅ Native | ❌ Web only | ❌ Web only | 🔄 Cross-platform |
+| **Performance** | 🟡 Good | 🟡 Good | ✅ Excellent | 🔄 Expected Excellent |
+
+## 🚨 **Priority Missing Features for Go + Bun Implementation**
+
+The Go + Bun implementation is functional for core terminal use but missing some advanced features from the production Mac app:
+
+## 🚨 **Priority Missing Features for Go + Bun Implementation**
+
+The Go + Bun implementation is functional for core terminal use but missing some advanced features from the production Mac app:
 
 ### **1. Power Management (Sleep Prevention)**
 
@@ -40,30 +71,30 @@ The Go server (port 4021) + Bun web server (port 3001) provides high-performance
 - **Automatic Management**: Prevents sleep when server is running, allows sleep when stopped
 - **User Preference**: Toggle in settings to enable/disable sleep prevention
 
-**Status in Alternative Implementation**: ❌ **NOT IMPLEMENTED** in Go server or Bun web interface
+**Status in Go + Bun Implementation**: ❌ **NOT IMPLEMENTED**
 
-**Impact**: Users can't rely on long-running terminal sessions - Mac may sleep and disconnect them
+**Impact**: Users can't rely on long-running terminal sessions - system may sleep and disconnect them
 
 **Implementation Priority**: 🔴 **HIGH** - Essential for reliable terminal access
 
 **Implementation Notes**: Would need cross-platform power management (macOS: IOKit, Linux: systemd-inhibit, Windows: SetThreadExecutionState)
 
-### **2. Native Desktop Integration**
+### **2. Tunnel Integration Services**
 
 **What the production Mac app has**:
-- **Menu Bar Integration**: System menu bar with native macOS integration
-- **System Notifications**: Native macOS notifications and alerts
-- **Auto-Updates**: Sparkle framework integration for seamless updates
-- **Launch at Login**: Automatic startup with macOS
-- **Native File Access**: Full file system access and permissions
+- **CloudflareService**: Full cloudflared CLI integration with UI controls
+- **NgrokService**: Complete ngrok tunnel management with auth token storage
+- **TailscaleService**: Tailscale status checking and hostname discovery
 
-**Status in Alternative Implementation**: ❌ **NOT IMPLEMENTED** - Web-based interface only
+**What the Node.js web implementation has**:
+- **TailscaleServeService**: Basic Tailscale Serve integration (`tailscale-serve-service.ts`)
+- **Limited scope**: Only Tailscale Serve, no ngrok or Cloudflare integration
 
-**Impact**: Users lose native desktop experience and system-level integrations
+**Status in Go + Bun Implementation**: ❌ **NOT IMPLEMENTED**
 
-**Implementation Priority**: 🟡 **MEDIUM** - Important for user experience, addressed by future Tauri apps
+**Impact**: Users can't create remote access tunnels for external access
 
-### **3. Tunnel Integration Services**
+**Implementation Priority**: 🟡 **MEDIUM** - Important for remote access, but core terminal works without it
 
 #### **Cloudflare Integration**
 
@@ -74,7 +105,7 @@ The Go server (port 4021) + Bun web server (port 3001) provides high-performance
 - **Process Management**: Starts/stops cloudflared tunnels
 - **Public URL Access**: Provides public URLs for remote access
 
-**Status in Alternative Implementation**: ❌ **NOT IMPLEMENTED** in Go server
+**Status in Go + Bun Implementation**: ❌ **NOT IMPLEMENTED**
 
 **Impact**: Users can't create public tunnels for remote access
 
@@ -82,275 +113,60 @@ The Go server (port 4021) + Bun web server (port 3001) provides high-performance
 
 #### **Ngrok Integration**
 
-**What the macOS app had**:
+**What the production Mac app has**:
 - **NgrokService**: Manages ngrok tunnel lifecycle
 - **Auth Token Management**: Secure storage of ngrok auth tokens
 - **Tunnel Creation**: Starts ngrok tunnels on specified ports
 - **Status Monitoring**: Tracks tunnel status and public URLs
 - **CLI Integration**: Uses ngrok CLI for tunnel management
 
-**Current Status**: ❌ **NOT IMPLEMENTED** in Go server
+**Status in Go + Bun Implementation**: ❌ **NOT IMPLEMENTED**
 
 **Impact**: Users can't use ngrok for remote access
 
 **Implementation Priority**: 🟡 **MEDIUM** - Alternative tunneling option
 
-#### **Tailscale Integration**
+### **3. Native Desktop Integration**
 
-**What the macOS app had**:
-- **TailscaleService**: Integrates with Tailscale VPN
-- **Hostname Discovery**: Gets Tailscale hostname for network access
-- **Status Checking**: Monitors Tailscale app installation and status
-- **Network Access**: Provides Tailscale-based remote access
-- **API Integration**: Uses Tailscale local API for status
+**What the production Mac app provides**:
+- **Menu Bar Integration**: System menu bar with native macOS integration
+- **System Notifications**: Native macOS notifications and alerts
+- **Auto-Updates**: Sparkle framework integration for seamless updates
+- **Launch at Login**: Automatic startup with macOS
+- **Native File Access**: Full file system access and permissions
 
-**Current Status**: ❌ **NOT IMPLEMENTED** in Go server
+**Status in Go + Bun Implementation**: ❌ **NOT AVAILABLE** - Web-based interface limitation
 
-**Impact**: Users can't use Tailscale for secure remote access
+**Impact**: Users lose native desktop experience and system-level integrations
 
-**Implementation Priority**: 🟡 **MEDIUM** - Secure VPN-based access
-
-### **3. Advanced Session Management**
-
-#### **Session Multiplexing**
-
-**What the macOS app had**:
-- **Multiplexer Routes**: Advanced session grouping and management
-- **Cross-session Operations**: Operations that affect multiple sessions
-- **Session Organization**: Grouping sessions by type, project, or purpose
-
-**Current Status**: ❌ **NOT IMPLEMENTED** in Go server
-
-**Impact**: Users can't efficiently manage multiple related sessions
-
-**Implementation Priority**: 🟢 **LOW** - Nice-to-have feature
-
-#### **Remote Session Registry**
-
-**What the macOS app had**:
-- **Remote Registry**: Manages sessions across multiple servers
-- **Cross-server Operations**: Operations that span multiple TunnelForge instances
-- **Remote Session Discovery**: Finds and connects to remote sessions
-
-**Current Status**: ❌ **NOT IMPLEMENTED** in Go server
-
-**Impact**: Users can't manage distributed terminal sessions
-
-**Implementation Priority**: 🟢 **LOW** - Advanced feature for enterprise use
-
-### **4. Activity Monitoring and Analytics**
-
-**What the macOS app had**:
-- **Activity Monitor**: Tracks session activity and usage patterns
-- **Performance Metrics**: Monitors resource usage and performance
-- **User Analytics**: Tracks user behavior and session patterns
-- **Session Statistics**: Provides insights into terminal usage
-
-**Current Status**: ❌ **NOT IMPLEMENTED** in Go server
-
-**Impact**: Users can't monitor usage patterns or performance
-
-**Implementation Priority**: 🟢 **LOW** - Analytics and monitoring feature
-
-### **5. Advanced Control System**
-
-**What the macOS app had**:
-- **Control Commands**: Advanced session control operations
-- **Control Status**: Detailed status information for control operations
-- **Control Stream**: Real-time control event streaming
-- **Unix Socket Integration**: Direct communication with macOS app
-
-**Current Status**: 🚧 **PARTIALLY IMPLEMENTED** in Go server
-- ✅ Basic control stream endpoint
-- ❌ Missing control commands and status endpoints
-
-**Impact**: Limited control over terminal sessions
-
-**Implementation Priority**: 🟡 **MEDIUM** - Important for session management
-
-## 📊 **Feature Completeness Analysis**
-
-### **Core Terminal Functionality**: ✅ **100% Complete**
-- Session creation, management, and termination
-- WebSocket communication and real-time I/O
-- PTY management and terminal emulation
-- File system operations
-- Git integration
-
-### **Power Management**: ❌ **0% Complete**
-- Sleep prevention
-- Power assertion management
-- Cross-platform power management
-
-### **Tunnel Integration**: ❌ **0% Complete**
-- Cloudflare integration
-- Ngrok integration
-- Tailscale integration
-
-### **Advanced Features**: 🚧 **30% Complete**
-- Basic control system (partial)
-- Session multiplexing (missing)
-- Remote registry (missing)
-- Activity monitoring (missing)
-
-### **Overall Completeness**: 🚧 **~70% Complete**
-
-## 🎯 **Implementation Roadmap**
-
-### **Phase 1: Critical Features (2-3 weeks)**
-
-1. **Power Management Service**
-   ```go
-   // Implement cross-platform power management
-   // macOS: IOKit power assertions
-   // Linux: systemd-inhibit or similar
-   // Windows: SetThreadExecutionState
-   ```
-
-2. **Basic Tunnel Integration**
-   ```go
-   // Start with Cloudflare integration (no auth required)
-   // Add ngrok integration (auth token management)
-   // Add Tailscale integration (system API)
-   ```
-
-### **Phase 2: Advanced Features (3-4 weeks)**
-
-1. **Complete Control System**
-   ```go
-   // Add missing control endpoints
-   // Implement control commands
-   // Add control status monitoring
-   ```
-
-2. **Session Multiplexing**
-   ```go
-   // Implement session grouping
-   // Add cross-session operations
-   // Create session organization system
-   ```
-
-### **Phase 3: Enterprise Features (2-3 weeks)**
-
-1. **Remote Registry**
-   ```go
-   // Implement remote session discovery
-   // Add cross-server operations
-   // Create distributed session management
-   ```
-
-2. **Activity Monitoring**
-   ```go
-   // Add usage analytics
-   // Implement performance monitoring
-   // Create reporting system
-   ```
-
-## 🔧 **Technical Implementation Details**
-
-### **Power Management (Cross-Platform)**
-
-```go
-// server/internal/power/power.go
-package power
-
-import (
-    "runtime"
-    "errors"
-)
-
-type PowerManager interface {
-    PreventSleep() error
-    AllowSleep() error
-    IsSleepPrevented() bool
-}
-
-// Platform-specific implementations
-type macOSPowerManager struct {
-    assertionID uint32
-}
-
-type LinuxPowerManager struct {
-    inhibitFd int
-}
-
-type WindowsPowerManager struct {
-    // Windows-specific implementation
-}
-```
-
-### **Tunnel Integration Services**
-
-```go
-// server/internal/tunnels/cloudflare.go
-package tunnels
-
-type CloudflareService struct {
-    isInstalled bool
-    isRunning   bool
-    publicURL   string
-    process     *os.Process
-}
-
-func (c *CloudflareService) StartTunnel(port int) error
-func (c *CloudflareService) StopTunnel() error
-func (c *CloudflareService) GetStatus() (*TunnelStatus, error)
-```
-
-### **Advanced Session Management**
-
-```go
-// server/internal/session/multiplexer.go
-package session
-
-type SessionMultiplexer struct {
-    groups map[string]*SessionGroup
-    sessions map[string]*types.Session
-}
-
-type SessionGroup struct {
-    ID          string
-    Name        string
-    Sessions    []string
-    Operations  []GroupOperation
-}
-```
-
-## 📱 **User Experience Impact**
-
-### **Without Sleep Prevention**
-- Terminal sessions disconnect when Mac sleeps
-- Long-running processes may be interrupted
-- Unreliable for overnight or extended use
-- Poor user experience for server management
-
-### **Without Tunnel Integration**
-- No remote access to terminal sessions
-- Limited to local network access only
-- Can't share terminals with remote users
-- Reduced functionality for distributed teams
-
-### **Without Advanced Features**
-- Basic session management only
-- No session organization or grouping
-- Limited control over terminal operations
-- No analytics or monitoring capabilities
-
-## 🚀 **Next Steps**
-
-1. **Immediate Priority**: Implement power management service
-2. **Short Term**: Add basic tunnel integration (Cloudflare first)
-3. **Medium Term**: Complete control system and session multiplexing
-4. **Long Term**: Add enterprise features and analytics
+**Implementation Priority**: 🟢 **LOW** - Addressed by future Tauri cross-platform apps
 
 ## 📝 **Conclusion**
 
-The current Go + Bun implementation provides excellent core terminal functionality but is missing several key features that made the macOS app powerful and user-friendly. The most critical missing features are:
+TunnelForge offers multiple implementations serving different needs:
 
-1. **Power Management** - Essential for reliable terminal access
-2. **Tunnel Integration** - Important for remote access functionality
-3. **Advanced Session Management** - Nice-to-have for power users
+### **Choose the Right Implementation:**
 
-Implementing these features would bring the Go + Bun implementation to full feature parity with the macOS app, making it a complete replacement that users can rely on for all their terminal management needs.
+**🍎 Production Mac App (SwiftUI + Node.js)** - **Recommended for daily use**
+- ✅ Complete feature set including power management and tunnel integrations
+- ✅ Native macOS integration with menu bar and notifications  
+- ✅ Stable and production-ready
+- **Best for**: Mac users who want full feature set and native experience
 
-The good news is that the core infrastructure is solid, so adding these features should be straightforward and won't require major architectural changes.
+**⚡ Go + Bun Alternative** - **For performance enthusiasts and developers**
+- ✅ Superior performance (lower memory, faster response times)
+- ✅ Core terminal functionality is complete and stable
+- ❌ Missing power management and tunnel integrations
+- **Best for**: Development, testing, or when you prioritize raw performance
+
+**🌍 Future Tauri Cross-Platform** - **For cross-platform needs**
+- 🔄 In development for Windows, Linux, and macOS
+- 🔄 Will leverage Go server backend for core functionality
+- **Best for**: Windows/Linux users who want native desktop experience
+
+### **Implementation Status Summary:**
+- **Production Ready**: SwiftUI Mac app ✅
+- **Performance Alternative**: Go + Bun ✅ (core features) + 🚧 (advanced features)
+- **Cross-Platform Future**: Tauri apps 🔄
+
+The Go + Bun implementation proves TunnelForge's architecture is solid and can support multiple backends. Missing features are primarily convenience/advanced functionality rather than core terminal capabilities.

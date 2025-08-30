@@ -1,7 +1,7 @@
 <!-- Generated: 2025-08-23 -->
 # Build System
 
-> **🔄 Refactoring in Progress**: This document describes the **TARGET BUILD SYSTEM** being implemented. The current implementation uses Xcode + npm/pnpm, but this document shows the planned Go + Bun + Tauri build system.
+> **🔧 Build Systems**: This document describes the build systems for TunnelForge's multiple implementations: current Xcode + npm/pnpm (production), Go + Bun (alternative), and future Tauri cross-platform builds.
 
 TunnelForge uses modern build systems for each component: Go for the high-performance server backend, Bun for the web interface, and Tauri v2 for cross-platform desktop applications. The build system supports both development and release builds with automated packaging for multiple platforms.
 
